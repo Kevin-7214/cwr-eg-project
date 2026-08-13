@@ -1,0 +1,37 @@
+registry_version: 0.1.0-pre-experiment
+families:
+  - family_id: kgw
+    implementation: markllm
+    detector_mode: key_required
+    keys: [kgw_key_a, kgw_key_b]
+    tail_direction: upper
+    enabled: true
+    scheme_only_detector: calibrated_key_invariant_probe
+  - family_id: unigram
+    implementation: markllm
+    detector_mode: key_required
+    keys: [unigram_key_a, unigram_key_b]
+    tail_direction: upper
+    enabled: true
+    scheme_only_detector: calibrated_key_invariant_probe
+  - family_id: unbiased
+    implementation: markllm
+    detector_mode: key_required
+    keys: [unbiased_key_a, unbiased_key_b]
+    tail_direction: upper
+    enabled: true
+    scheme_only_detector: calibrated_key_invariant_probe
+  - family_id: synthid
+    implementation: markllm
+    detector_mode: key_required
+    keys: [synthid_key_a, synthid_key_b]
+    tail_direction: upper
+    enabled: true
+    scheme_only_detector: calibrated_key_invariant_probe
+  - family_id: waterseeker
+    implementation: external
+    detector_mode: scheme_only
+    keys: []
+    tail_direction: upper
+    enabled: false
+    disabled_reason: upstream_license_not_declared

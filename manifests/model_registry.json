@@ -1,0 +1,48 @@
+{
+  "manifest_version": "0.1.0-pre-experiment",
+  "selection_policy": "ungated_no_manual_approval",
+  "models": [
+    {
+      "id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "license": "apache-2.0",
+      "role": ["local_smoke_generator"],
+      "availability": "local_hash_verified"
+    },
+    {
+      "id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "license": "apache-2.0",
+      "role": ["pilot_generator"],
+      "availability": "local_hash_verified"
+    },
+    {
+      "id": "Qwen/Qwen2.5-7B-Instruct",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "license": "apache-2.0",
+      "role": ["formal_generator", "proxy_candidate"],
+      "availability": "download_required"
+    },
+    {
+      "id": "microsoft/Phi-3.5-mini-instruct",
+      "revision": "2fe192450127e6a83f7441aef6e3ca586c338b77",
+      "license": "mit",
+      "role": ["cross_model_generator"],
+      "availability": "download_required"
+    },
+    {
+      "id": "bigscience/bloom-1b7",
+      "revision": "cc72a88036c2fb937d65efeacc57a0c2ef5d6fe5",
+      "license": "bigscience-rail-1.0",
+      "role": ["architecture_shift_generator"],
+      "availability": "download_required"
+    },
+    {
+      "id": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "license": "mit",
+      "role": ["frozen_representation_view"],
+      "availability": "download_required"
+    }
+  ]
+}

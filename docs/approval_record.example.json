@@ -1,0 +1,15 @@
+{
+  "approval_id": "replace-after-explicit-chat-approval",
+  "approved": true,
+  "approved_by": "user_chat",
+  "issued_at": "2026-08-13T00:00:00+08:00",
+  "expires_at": "2026-08-13T01:00:00+08:00",
+  "action": "model-smoke",
+  "fingerprint": "replace-with-cwr-eg-fingerprint-output",
+  "resource_class": "local-rtx5060",
+  "scope": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "prompts": 1
+  },
+  "chat_evidence": "replace-with-explicit-user-approval-reference"
+}

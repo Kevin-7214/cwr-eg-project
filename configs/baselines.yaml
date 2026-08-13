@@ -1,0 +1,71 @@
+baseline_registry_version: 0.1.0-pre-experiment
+
+registered_detection:
+  markllm_detectors:
+    status: ready_for_approved_smoke
+    families: [kgw, unigram, unbiased, synthid]
+    fairness: same_documents_keys_windows_and_character_mapping
+  scheme_oracle:
+    status: diagnostic_only
+    uses_ground_truth_scheme: true
+
+known_localization:
+  official_gcd_aol:
+    status: source_pinned_build_not_run
+    repository: llm-watermark-location
+    requires: [linux, cpp_compiler, pybind11]
+  legacy_independent_gcd:
+    status: historical_code_ready
+    source: ../../../project1
+  legacy_hybrid_v2:
+    status: historical_only_failed_core_acceptance
+  waterseeker:
+    status: blocked
+    reason: upstream_license_not_declared
+
+conditional_access:
+  ttp_detect:
+    status: blocked_no_public_code_confirmed
+    paper: https://aclanthology.org/2026.findings-acl.990/
+    comparability_note: query_time_paired_reference_and_proxy_access_differ
+
+ai_text_detection:
+  detectgpt:
+    status: source_pinned_model_not_selected
+    repository: detect-gpt
+  binoculars:
+    status: source_pinned_model_pair_not_downloaded
+    repository: Binoculars
+  direct_statistics:
+    status: implemented
+    features: [mean_nll, mean_entropy, mean_log_rank, perturbation_curvature]
+  logistic_regression:
+    status: implemented_optional_dependency
+  xgboost:
+    status: implemented_optional_dependency
+
+open_set_ood:
+  maximum_softmax:
+    status: implemented
+  energy:
+    status: implemented
+  mahalanobis:
+    status: implemented
+  one_class_svm:
+    status: implemented_optional_dependency
+  known_prototype_distance:
+    status: implemented
+  openmax:
+    status: protocol_selected_implementation_deferred_until_pilot_fit
+
+unstructured_fusion:
+  direct_feature_mlp:
+    status: implemented
+  linear_generic_registered:
+    status: implemented
+  generic_only:
+    status: implemented
+  registered_only:
+    status: implemented
+  uncalibrated_gap:
+    status: diagnostic_only_never_a_p_value

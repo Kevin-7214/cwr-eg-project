@@ -1,0 +1,67 @@
+{
+  "ok": true,
+  "legacy_root": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1",
+  "records": [
+    {
+      "kind": "corpus",
+      "id": "arxiv_en",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\data\\corpus\\arxiv_en.jsonl",
+      "expected_sha256": "a5a8f45ee43c940f0d7586abb71ad8267676857ccf6470967880c6ab889d688b",
+      "actual_sha256": "a5a8f45ee43c940f0d7586abb71ad8267676857ccf6470967880c6ab889d688b",
+      "ok": true
+    },
+    {
+      "kind": "corpus",
+      "id": "c4_en",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\data\\corpus\\c4_en.jsonl",
+      "expected_sha256": "4e5b64420becf5080a51e2b424531aa27563e635aaa77a28c776c068d0084678",
+      "actual_sha256": "4e5b64420becf5080a51e2b424531aa27563e635aaa77a28c776c068d0084678",
+      "ok": true
+    },
+    {
+      "kind": "corpus",
+      "id": "wikipedia_en",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\data\\corpus\\wikipedia_en.jsonl",
+      "expected_sha256": "ecdf89f10233f0601dcb790929fc3c4b3c4b41d842fc50ba7f51fb81a0989add",
+      "actual_sha256": "ecdf89f10233f0601dcb790929fc3c4b3c4b41d842fc50ba7f51fb81a0989add",
+      "ok": true
+    },
+    {
+      "kind": "corpus",
+      "id": "thucnews_zh",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\data\\corpus\\thucnews_zh.jsonl",
+      "expected_sha256": "21171f2e2467e1c664e5821ea038b256007665be76bf39db1092e81c85d80de7",
+      "actual_sha256": "21171f2e2467e1c664e5821ea038b256007665be76bf39db1092e81c85d80de7",
+      "ok": true
+    },
+    {
+      "kind": "corpus",
+      "id": "wikipedia_zh",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\data\\corpus\\wikipedia_zh.jsonl",
+      "expected_sha256": "de27c4165d8e16a2ea98066b29fe2f7adfba79433bd479bb1f3fbe7d18353bbb",
+      "actual_sha256": "de27c4165d8e16a2ea98066b29fe2f7adfba79433bd479bb1f3fbe7d18353bbb",
+      "ok": true
+    },
+    {
+      "kind": "model_file",
+      "id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\models\\Qwen2.5-0.5B-Instruct\\model.safetensors",
+      "expected_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+      "actual_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+      "ok": true
+    },
+    {
+      "kind": "model_file",
+      "id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\models\\Qwen2.5-1.5B-Instruct\\model.safetensors",
+      "expected_sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee",
+      "actual_sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee",
+      "ok": true
+    }
+  ],
+  "registry": {
+    "ok": true,
+    "errors": []
+  },
+  "experiment_executed": false
+}

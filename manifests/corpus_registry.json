@@ -1,0 +1,42 @@
+{
+  "manifest_version": "0.1.0-pre-experiment",
+  "legacy_manifest": "../../../project1/manifests/corpus_manifest.json",
+  "sources": [
+    {
+      "name": "c4_en",
+      "dataset": "allenai/c4",
+      "license": "odc-by",
+      "language": "en",
+      "selected_for_pilot": true
+    },
+    {
+      "name": "wikipedia_en",
+      "dataset": "wikimedia/wikipedia",
+      "license": ["cc-by-sa-3.0", "gfdl"],
+      "language": "en",
+      "selected_for_pilot": true
+    },
+    {
+      "name": "thucnews_zh",
+      "dataset": "Tongjilibo/THUCNews",
+      "license": "apache-2.0",
+      "language": "zh",
+      "selected_for_pilot": true
+    },
+    {
+      "name": "wikipedia_zh",
+      "dataset": "wikimedia/wikipedia",
+      "license": ["cc-by-sa-3.0", "gfdl"],
+      "language": "zh",
+      "selected_for_pilot": true
+    },
+    {
+      "name": "arxiv_en",
+      "dataset": "ccdv/arxiv-summarization",
+      "license": null,
+      "language": "en",
+      "selected_for_pilot": false,
+      "exclusion_reason": "dataset_card_license_not_declared"
+    }
+  ]
+}

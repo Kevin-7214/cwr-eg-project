@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cwr-eg"
+version = "0.1.0"
+description = "Finite-open-set watermark localization and attribution"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "numpy>=1.26,<3",
+  "scipy>=1.12,<2",
+  "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+gpu = [
+  "torch==2.9.1",
+  "transformers>=4.46,<5",
+  "accelerate>=1.0,<2",
+  "datasets>=3,<5",
+  "huggingface-hub>=0.26,<1",
+  "safetensors>=0.4,<1",
+]
+dev = [
+  "pytest>=8,<10",
+  "pytest-cov>=5,<8",
+]
+baselines = [
+  "scikit-learn>=1.4,<2",
+  "xgboost>=2,<4",
+]
+
+[project.scripts]
+cwr-eg = "cwr_eg.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+norecursedirs = ["external", "artifacts", ".git"]

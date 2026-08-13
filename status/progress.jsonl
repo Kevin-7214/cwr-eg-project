@@ -1,0 +1,26 @@
+{"time":"2026-08-13T15:05:17+08:00","task_id":"A-01","status":"done","evidence":"Read-only inventory confirmed 11 implementation documents and no existing cwr_eg_project."}
+{"time":"2026-08-13T15:05:17+08:00","task_id":"A-02","status":"done","evidence":"No protocol.md or environment.md existed in the current implementation scope."}
+{"time":"2026-08-13T15:05:17+08:00","task_id":"B-01","status":"in_progress","evidence":"Creating independent project skeleton; legacy project1 remains read-only."}
+{"time":"2026-08-13T15:05:17+08:00","task_id":"GATE-LOCAL-EXPERIMENT","status":"waiting_user_approval","evidence":"Hard gate active. No experiment command has been run."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"A-03","status":"done","evidence":"Read-only SHA-256 audit passed for five legacy corpus files and two local Qwen weight files."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"A-04","status":"done","evidence":"Implementation ambiguities were frozen in protocol.md, including positive-only scheme adversary, train-only null prototype, distinct grl_scale and loss weights, search-aware p-values, and conservative document aggregation."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"B-01","status":"done","evidence":"Independent cwr_eg_project created; no legacy project1 file was modified."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"B-02","status":"done","evidence":"protocol.md, environment.md, README.md, registries, and source boundaries created."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"B-03","status":"done","evidence":"Independent Git repository initialized on main with pyproject.toml and .gitignore."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"B-04","status":"done","evidence":"Append-only progress ledger and fingerprinted approval guard implemented."}
+{"time":"2026-08-13T15:28:00+08:00","task_id":"B-05","status":"done","evidence":"Separate Windows RTX 5060 and Linux H100 Conda definitions created; no environment installed."}
+{"time":"2026-08-13T15:34:00+08:00","task_id":"C-04","status":"in_progress","evidence":"Pilot manifests generated successfully; secondary assertion wrapper failed because a Chinese literal path in stdin was replaced by question marks. Retrying with environment-variable path transport."}
+{"time":"2026-08-13T15:35:00+08:00","task_id":"C-04","status":"done","evidence":"Unicode-safe retry passed: four sources x eight parents, 32 unique parent_ids, no split leakage."}
+{"time":"2026-08-13T15:35:00+08:00","task_id":"C-05","status":"done","evidence":"Pilot split counts verified as Train/Dev/Calibration/Test = 16/8/4/4; Test marked smoke_only."}
+{"time":"2026-08-13T15:35:00+08:00","task_id":"C-06","status":"done","evidence":"Corpus licenses, source file hashes, sample hashes, and pilot manifest hashes recorded."}
+{"time":"2026-08-13T15:35:00+08:00","task_id":"C-07","status":"done","evidence":"Created 160 base-generation, 160 matched-attack, and 16 mixed-document recipes; all remain planned_not_generated."}
+{"time":"2026-08-13T15:37:00+08:00","task_id":"E-01:E-09","status":"done","evidence":"Core package, MarkLLM adapters, CWR-EG model/losses, calibration bundle, inference/evaluation runtime, tensor bundling, CLI, and approval guard implemented."}
+{"time":"2026-08-13T15:38:00+08:00","task_id":"F-02","status":"in_progress","evidence":"First run had 23/25 pass. Fixed one protocol-inconsistent test and removed torch.from_numpy dependence under the stale system ABI."}
+{"time":"2026-08-13T15:38:30+08:00","task_id":"F-02","status":"done","evidence":"All synthetic CPU tests passed after corrections; later baseline coverage increased the final total to 28/28."}
+{"time":"2026-08-13T15:39:00+08:00","task_id":"F-04","status":"in_progress","evidence":"First legacy test invocation omitted src from PYTHONPATH; second used the wrong working directory. Both were runner setup failures, not legacy test failures."}
+{"time":"2026-08-13T15:39:30+08:00","task_id":"F-04","status":"done","evidence":"All 23 legacy project1 tests passed from the legacy working directory with cache and bytecode writes disabled."}
+{"time":"2026-08-13T15:40:00+08:00","task_id":"D-01:D-05","status":"done","evidence":"Pinned model/data registries and MarkLLM, KGW, GCD/AOL, DetectGPT, and Binoculars sources; WaterSeeker disabled and TTP-Detect blocked with reasons."}
+{"time":"2026-08-13T15:41:00+08:00","task_id":"F-01:F-05","status":"done","evidence":"Compile, 28/28 new tests, config/manifest audit, 23/23 legacy tests, preflight report, and SHA-256 manifest completed."}
+{"time":"2026-08-13T15:41:00+08:00","task_id":"GATE-LOCAL-EXPERIMENT","status":"waiting_user_approval","evidence":"Pre-experiment preparation complete. No environment install, model load, CUDA use, generation, training, calibration, inference, evaluation, or benchmark was executed."}
+{"time":"2026-08-13T15:42:00+08:00","task_id":"B-03-COMMIT","status":"blocked","evidence":"Initial local commit was rejected because Git user.name and user.email are unset. Repository is initialized and all new files are staged; no identity was fabricated."}
+{"time":"2026-08-13T15:46:00+08:00","task_id":"F-02","status":"done","evidence":"Approval scope-file regression added; final synthetic CPU test total is 29/29. G-01 fingerprint verified as 955771eda2fecba9688a18cca3cbb3632d4ea45db5d8b79f4c6fdec98d0e5586."}

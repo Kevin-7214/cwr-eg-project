@@ -1,0 +1,15 @@
+{
+  "approval_gate": "waiting_user_approval",
+  "checksummed_files": 72,
+  "checksums_sha256": "69daa74d533d0cd2f80010f7f644f578d5c49605efed2ca74a06de3ffd1cdb50",
+  "created_at": "2026-08-13T15:47:37+08:00",
+  "experiment_executed": false,
+  "known_environment_warning": "current_system_torch_2_0_numpy_2_abi_mismatch",
+  "legacy_project_tests_passed": 23,
+  "new_project_tests_passed": 29,
+  "pilot_base_generation_recipes": 160,
+  "pilot_matched_attack_recipes": 160,
+  "pilot_mixed_document_recipes": 16,
+  "pilot_parent_samples": 32,
+  "status": "ready_at_local_experiment_approval_gate"
+}

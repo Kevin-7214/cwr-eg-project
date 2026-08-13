@@ -1,0 +1,47 @@
+{
+  "manifest_version": "0.1.0-pre-experiment",
+  "repositories": [
+    {
+      "name": "MarkLLM",
+      "url": "https://github.com/THU-BPM/MarkLLM",
+      "commit": "c45ddc40f7b761beabe55a1b8dc4690e531d1c6d",
+      "license": "apache-2.0",
+      "policy": "adapter_or_pinned_vendor_after_license_audit"
+    },
+    {
+      "name": "lm-watermarking",
+      "url": "https://github.com/jwkirchenbauer/lm-watermarking",
+      "commit": "82922516930c02f8aa322765defdb5863d07a00e",
+      "license": "apache-2.0",
+      "policy": "reference_implementation"
+    },
+    {
+      "name": "WaterSeeker",
+      "url": "https://github.com/THU-BPM/WaterSeeker",
+      "commit": "01ee6d995805de8e475f639f789d857dbad4fe72",
+      "license": null,
+      "policy": "disabled_until_license_clarified"
+    },
+    {
+      "name": "llm-watermark-location",
+      "url": "https://github.com/XuandongZhao/llm-watermark-location",
+      "commit": "87cab921dc5fcdef62ce3b6410a791d387780d2e",
+      "license": "mit",
+      "policy": "gcd_aol_baseline_requires_linux_cpp_build"
+    },
+    {
+      "name": "detect-gpt",
+      "url": "https://github.com/eric-mitchell/detect-gpt",
+      "commit": "447d2ce8177004203f42d1da87d7f93a2e31ad52",
+      "license": "mit",
+      "policy": "ai_text_detection_baseline_requires_perturbation_model"
+    },
+    {
+      "name": "Binoculars",
+      "url": "https://github.com/ahans30/Binoculars",
+      "commit": "c8ae2f90d50ee696418bc71d8d9e5020e5f9d7b8",
+      "license": "bsd-3-clause",
+      "policy": "ai_text_detection_baseline_requires_model_pair"
+    }
+  ]
+}

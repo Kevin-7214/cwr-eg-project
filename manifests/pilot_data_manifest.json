@@ -1,0 +1,57 @@
+{
+  "experiment_executed": false,
+  "manifest_version": "0.1.0-pre-experiment",
+  "maximum_characters": 6000,
+  "minimum_characters": 2000,
+  "outputs": [
+    {
+      "bytes": 248578,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/最新思路/项目实施/cwr_eg_project/manifests/pilot_parents.jsonl",
+      "sha256": "7c516ac55e43eb42f55782482932dcbf28edc8585c4eb9ba048c3b137999a41c"
+    },
+    {
+      "bytes": 97131,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/最新思路/项目实施/cwr_eg_project/manifests/pilot_recipes.jsonl",
+      "sha256": "235bc7d3c133e8494de6f8eeac8f166ca347f7540b823cace8afc67ac5d5df59"
+    }
+  ],
+  "parent_audit": {
+    "manifest_content_hash": "2138852f4249f8a2851ca2f399e917be93fbddb52d980b3df88d08cdf690382d",
+    "rows": 32,
+    "split_counts": {
+      "calibration": 4,
+      "dev": 8,
+      "test": 4,
+      "train": 16
+    },
+    "unique_parent_ids": 32
+  },
+  "recipe_counts": {
+    "base_generation": 160,
+    "matched_attack": 160,
+    "mixed_document": 16
+  },
+  "seed": 20260813,
+  "source_files": [
+    {
+      "bytes": 124341851,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/data/corpus/c4_en.jsonl",
+      "sha256": "4e5b64420becf5080a51e2b424531aa27563e635aaa77a28c776c068d0084678"
+    },
+    {
+      "bytes": 211895072,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/data/corpus/wikipedia_en.jsonl",
+      "sha256": "ecdf89f10233f0601dcb790929fc3c4b3c4b41d842fc50ba7f51fb81a0989add"
+    },
+    {
+      "bytes": 61841128,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/data/corpus/thucnews_zh.jsonl",
+      "sha256": "21171f2e2467e1c664e5821ea038b256007665be76bf39db1092e81c85d80de7"
+    },
+    {
+      "bytes": 138811829,
+      "path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/data/corpus/wikipedia_zh.jsonl",
+      "sha256": "de27c4165d8e16a2ea98066b29fe2f7adfba79433bd479bb1f3fbe7d18353bbb"
+    }
+  ]
+}

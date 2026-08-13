@@ -1,0 +1,81 @@
+protocol_version: 0.1.0-pre-experiment
+seed: 20260813
+
+data:
+  parent_manifest: manifests/pilot_parents.jsonl
+  recipe_manifest: manifests/pilot_recipes.jsonl
+  split_unit: parent_id
+  split_counts:
+    train: 16
+    dev: 8
+    calibration: 4
+    test: 4
+  languages: [en, zh]
+  minimum_characters: 2000
+  test_usage: smoke_only
+
+model:
+  view_names: [proxy, representation, perturbation, validity]
+  hidden_dim: 256
+  invariant_dim: 128
+  private_dim: 128
+  dropout: 0.1
+  proxy_trainable: false
+  losses:
+    watermark_weight: 1.0
+    null_weight: 1.0
+    margin_weight: 1.0
+    contrastive_weight: 0.2
+    reconstruction_weight: 0.1
+    orthogonality_weight: 0.05
+    scheme_adv_weight: 0.1
+    private_scheme_weight: 0.1
+    nuisance_adv_weight: 0.1
+    boundary_weight: 0.5
+    consistency_weight: 0.2
+    variance_floor_weight: 0.01
+    grl_scale: 1.0
+    invariant_margin: 1.5
+
+search:
+  window_char_lengths: [256, 512, 1024]
+  stride_fraction: 0.25
+  candidate_quantile: 0.95
+  merge_gap_chars: 32
+  boundary_refinement: evidence_change_point
+
+registered:
+  registry: configs/registered_registry.yaml
+  adjust_method: search_maximum
+
+calibration:
+  alpha: 0.01
+  fwer_upper_acceptance: 0.015
+  confidence_level: 0.95
+  empirical_smoothing: plus_one
+  null_strata: [language, source, effective_length]
+  search_aware: true
+  pseudo_unknown_in_formal_gap_null: false
+
+validity:
+  minimum_effective_length: 64
+  minimum_mapping_coverage: 0.98
+  maximum_repetition_ratio: 0.35
+  supported_languages: [en, zh]
+  warning_forces_uncertain: false
+
+decision:
+  labels:
+    - known_scheme_known_key
+    - known_scheme_unknown_key
+    - suspected_unknown_scheme
+    - uncertain
+    - none
+  conflict_label: uncertain
+  document_conflict_forces_uncertain: true
+
+evaluation:
+  bootstrap_unit: parent_id
+  bootstrap_replicates: 2000
+  localization_metrics: [character_iou, boundary_error, event_f1]
+  open_set_metrics: [macro_f1, oscr, fwer]
