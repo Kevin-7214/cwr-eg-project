@@ -1,0 +1,32 @@
+{
+  "prepared_at": "2026-08-13T17:29:35+08:00",
+  "status": "waiting_user_approval",
+  "config_hash": "3aa92e52d266ee66670c030dbd49c96f4be0097db570c2131dcfbd29415d0e2d",
+  "resource_class": "local-rtx5060",
+  "checks": {
+    "cpu_tests_passed": 33,
+    "pip_check_passed": true,
+    "compileall_passed": true,
+    "stale_approval_rejected": true,
+    "critical_files_verified_per_model": 7
+  },
+  "scopes": [
+    {
+      "task_id": "G-02-A",
+      "operation": "forward_only",
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "scope_file": "docs/g02_qwen05_forward_scope.json",
+      "fingerprint": "de2ad5e5e22eee3a39037f6f847e37949083f494bb30593aa83e902262fb82e6"
+    },
+    {
+      "task_id": "G-02-B",
+      "operation": "generate_only",
+      "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scope_file": "docs/g02_qwen15_generate_scope.json",
+      "fingerprint": "801845f208c175492c7b85802312a6cf7310d727bc4cf58cb7dd8e490962e9d7"
+    }
+  ],
+  "model_loaded": false,
+  "cuda_called": false,
+  "experiment_executed": false
+}

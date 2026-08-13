@@ -7,6 +7,7 @@ import time
 from typing import Any, Callable
 
 from cwr_eg.config import load_yaml
+from cwr_eg.hashing import sha256_file
 
 
 def _write_result(scope: dict[str, Any], result: dict[str, Any]) -> None:
@@ -65,45 +66,143 @@ def _cuda_smoke(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _run_model_smoke_operation(
+    operation: str,
+    *,
+    model: Any,
+    encoded: Any,
+    tokenizer: Any,
+    torch_module: Any,
+    max_new_tokens: int | None,
+) -> dict[str, Any]:
+    with torch_module.inference_mode():
+        if operation == "forward_only":
+            forward = model(**encoded)
+            return {
+                "logits_finite": bool(
+                    torch_module.isfinite(forward.logits).all().item()
+                )
+            }
+        if operation == "generate_only":
+            generated = model.generate(
+                **encoded,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+                pad_token_id=tokenizer.eos_token_id,
+            )
+        else:
+            raise ValueError(f"Unsupported model-smoke operation: {operation}")
+    input_tokens = int(encoded["input_ids"].shape[1])
+    output_tokens = int(generated.shape[1])
+    return {
+        "output_tokens": output_tokens,
+        "generated_tokens": output_tokens - input_tokens,
+        "generated_text": tokenizer.decode(generated[0], skip_special_tokens=True),
+    }
+
+
 def _model_smoke(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    operation = str(scope.get("operation", ""))
+    if operation not in {"forward_only", "generate_only"}:
+        raise ValueError("model-smoke operation must be forward_only or generate_only")
+    if scope.get("local_files_only") is not True:
+        raise ValueError("model-smoke requires local_files_only=true")
+    if scope.get("trust_remote_code") is not False:
+        raise ValueError("model-smoke requires trust_remote_code=false")
+    if scope.get("do_sample") is not False:
+        raise ValueError("model-smoke requires do_sample=false")
+    expected_runner_sha256 = str(scope["runner_sha256"])
+    actual_runner_sha256 = sha256_file(Path(__file__))
+    if actual_runner_sha256 != expected_runner_sha256:
+        raise RuntimeError("Model-smoke runner SHA-256 does not match the approved scope")
+
+    model_path = Path(str(scope["model_path"])).resolve()
+    if not model_path.is_dir():
+        raise FileNotFoundError(f"Local model directory does not exist: {model_path}")
+    approved_files = scope.get("model_files")
+    if not isinstance(approved_files, list) or not approved_files:
+        raise ValueError("model-smoke requires a non-empty model_files manifest")
+    verified_files: dict[str, dict[str, Any]] = {}
+    for entry in approved_files:
+        if not isinstance(entry, dict):
+            raise ValueError("Every model_files entry must be an object")
+        relative_path = Path(str(entry["path"]))
+        target = (model_path / relative_path).resolve()
+        if relative_path.is_absolute() or not target.is_relative_to(model_path):
+            raise ValueError("model_files paths must remain inside model_path")
+        expected_bytes = int(entry["bytes"])
+        if target.stat().st_size != expected_bytes:
+            raise RuntimeError(f"Byte size mismatch for approved model file: {relative_path}")
+        expected_sha256 = str(entry["sha256"])
+        actual_sha256 = sha256_file(target)
+        if actual_sha256 != expected_sha256:
+            raise RuntimeError(f"SHA-256 mismatch for approved model file: {relative_path}")
+        verified_files[relative_path.as_posix()] = {
+            "bytes": expected_bytes,
+            "sha256": actual_sha256,
+        }
+    if "model.safetensors" not in verified_files:
+        raise ValueError("model_files must include model.safetensors")
+
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    model_path = str(scope["model_path"])
     revision = str(scope["revision"])
-    device = str(scope.get("device", "cuda:0"))
-    prompt = str(scope.get("prompt", "Explain text watermarking in one sentence."))
+    device = str(scope["device"])
+    dtype_name = str(scope["dtype"])
+    dtype_by_name = {"bfloat16": torch.bfloat16, "float32": torch.float32}
+    if dtype_name not in dtype_by_name:
+        raise ValueError("model-smoke dtype must be bfloat16 or float32")
+    prompt = str(scope["prompt"])
+    max_new_tokens: int | None = None
+    if operation == "forward_only":
+        if "max_new_tokens" in scope:
+            raise ValueError("forward_only scope must not contain max_new_tokens")
+    else:
+        max_new_tokens = int(scope["max_new_tokens"])
+        if not 1 <= max_new_tokens <= 64:
+            raise ValueError("max_new_tokens must be between 1 and 64")
+
     tokenizer = AutoTokenizer.from_pretrained(
-        model_path, revision=revision, local_files_only=bool(scope.get("local_files_only", True))
-    )
-    dtype = torch.bfloat16 if device.startswith("cuda") else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(
-        model_path,
+        str(model_path),
         revision=revision,
-        local_files_only=bool(scope.get("local_files_only", True)),
-        torch_dtype=dtype,
+        local_files_only=True,
+        trust_remote_code=False,
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        str(model_path),
+        revision=revision,
+        local_files_only=True,
+        trust_remote_code=False,
+        use_safetensors=True,
+        torch_dtype=dtype_by_name[dtype_name],
     ).to(device)
     model.eval()
     encoded = tokenizer(prompt, return_tensors="pt").to(device)
-    with torch.inference_mode():
-        forward = model(**encoded)
-        generated = model.generate(
-            **encoded,
-            max_new_tokens=int(scope.get("max_new_tokens", 16)),
-            do_sample=False,
-            pad_token_id=tokenizer.eos_token_id,
-        )
+    operation_result = _run_model_smoke_operation(
+        operation,
+        model=model,
+        encoded=encoded,
+        tokenizer=tokenizer,
+        torch_module=torch,
+        max_new_tokens=max_new_tokens,
+    )
     if device.startswith("cuda"):
         torch.cuda.synchronize(device)
-    return {
-        "model_path": model_path,
+    result = {
+        "operation": operation,
+        "model_path": str(model_path),
         "revision": revision,
         "device": device,
+        "dtype": dtype_name,
+        "runner_sha256": actual_runner_sha256,
+        "model_files_verified": len(verified_files),
+        "weight_bytes": verified_files["model.safetensors"]["bytes"],
+        "weight_sha256": verified_files["model.safetensors"]["sha256"],
         "input_tokens": int(encoded["input_ids"].shape[1]),
-        "logits_finite": bool(torch.isfinite(forward.logits).all().item()),
-        "output_tokens": int(generated.shape[1]),
-        "generated_text": tokenizer.decode(generated[0], skip_special_tokens=True),
     }
+    result.update(operation_result)
+    return result
 
 
 def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
