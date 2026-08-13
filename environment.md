@@ -1,6 +1,6 @@
 # Environment Contract
 
-Status: pre-experiment environment specification. No environment installation is implied by this file.
+Status: environment contract. The Windows G-01 environment was resolved on 2026-08-13; Linux H100 remains a specification only.
 
 ## Supported profiles
 
@@ -12,6 +12,16 @@ Status: pre-experiment environment specification. No environment installation is
 - GPU target: NVIDIA RTX 5060, compute capability `sm_120`.
 - PyTorch target: CUDA 12.8 wheel build. The exact resolved package versions must be captured before the first approved GPU test.
 - Pre-approval use: source editing, manifest preparation, static checks, and CPU-only synthetic unit tests.
+
+#### Resolved G-01 environment
+
+- Miniforge: `26.3.2`, installed physically under project `.miniforge/`.
+- Environment: project `.conda/cwr-eg-win-py311`, Python `3.11.15`.
+- Stable ASCII path alias: `E:\.cwr-eg-project-local`, verified as an NTFS junction to this project because Miniforge cannot install directly through the Chinese prefix on this volume.
+- PyTorch: `2.9.1+cu128`; official wheel SHA-256 `633005a3700e81b5be0df2a7d3c1d48aced23ed927653797a3bd2b144a3aeeb6`.
+- GPU observed: NVIDIA GeForce RTX 5060, driver `610.74`, compute capability `sm_120`.
+- Locked package records: `manifests/environment.windows.conda-explicit.txt` and `manifests/environment.windows.pip-lock.txt`.
+- G-01 executed no model download or model load.
 
 ### Linux formal experiment
 

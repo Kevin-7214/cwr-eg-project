@@ -1,0 +1,33 @@
+{
+  "task_id": "G-01",
+  "completed_at": "2026-08-13T17:12:11+08:00",
+  "approval_fingerprint": "955771eda2fecba9688a18cca3cbb3632d4ea45db5d8b79f4c6fdec98d0e5586",
+  "resource_class": "local-rtx5060",
+  "environment": {
+    "miniforge": "26.3.2",
+    "python": "3.11.15",
+    "torch": "2.9.1+cu128",
+    "cuda_runtime": "12.8",
+    "driver": "610.74",
+    "device": "NVIDIA GeForce RTX 5060",
+    "capability": [12, 0]
+  },
+  "checks": {
+    "pip_check": "pass",
+    "cpu_tests": "29/29",
+    "cuda_matrix_finite": true,
+    "model_downloaded": false,
+    "model_loaded": false
+  },
+  "pytorch_wheel": {
+    "size_bytes": 2862053760,
+    "sha256": "633005a3700e81b5be0df2a7d3c1d48aced23ed927653797a3bd2b144a3aeeb6"
+  },
+  "local_evidence": {
+    "directory": "artifacts/g01_cuda_smoke",
+    "result_sha256": "dfc3d1c38ef88b3fe6818ec220136d635eddca8244b62d934c2fadcb48731daf",
+    "environment_sha256": "f4b6fdd4a59e261619d87a17bf47433a5781c1b9933437e2defc7fd40ba91694",
+    "evidence_manifest": "artifacts/g01_cuda_smoke/evidence.sha256"
+  },
+  "next_gate": "G-02 requires separate explicit approval"
+}

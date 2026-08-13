@@ -39,3 +39,13 @@ python -m cwr_eg.cli status --progress status\progress.jsonl
 4. Run the matching command with `--approval`. Any action, fingerprint, resource, or expiry mismatch fails before the runtime handler imports model code.
 
 Watermark key names are listed in `configs/keys.env.example`. Values are human-supplied secrets and must remain outside Git.
+
+## Resolved Windows environment
+
+After explicit approval for environment installation, create or repair the project-local Windows environment with:
+
+```powershell
+& .\scripts\create_windows_env.ps1 -ProjectRoot $PWD.Path
+```
+
+The script verifies fixed Miniforge and PyTorch wheel hashes, uses `conda-forge` plus official PyPI, and does not add the environment to global `PATH`. Environment installation alone does not authorize a CUDA action or model load.

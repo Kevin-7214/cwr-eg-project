@@ -1,9 +1,7 @@
 name: cwr-eg-win-py311
 channels:
-  - defaults
+  - conda-forge
+  - nodefaults
 dependencies:
   - python=3.11
   - pip
-  - pip:
-      - --extra-index-url https://download.pytorch.org/whl/cu128
-      - -e .[gpu,dev]
