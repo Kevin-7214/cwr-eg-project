@@ -1,0 +1,14 @@
+{
+  "runner_sha256": "6183ea7be8f2a92ac77bb76447a53adbd452a83ed9a9f207f231388957261d11",
+  "code_files": [
+    {"path": "src/cwr_eg/tensor_bundle.py", "sha256": "b36a9006728588bd8b501cbae37d9ed97808b8a8b5fc257eabef2db8ff06cfc1"}
+  ],
+  "feature_manifest": "artifacts/g05_smoke/features/feature_manifest.jsonl",
+  "feature_manifest_sha256": "a32bd18da6ac1c6de5224806f76dd49ee82e75297e6520be78f23e5110af7cec",
+  "positions": 127,
+  "maximum_batch_examples": 10,
+  "expected_train_batches": 1,
+  "expected_dev_batches": 1,
+  "output_path": "artifacts/g05_smoke/train_dev_tensor_bundle.pt",
+  "result_path": "artifacts/g05_smoke/tensorize_result.json"
+}

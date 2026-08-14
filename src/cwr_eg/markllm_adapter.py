@@ -25,6 +25,9 @@ class MarkLlmRegisteredAdapter(RegisteredDetectorAdapter):
     ) -> None:
         self.bridge = bridge
         self.family = family
+        tail_direction = (
+            TailDirection.LOWER if family == "unbiased" else TailDirection.UPPER
+        )
         self.declaration = DetectorDeclaration(
             detector_id=f"markllm-{family}-c45ddc4",
             scheme_id=family,
@@ -35,7 +38,7 @@ class MarkLlmRegisteredAdapter(RegisteredDetectorAdapter):
             supports_scheme_only=False,
             minimum_effective_length=minimum_effective_length,
             supported_languages=supported_languages,
-            tail_direction=TailDirection.UPPER,
+            tail_direction=tail_direction,
             emits_local_evidence=False,
             license="apache-2.0",
             source_url="https://github.com/THU-BPM/MarkLLM",
@@ -70,7 +73,7 @@ class MarkLlmRegisteredAdapter(RegisteredDetectorAdapter):
             key_status=KeyStatus.REGISTERED,
             interval=interval,
             raw_statistic=float(result["score"]),
-            tail_direction=TailDirection.UPPER,
+            tail_direction=self.declaration.tail_direction,
             single_test_p=None,
             adjusted_p=None,
             applicability=Applicability.VALID,

@@ -1,0 +1,32 @@
+{
+  "runner_sha256": "cd1547e6d9052c5c62cf19ae6af16fecfe8ce6b82e960940d9a7a60ddc31c885",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "model_path": "E:\\课题组\\01_水印与大模型安全\\个人创新\\多来源多密钥联合定位与归因\\project1\\models\\Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "model_files": [
+    {"path": "config.json", "bytes": 660, "sha256": "98d2ff8cc47488d08a2b0b3acf4eb99ef210779b42bd48605f6b8e36acdbf670"},
+    {"path": "generation_config.json", "bytes": 242, "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"},
+    {"path": "merges.txt", "bytes": 1671839, "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"},
+    {"path": "model.safetensors", "bytes": 3087467144, "sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"},
+    {"path": "tokenizer.json", "bytes": 7031645, "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"},
+    {"path": "tokenizer_config.json", "bytes": 7305, "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"},
+    {"path": "vocab.json", "bytes": 2776833, "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"}
+  ],
+  "input_path": "artifacts/g04_pilot/base_generated.jsonl",
+  "input_sha256": "ee76da7c1c696c05417abea69a0cc37d43d68682a63ec8bd8c642960c6c40be4",
+  "recipe_manifest": "manifests/pilot_recipes.jsonl",
+  "recipe_manifest_sha256": "235bc7d3c133e8494de6f8eeac8f166ca347f7540b823cace8afc67ac5d5df59",
+  "attack_ids": ["paraphrase", "translation_roundtrip", "copy_edit", "truncation"],
+  "expected_recipe_count": 160,
+  "limit": 160,
+  "device": "cuda:0",
+  "dtype": "bfloat16",
+  "maximum_input_tokens": 1024,
+  "max_new_tokens": 256,
+  "do_sample": false,
+  "truncation_fraction": 0.75,
+  "local_files_only": true,
+  "trust_remote_code": false,
+  "output_path": "artifacts/g04_pilot/attacked_generated.jsonl",
+  "result_path": "artifacts/g04_pilot/attack_generation_result.json"
+}

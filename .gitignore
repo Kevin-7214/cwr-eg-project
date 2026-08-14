@@ -14,6 +14,7 @@ artifacts/*
 !artifacts/.gitkeep
 status/approvals/*.json
 !status/approvals/.gitkeep
+status/private/
 models/
 downloads/
 external/

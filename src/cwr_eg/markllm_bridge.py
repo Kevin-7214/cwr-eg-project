@@ -16,13 +16,25 @@ ALGORITHM_NAMES = {
 }
 
 
-def _key_override(key_id: str, secret: Any | None = None) -> dict[str, Any]:
+def _raw_secret(key_id: str, secret: Any | None = None) -> Any:
     environment_name = "CWR_EG_KEY_" + key_id.upper()
     raw = os.environ.get(environment_name) if secret is None else secret
     if raw is None:
         raise RuntimeError(
             f"Missing {environment_name}; watermark secrets must be supplied at runtime"
         )
+    return raw
+
+
+def _unbiased_key_bytes(raw: Any) -> bytes:
+    value = int(raw)
+    if not 0 < value < 2**1024:
+        raise ValueError("Unbiased key must be a positive integer smaller than 2**1024")
+    return value.to_bytes(128, "big")
+
+
+def _key_override(key_id: str, secret: Any | None = None) -> dict[str, Any]:
+    raw = _raw_secret(key_id, secret)
     family = key_id.rsplit("_key_", 1)[0]
     if family in {"kgw", "unigram"}:
         return {"hash_key": int(raw)}
@@ -60,7 +72,7 @@ class MarkLlmBridge:
             sys.path.insert(0, repository_text)
 
         import torch
-        from transformers import AutoModelForCausalLM, AutoTokenizer
+        from transformers import AutoModelForCausalLM, AutoTokenizer, LogitsProcessorList
         from utils.transformers_config import TransformersConfig
 
         dtype = torch.bfloat16 if settings.device.startswith("cuda") else torch.float32
@@ -69,17 +81,24 @@ class MarkLlmBridge:
             revision=settings.model_revision,
             local_files_only=settings.local_files_only,
             use_fast=True,
+            trust_remote_code=False,
         )
         self.model = AutoModelForCausalLM.from_pretrained(
             settings.model_path,
             revision=settings.model_revision,
             local_files_only=settings.local_files_only,
             torch_dtype=dtype,
+            trust_remote_code=False,
+            use_safetensors=True,
         ).to(settings.device)
         self.model.eval()
+        output_vocab_size = int(self.model.get_output_embeddings().weight.shape[0])
+        self.torch = torch
+        self.logits_processor_list = LogitsProcessorList
         self.transformers_config = TransformersConfig(
             model=self.model,
             tokenizer=self.tokenizer,
+            vocab_size=output_vocab_size,
             device=settings.device,
             max_new_tokens=settings.max_new_tokens,
             do_sample=settings.do_sample,
@@ -95,21 +114,45 @@ class MarkLlmBridge:
         algorithm_name = ALGORITHM_NAMES[family]
         config_path = self.settings.repository / "config" / f"{algorithm_name}.json"
         overrides = {} if key_id is None else _key_override(key_id, secret)
-        return AutoWatermark.load(
+        watermark = AutoWatermark.load(
             algorithm_name,
             algorithm_config=str(config_path),
             transformers_config=self.transformers_config,
             **overrides,
         )
+        if family == "unbiased" and key_id is not None:
+            watermark.config.hash_key = _unbiased_key_bytes(_raw_secret(key_id, secret))
+        return watermark
 
-    def generate(self, prompt: str, family: str | None, key_id: str | None) -> str:
-        if family is None:
-            watermark = self.load_watermark("kgw", None)
-            return str(watermark.generate_unwatermarked_text(prompt))
-        if key_id is None:
-            raise ValueError("Watermarked generation requires key_id")
-        watermark = self.load_watermark(family, key_id)
-        return str(watermark.generate_watermarked_text(prompt))
+    def generate(
+        self, prompt: str, family: str | None, key_id: str | None, *, seed: int
+    ) -> str:
+        self.torch.manual_seed(seed)
+        if self.settings.device.startswith("cuda"):
+            self.torch.cuda.manual_seed_all(seed)
+        encoded = self.tokenizer(
+            prompt, return_tensors="pt", add_special_tokens=True
+        ).to(self.settings.device)
+        generation_kwargs = dict(self.transformers_config.gen_kwargs)
+        watermark = None
+        if family is not None:
+            if key_id is None:
+                raise ValueError("Watermarked generation requires key_id")
+            watermark = self.load_watermark(family, key_id)
+            if family == "unbiased":
+                watermark.utils.state_indicator = 0
+            generation_kwargs["logits_processor"] = self.logits_processor_list(
+                [watermark.logits_processor]
+            )
+        with self.torch.inference_mode():
+            generated = self.model.generate(**encoded, **generation_kwargs)
+        continuation = generated[0, encoded["input_ids"].shape[1] :]
+        text = self.tokenizer.decode(continuation, skip_special_tokens=True).strip()
+        if watermark is not None and family == "unbiased":
+            watermark.utils.cc_history.clear()
+        if not text:
+            raise RuntimeError("Model returned an empty continuation")
+        return text
 
     def detect(
         self, text: str, family: str, key_id: str, secret: Any | None = None

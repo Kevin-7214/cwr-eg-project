@@ -1,0 +1,22 @@
+{
+  "runner_sha256": "6183ea7be8f2a92ac77bb76447a53adbd452a83ed9a9f207f231388957261d11",
+  "code_files": [
+    {"path": "src/cwr_eg/bundle.py", "sha256": "ecc48dc17cf3a0bf81f696b1c2ad0fd293ea8b327cd2fd66f87c9741a3ee2105"},
+    {"path": "src/cwr_eg/calibration.py", "sha256": "23bd1d1c069daeba3f9eeefabe9be76718548a052105b4966bd3579eadaaee83"}
+  ],
+  "records_path": "artifacts/g05_smoke/calibration_records.jsonl",
+  "records_sha256": "6e8c75ecfc96bc922b6ebac7547071c913be5aed568f8ecf0bcab5bebcf8fdea",
+  "header": {
+    "calibration_id": "g05-pipeline-smoke-v1",
+    "protocol_version": "0.1.0-pre-experiment",
+    "data_manifest_hash": "ee76da7c1c696c05417abea69a0cc37d43d68682a63ec8bd8c642960c6c40be4",
+    "search_config_hash": "0ee5952a41ad0e665f8bf10841be3ba9efbcbe2c40881badef8d77380ef3ac28",
+    "registered_registry_hash": "06d6f1c9696d2e9a21cb1461ab1e8789cd36b437db266abb2a5593e5df737a5c",
+    "normalization_version": "raw-unicode-codepoint-v1",
+    "model_version": "sha256:6c6ac27571031b798848693e4793943142c16e993f7d0edf658b300b5987cd73",
+    "languages": ["en", "zh"],
+    "strata": ["en:all", "zh:all"]
+  },
+  "output_dir": "artifacts/g05_smoke/calibration_bundle",
+  "result_path": "artifacts/g05_smoke/calibration_result.json"
+}

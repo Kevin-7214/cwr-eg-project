@@ -1,0 +1,37 @@
+{
+  "task_id": "G-04",
+  "status": "done",
+  "completed_at": "2026-08-14T11:33:30+08:00",
+  "authorization": "用户于 2026-08-14 明确授权使用本机 GPU 完成本机实验审批门所有任务。",
+  "base_generation": {
+    "fingerprint": "83fdbe6607d834cc485f3e7cc9fe835b85d999a909bf40256e3758f7cc31a07e",
+    "rows": 160,
+    "split_counts": {"train": 80, "dev": 40, "calibration": 20, "test": 20},
+    "output_sha256": "ee76da7c1c696c05417abea69a0cc37d43d68682a63ec8bd8c642960c6c40be4",
+    "scope_sha256": "777f44132e13feb9761f57364a5f4dc6c521f39fd21207e05c4f3050c55a0a65"
+  },
+  "matched_attacks": {
+    "fingerprint": "b603e84cbfea25f2ada455a19d02887266afe5ea43391a79dc3139d00df87e42",
+    "rows": 160,
+    "attack_counts": {"paraphrase": 40, "translation_roundtrip": 40, "copy_edit": 40, "truncation": 40},
+    "boundary_quality_counts": {"exact": 80, "weak": 80},
+    "output_sha256": "565540fdc81089b5f9aa9c35a9998155c06193737b67e4f9461439dd64d9a9c3",
+    "scope_sha256": "fa1db1e34517fc2300b1562323010a1a43243f2b36170edb9e3ec6b119e4c0fa"
+  },
+  "mixed_documents": {
+    "fingerprint": "9a4f9899e6dd265571d82690cc6626c5b8207fe20fa954149d72ac07cd019e62",
+    "rows": 16,
+    "components": 32,
+    "split_counts": {"train": 8, "dev": 4, "calibration": 2, "test": 2},
+    "component_family_counts": {"kgw": 8, "unigram": 8, "unbiased": 8, "synthid": 8},
+    "output_sha256": "0ab61b1ae68cb484950efd30456e136f00157e0058ceb1a7e7a8b2c104523e92",
+    "scope_sha256": "14c4843bdb68d5141cbe40b66d60f5a384f3925f46ed4c66bbeceb6fce81ff6a"
+  },
+  "validation": {
+    "empty_texts": 0,
+    "duplicate_recipe_ids": 0,
+    "text_hash_errors": 0,
+    "mixed_component_interval_errors": 0,
+    "tests": "37/37"
+  }
+}

@@ -18,7 +18,7 @@ families:
     implementation: markllm
     detector_mode: key_required
     keys: [unbiased_key_a, unbiased_key_b]
-    tail_direction: upper
+    tail_direction: lower
     enabled: true
     scheme_only_detector: calibrated_key_invariant_probe
   - family_id: synthid

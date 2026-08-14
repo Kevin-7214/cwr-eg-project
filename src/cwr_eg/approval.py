@@ -16,6 +16,7 @@ EXPERIMENT_ACTIONS = frozenset(
         "generate",
         "attack-generate",
         "extract-features",
+        "tensorize",
         "train",
         "calibrate",
         "infer",

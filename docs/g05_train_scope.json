@@ -1,0 +1,30 @@
+{
+  "runner_sha256": "6183ea7be8f2a92ac77bb76447a53adbd452a83ed9a9f207f231388957261d11",
+  "code_files": [
+    {"path": "src/cwr_eg/training.py", "sha256": "7aff59b808850bb42f6805d501d7234423a6efc4b4d7dea0a62626f861f72cc2"},
+    {"path": "src/cwr_eg/modeling.py", "sha256": "d7a526288391008e1ffe91e383f07a5c17c98582e3e9b5e8b469f3a6ca349769"},
+    {"path": "src/cwr_eg/losses.py", "sha256": "2379c6383d374b8c24865d2eda58bb8cc38e1009f3d43adc13f2211b36f5f671"}
+  ],
+  "bundle_path": "artifacts/g05_smoke/train_dev_tensor_bundle.pt",
+  "bundle_sha256": "8bdad982a66499abbb9f59cb9e871fe397a1246475aa35d97817269693c81944",
+  "model_config": {
+    "view_dims": {"proxy": 4, "representation": 1536, "perturbation": 4, "validity": 4},
+    "hidden_dim": 256,
+    "invariant_dim": 128,
+    "private_dim": 128,
+    "scheme_classes": 4,
+    "nuisance_classes": {"language": 2},
+    "dropout": 0.1
+  },
+  "training_settings": {
+    "epochs": 1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "grl_scale": 1.0,
+    "seed": 20260813
+  },
+  "device": "cuda:0",
+  "output_dir": "artifacts/g05_smoke/training",
+  "result_path": "artifacts/g05_smoke/training_result.json"
+}

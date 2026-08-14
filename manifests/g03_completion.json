@@ -1,0 +1,22 @@
+{
+  "completed_at": "2026-08-14T10:58:01+08:00",
+  "fingerprint": "43b7d36702bbbce0772670a51659de99f63f22fd86d5d052463a135c23c1bcc3",
+  "families": {
+    "kgw": {"correct_score": 9.317243348869196, "wrong_score": 1.863448669773839, "correct_detected": true, "wrong_detected": false},
+    "unigram": {"correct_score": 9.369164850721754, "wrong_score": -0.5303300858899106, "correct_detected": true, "wrong_detected": false},
+    "unbiased": {"correct_score": 1.56158980920913e-16, "wrong_score": 7.174648761749268, "correct_detected": true, "wrong_detected": false, "tail": "lower"},
+    "synthid": {"correct_score": 0.5833333333333334, "wrong_score": 0.5010752688172043, "correct_detected": true, "wrong_detected": false}
+  },
+  "output": {
+    "path": "artifacts/g03_watermark_smoke/generated.jsonl",
+    "bytes": 5502,
+    "sha256": "ce4fb4a1690a0ce7941d020aa597fb321fe8cfd0deb5aed94a25382cc434ddca"
+  },
+  "result_sha256": "19403975b0cd2d2958be8a4ed643755c30d2771eac3688653bd26354a69339cb",
+  "first_attempt": {
+    "status": "stopped_and_archived",
+    "reason": "Pinned MarkLLM used tokenizer length 151665 instead of Qwen output vocabulary 151936 for Unigram",
+    "archive_sha256": "8b961979855e5864c3684ecddbe8206c830b77c9ee77648fae5428fcde4c352f"
+  },
+  "status": "passed"
+}

@@ -1,0 +1,28 @@
+{
+  "runner_sha256": "6183ea7be8f2a92ac77bb76447a53adbd452a83ed9a9f207f231388957261d11",
+  "code_files": [
+    {"path": "src/cwr_eg/bundle.py", "sha256": "ecc48dc17cf3a0bf81f696b1c2ad0fd293ea8b327cd2fd66f87c9741a3ee2105"},
+    {"path": "src/cwr_eg/calibration.py", "sha256": "23bd1d1c069daeba3f9eeefabe9be76718548a052105b4966bd3579eadaaee83"},
+    {"path": "src/cwr_eg/contracts.py", "sha256": "92960182830cf969d1f5365bd5aab59d3968d513d24b9cdfcf46dacef5387fb3"},
+    {"path": "src/cwr_eg/enums.py", "sha256": "91d93c5ddf7871d19cb5ccfd4295279a084f9107c43cc8d553eadae199f638cd"},
+    {"path": "src/cwr_eg/inference.py", "sha256": "8267e93aaf83e75e474ee2581de2ee32ca55b644afb4541ad9838913bd1eccee"},
+    {"path": "src/cwr_eg/candidates.py", "sha256": "da9b193d43fbc9b38b2eaa6e00a49b08f942c603753b38c9a9daaaef70163489"},
+    {"path": "src/cwr_eg/decision.py", "sha256": "256d2ceb02faf8d085ce702f487357edbe65316ed3f7c4ec9cb5552f64cd57e5"},
+    {"path": "src/cwr_eg/validity.py", "sha256": "ee99047ba4eaa59a5d7598740725f12d4d01e582243a56f02593698a4b6bc127"}
+  ],
+  "calibration_bundle": "artifacts/g05_smoke/calibration_bundle",
+  "calibration_manifest_sha256": "b0465f57e1220d6cb5624e2418ecf9e919c7f5e4b1d41d18e449603165198cd2",
+  "null_distributions_sha256": "9e78a36468f596a57657e9c93bb3a9da7b198ea1f98b174c5d72de35383a6d8d",
+  "score_records_path": "artifacts/g05_smoke/test_score_record.jsonl",
+  "score_records_sha256": "b664754888ed03cc8636aa52529fc1b7641b6bc64967d60427f7eab727e87b44",
+  "expected_document_count": 1,
+  "versions": {
+    "model_version": "sha256:6c6ac27571031b798848693e4793943142c16e993f7d0edf658b300b5987cd73",
+    "calibration_id": "g05-pipeline-smoke-v1",
+    "normalization_version": "raw-unicode-codepoint-v1",
+    "manifest_version": "g04-completion-v1",
+    "code_revision": "working-tree:6183ea7be8f2a92ac77bb76447a53adbd452a83ed9a9f207f231388957261d11"
+  },
+  "output_path": "artifacts/g05_smoke/inference_decisions.jsonl",
+  "result_path": "artifacts/g05_smoke/inference_result.json"
+}

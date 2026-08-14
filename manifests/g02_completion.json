@@ -1,0 +1,31 @@
+{
+  "completed_at": "2026-08-14T10:46:02+08:00",
+  "resource_class": "local-rtx5060",
+  "authorization": "2026-08-14 user chat approval for all local experiment gate tasks",
+  "runs": [
+    {
+      "task_id": "G-02-A",
+      "fingerprint": "de2ad5e5e22eee3a39037f6f847e37949083f494bb30593aa83e902262fb82e6",
+      "operation": "forward_only",
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "result_path": "artifacts/g02_qwen05_forward/result.json",
+      "result_bytes": 645,
+      "result_sha256": "225b2f282565fb736fd3dacdec6b2c877f8c8e8ffac26db1cf609a72b18bddee",
+      "input_tokens": 9,
+      "logits_finite": true
+    },
+    {
+      "task_id": "G-02-B",
+      "fingerprint": "801845f208c175492c7b85802312a6cf7310d727bc4cf58cb7dd8e490962e9d7",
+      "operation": "generate_only",
+      "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "result_path": "artifacts/g02_qwen15_generate/result.json",
+      "result_bytes": 837,
+      "result_sha256": "cc3ebb23a2adf3e6c9614b3a5bcfe902c24162363454d9b4775296825f878bb8",
+      "input_tokens": 9,
+      "generated_tokens": 16
+    }
+  ],
+  "download_performed": false,
+  "status": "passed"
+}

@@ -16,6 +16,7 @@ class TransformerFeatureSettings:
     device: str
     maximum_tokens: int = 1024
     local_files_only: bool = True
+    trust_remote_code: bool = False
 
 
 class TransformersCausalFeatureExtractor:
@@ -31,6 +32,7 @@ class TransformersCausalFeatureExtractor:
             revision=settings.revision,
             local_files_only=settings.local_files_only,
             use_fast=True,
+            trust_remote_code=settings.trust_remote_code,
         )
         if not self.tokenizer.is_fast:
             raise RuntimeError("A fast tokenizer with offset mapping is required")
@@ -39,6 +41,8 @@ class TransformersCausalFeatureExtractor:
             revision=settings.revision,
             local_files_only=settings.local_files_only,
             torch_dtype=dtype,
+            trust_remote_code=settings.trust_remote_code,
+            use_safetensors=True,
         ).to(settings.device)
         self.model.eval()
 

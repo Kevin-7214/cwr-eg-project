@@ -26,6 +26,8 @@ def _pad(array: np.ndarray, positions: int) -> np.ndarray:
 def _load_example(row: dict[str, Any], positions: int) -> dict[str, Any]:
     if len(row["parent_ids"]) != 1:
         raise ValueError("Mixed-parent features are evaluation-only and cannot enter paired training")
+    if sha256_file(row["feature_path"]) != str(row["feature_sha256"]):
+        raise RuntimeError("Feature file SHA-256 does not match its manifest")
     with np.load(row["feature_path"], allow_pickle=False) as payload:
         view_names = tuple(
             key[: -len("_values")] for key in payload.files if key.endswith("_values")
@@ -34,6 +36,8 @@ def _load_example(row: dict[str, Any], positions: int) -> dict[str, Any]:
             name: _pad(np.asarray(payload[f"{name}_values"], dtype=np.float32), positions)
             for name in view_names
         }
+        if any(not np.all(np.isfinite(values)) for values in views.values()):
+            raise RuntimeError("Feature file contains non-finite values")
         masks = [np.asarray(payload[f"{name}_mask"], dtype=bool)[:positions] for name in view_names]
     valid = np.zeros(positions, dtype=bool)
     if masks:

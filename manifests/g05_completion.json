@@ -1,0 +1,58 @@
+{
+  "task_id": "G-05",
+  "status": "done",
+  "completed_at": "2026-08-14T11:39:00+08:00",
+  "authorization": "用户于 2026-08-14 明确授权使用本机 GPU 完成本机实验审批门所有任务。",
+  "feature_extraction": {
+    "fingerprint": "89f3cdfe5a2380b2baa2fa8dfcbd1b2629388396f2e9c3bb68a64706b617cb0d",
+    "documents": 10,
+    "split_counts": {"train": 5, "dev": 5},
+    "maximum_tokens": 128,
+    "view_dims": {"proxy": 4, "representation": 1536, "perturbation": 4, "validity": 4},
+    "feature_manifest_sha256": "a32bd18da6ac1c6de5224806f76dd49ee82e75297e6520be78f23e5110af7cec",
+    "scope_sha256": "080ecf5d4200ca2e9fe2d8369976520b892fbc6b58809a36500e8e61e13bbb5e"
+  },
+  "tensor_bundle": {
+    "fingerprint": "595e5f1b4d148e7c330167788c1eaaf6bc6ff95464d964aaa5f50e905220830c",
+    "train_batches": 1,
+    "dev_batches": 1,
+    "positions": 127,
+    "bundle_sha256": "8bdad982a66499abbb9f59cb9e871fe397a1246475aa35d97817269693c81944",
+    "scope_sha256": "818876d29bfa3c7c3c8152d0acbcd9c3a2e4defe2201fcf61661a8926b3bc246"
+  },
+  "training": {
+    "fingerprint": "b68b1fc499fdffd269ef8c1259e42483d4045d0edb52ba6d3aa04c105d75216c",
+    "epochs": 1,
+    "train_batches": 1,
+    "dev_batches": 1,
+    "train_total": 3.2408859729766846,
+    "dev_total": 10.295975685119629,
+    "all_metrics_finite": true,
+    "checkpoint_sha256": "6c6ac27571031b798848693e4793943142c16e993f7d0edf658b300b5987cd73",
+    "scope_sha256": "5a6d6d877c72fe861604ef7d450888add3fea51e6dadd6ca73e80969ee538589"
+  },
+  "calibration": {
+    "fingerprint": "f840d4eddcb8f2433c3392e79d48fb40fd76803b2ad9bb47a0901d33cd815172",
+    "calibration_documents": 4,
+    "route_records": 12,
+    "calibration_manifest_sha256": "b0465f57e1220d6cb5624e2418ecf9e919c7f5e4b1d41d18e449603165198cd2",
+    "null_distributions_sha256": "9e78a36468f596a57657e9c93bb3a9da7b198ea1f98b174c5d72de35383a6d8d",
+    "scope_sha256": "3141d85ee5247d76aec969219b4bb2e8d8d7a823952c69d2255734af9307bc6c"
+  },
+  "inference": {
+    "fingerprint": "1c2593224df15d1f28f68af535e8dadd67f7292a9a741b6a80d55eee6eb0d592",
+    "test_documents": 1,
+    "document_label": "none",
+    "validity_status": "pass",
+    "any_accept": false,
+    "output_sha256": "17c23585fefb52cb6d9f0353c09edf86db8cdd0b1494f9e63e3ea083a7ad66fc",
+    "scope_sha256": "b754eabcd7310684a50dc37f8f6e1c507cf0e4b1358bee464ef5d1e8dbeb7628"
+  },
+  "interpretation_boundary": "Calibration and Test character scores are deterministic pipeline-smoke values. They validate wiring and split isolation only and are not model-quality evidence or formal experimental results.",
+  "validation": {
+    "feature_non_finite_values": 0,
+    "training_non_finite_metrics": 0,
+    "test_score_alignment_errors": 0,
+    "test_used_for_fitting": false
+  }
+}
