@@ -1,0 +1,51 @@
+{
+  "allowed_splits": [
+    "train",
+    "dev"
+  ],
+  "calibration_and_test_sealed": true,
+  "experiment_executed": false,
+  "full_inputs": [
+    {
+      "bytes": 6073913,
+      "path": "manifests/intermediate_parents.jsonl",
+      "sha256": "02fd389173f76e2113e40601e1be8324d9a3359fb3b58a11fc48eeb0aa87276d"
+    },
+    {
+      "bytes": 3208227,
+      "path": "manifests/intermediate_recipes.jsonl",
+      "sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5"
+    }
+  ],
+  "manifest_version": "intermediate-canary-v1",
+  "outputs": [
+    {
+      "bytes": 647435,
+      "path": "manifests/intermediate_canary_parents.jsonl",
+      "sha256": "eac7753cc13567bd203960a6f40beac65915a49b5b437978b2715e5bbf7f3f29"
+    },
+    {
+      "bytes": 319536,
+      "path": "manifests/intermediate_canary_recipes.jsonl",
+      "sha256": "3921a991af90cd588c7f11353eeb4c869fd6a90ebaa12c02684cee4596d7506b"
+    }
+  ],
+  "parent_count": 80,
+  "recipe_counts": {
+    "base_generation": 400,
+    "matched_attack": 400,
+    "mixed_document": 40
+  },
+  "seed": 20260815,
+  "selection_unit": "reusable_full_manifest_mixed_pair",
+  "source_split_counts": {
+    "c4_en:dev": 5,
+    "c4_en:train": 15,
+    "thucnews_zh:dev": 5,
+    "thucnews_zh:train": 15,
+    "wikipedia_en:dev": 5,
+    "wikipedia_en:train": 15,
+    "wikipedia_zh:dev": 5,
+    "wikipedia_zh:train": 15
+  }
+}

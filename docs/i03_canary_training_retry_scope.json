@@ -1,0 +1,57 @@
+{
+  "task_id": "I-03-canary-training-full-seed-20260815-retry",
+  "run_id": "full_seed_20260815",
+  "role": "canary_representative_full_model",
+  "retry_of_scope": "docs/i03_canary_training_scope.json",
+  "retry_reason": "PyTorch deterministic CUDA requires CUBLAS_WORKSPACE_CONFIG before process start",
+  "required_environment": {"CUBLAS_WORKSPACE_CONFIG": ":4096:8"},
+  "freeze_manifest": "manifests/intermediate_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "a1b7c76eaf6c9c78189f86202d4c0ae366b3bcf13c1b1df9e9cbfd844ba7aad3",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "runner_sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78",
+  "code_files": [
+    {"path": "src/cwr_eg/runtime.py", "sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78"},
+    {"path": "src/cwr_eg/training.py", "sha256": "0b0637db369986c4a2aca5df03c4a723e3aa2336af039dfc1ef0a82bdd19f5bf"},
+    {"path": "src/cwr_eg/modeling.py", "sha256": "d7a526288391008e1ffe91e383f07a5c17c98582e3e9b5e8b469f3a6ca349769"},
+    {"path": "src/cwr_eg/losses.py", "sha256": "2379c6383d374b8c24865d2eda58bb8cc38e1009f3d43adc13f2211b36f5f671"},
+    {"path": "src/cwr_eg/tensor_bundle.py", "sha256": "c48d140d98dff58a2b51ccdb264aae891c15d2154f4d9970633730a5d317125e"},
+    {"path": "src/cwr_eg/monitoring.py", "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"},
+    {"path": "src/cwr_eg/hashing.py", "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"}
+  ],
+  "bundle_path": "artifacts/i03_canary/tensor_bundle_full",
+  "bundle_sha256": "d719ede3674ade618ce7446a48bb0b013445ce28b4b7e76fab13c418b90c542b",
+  "bundle_content_hash": "6d2d6b47bdbb6ecac04ce490018984f2593987d2158026c5997c6c985d5b1a90",
+  "model_config": {
+    "view_dims": {"proxy": 4, "representation": 1536, "perturbation": 4, "validity": 4},
+    "hidden_dim": 256,
+    "invariant_dim": 128,
+    "private_dim": 128,
+    "scheme_classes": 4,
+    "nuisance_classes": {"language": 2},
+    "dropout": 0.1
+  },
+  "training_settings": {
+    "epochs": 20,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "grl_scale": 1.0,
+    "seed": 20260815,
+    "minimum_epochs": 5,
+    "early_stopping_patience": 4,
+    "deterministic_algorithms": true
+  },
+  "loss_overrides": {},
+  "device": "cuda:0",
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_dir": "artifacts/i03_canary/training_full_seed_20260815",
+  "result_path": "artifacts/i03_canary/training_result.json"
+}

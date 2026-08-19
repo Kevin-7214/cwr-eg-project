@@ -1,0 +1,61 @@
+{
+  "task_id": "I-07-evaluate-lofo_synthid",
+  "freeze_manifest": "manifests/i07_test_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "00834b285f7835a47d416544e9727f18db4a82d2212c21296d74fcbfd4dddb18",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/metrics.py",
+      "sha256": "6f8f81db775919290c14ae0953d2c81e590a3e1a2c590a684411d6de093344a5"
+    },
+    {
+      "path": "src/cwr_eg/calibration.py",
+      "sha256": "23bd1d1c069daeba3f9eeefabe9be76718548a052105b4966bd3579eadaaee83"
+    },
+    {
+      "path": "src/cwr_eg/contracts.py",
+      "sha256": "c22de8aaaec648cbda98d86029df40d3405f23d323e17e3f100319e585bd645c"
+    },
+    {
+      "path": "src/cwr_eg/enums.py",
+      "sha256": "91d93c5ddf7871d19cb5ccfd4295279a084f9107c43cc8d553eadae199f638cd"
+    },
+    {
+      "path": "src/cwr_eg/intervals.py",
+      "sha256": "8fa285356de5e620da1ceeaae695d11eef8ce6345032e1721510bb417312b7e4"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "records_path": "artifacts/i07_test/evaluation_records/lofo_synthid.jsonl",
+  "records_sha256": "1a67467a4032391ce66c08df30354c8ed03c1fc71d5db9eda3429b3496cb2836",
+  "stratify_by": [
+    "source",
+    "language",
+    "watermark_family",
+    "key_id",
+    "attack_id"
+  ],
+  "bootstrap_replicates": 2000,
+  "seed": 20260815,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "result_path": "artifacts/i07_test/metric_results/lofo_synthid.json"
+}

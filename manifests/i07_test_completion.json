@@ -1,0 +1,23 @@
+{
+  "completed_at": "2026-08-20T05:48:30.109856+08:00",
+  "deviation_audit": {
+    "all_failed_rows_remained_explicit": true,
+    "baseline_or_fusion_selected_on_test": false,
+    "ensemble_rule_changed": false,
+    "status": "pass",
+    "test_executions": 1,
+    "test_used_for_training_selection_or_early_stopping": false
+  },
+  "primary_parent_fwer": {
+    "cluster_unit": "parent_id",
+    "descendant_rule": "any_false_positive",
+    "errors": 48,
+    "rate": 0.24,
+    "trials": 200,
+    "upper": 0.29490019258762373
+  },
+  "result_path": "artifacts/i07_test/i07_results.json",
+  "result_sha256": "39fe12764747919d7aab7dac3e03758a256dc9fdba485d85b827e42a73a894b6",
+  "task_id": "I-07",
+  "test_freeze_sha256": "00834b285f7835a47d416544e9727f18db4a82d2212c21296d74fcbfd4dddb18"
+}

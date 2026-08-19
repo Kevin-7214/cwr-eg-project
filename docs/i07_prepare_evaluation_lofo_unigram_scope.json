@@ -1,0 +1,45 @@
+{
+  "task_id": "I-07-prepare-evaluation-lofo_unigram",
+  "freeze_manifest": "manifests/i07_test_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "00834b285f7835a47d416544e9727f18db4a82d2212c21296d74fcbfd4dddb18",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/evaluation_records.py",
+      "sha256": "2dc035ecbc0cc1bd9019f6a429717c9c07eea5365ca208d4645ae5c44f4da234"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "decisions_path": "artifacts/i07_test/decisions/lofo_unigram.jsonl",
+  "decisions_sha256": "6e2a83a5ef848b709ab99854b93235a3b33a16678926516d883b7ff19ab55629",
+  "documents_path": "artifacts/i07_test/lofo/unigram/feature_documents.jsonl",
+  "documents_sha256": "f7e9a58369b39f4c929a0d2fa00d0e335b006808990aae9aeb9317e875a4d905",
+  "authorized_key_slots": [
+    "a",
+    "b"
+  ],
+  "held_out_family": "unigram",
+  "expected_parent_count": 200,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i07_test/evaluation_records/lofo_unigram.jsonl",
+  "result_path": "artifacts/i07_test/evaluation_prepare_results/lofo_unigram.json"
+}

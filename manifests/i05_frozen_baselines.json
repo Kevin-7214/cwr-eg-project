@@ -1,0 +1,9 @@
+{
+  "completed_at": "2026-08-20T02:17:38.633701+08:00",
+  "path": "artifacts/i05_train_dev/baselines/frozen_baselines.joblib",
+  "sha256": "7fd90062089f179ad689ef0f41cd3ba003c4db63b68e3d6c61c5d33515262699",
+  "task_id": "I-05-frozen-baselines",
+  "test_read": false,
+  "train_examples": 2997,
+  "version": "i07-frozen-baselines-v1"
+}

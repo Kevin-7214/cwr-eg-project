@@ -85,7 +85,13 @@ class InferencePipeline:
         for candidate in candidates:
             registered = tuple(self.registered_scorer(raw_text, candidate))
             best_registered_statistic = max(
-                (item.raw_statistic for item in registered), default=0.0
+                (
+                    item.raw_statistic
+                    if item.evidence_strength is None
+                    else item.evidence_strength
+                    for item in registered
+                ),
+                default=0.0,
             )
             gap_score = candidate.raw_score - best_registered_statistic
             gap_p = self.calibration.p_value("gap", stratum, gap_score)
@@ -107,6 +113,8 @@ class InferencePipeline:
                     adjusted_p=max(item.adjusted_p or 0.0, registered_document_p),
                     applicability=item.applicability,
                     reason_codes=item.reason_codes,
+                    evidence_strength=item.evidence_strength,
+                    evidence_transform_version=item.evidence_transform_version,
                 )
                 for item in registered
             )

@@ -31,12 +31,26 @@ python -m pytest -q
 python -m cwr_eg.cli status --progress status\progress.jsonl
 ```
 
+The frozen intermediate manifests can be reproduced without loading a model or touching CUDA:
+
+```powershell
+python -m cwr_eg.cli validate-config --config configs\intermediate.yaml
+python -m cwr_eg.cli prepare-intermediate-data `
+  --legacy-corpus-dir ..\..\..\project1\data\corpus `
+  --excluded-parent-manifest manifests\pilot_parents.jsonl
+python -m cwr_eg.cli prepare-intermediate-canary
+```
+
+The resulting full and canary manifests are immutable inputs to the I-stage approval scopes. The canary contains 80 Train/Dev parents and 840 reusable recipes; Calibration and Test remain sealed.
+
 ## Approval workflow
 
 1. Produce an exact fingerprint with `cwr-eg fingerprint <action> --resource-class <class> --scope-file <json-path>`.
 2. Present the command, scope, expected resources, duration, outputs, and risks to the user in chat.
 3. Only after explicit approval, create an ignored approval record based on `docs/approval_record.example.json`.
 4. Run the matching command with `--approval`. Any action, fingerprint, resource, or expiry mismatch fails before the runtime handler imports model code.
+
+Intermediate actions additionally include `tensorize`, `assemble-data`, `score-checkpoint`, `score-registered`, `prepare-calibration`, and `prepare-evaluation`. These remain approval-gated even when part of their work is CPU-bound because they consume experiment products or calibration/Test evidence.
 
 Watermark key names are listed in `configs/keys.env.example`. Values are human-supplied secrets and must remain outside Git.
 

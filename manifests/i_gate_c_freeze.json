@@ -1,0 +1,156 @@
+{
+  "manifest_version": "i-gate-c-v1",
+  "created_at": "2026-08-15T13:51:00.505875+08:00",
+  "task_id": "I-GATE-C",
+  "parent_completion": {
+    "path": "manifests/i04_completion.json",
+    "sha256": "c1fb6dbc78444c0e7037cdbf3c7fd1614e95cde46beb5e10f12fa14e42ccd7a2"
+  },
+  "config": {
+    "path": "configs/intermediate.yaml",
+    "sha256": "19b00a34dc9738b3d7bb46682aab55b698f844804a8fb506d56a3e3c9b0168d8"
+  },
+  "training_matrix": {
+    "path": "configs/intermediate_training_matrix.yaml",
+    "sha256": "b724fb04958c8715ec5989b9f66bb331cd1b43098d5740b618307f8e4d55b0fa",
+    "runs": 10
+  },
+  "train_dev_input": {
+    "path": "artifacts/i05_train_dev/feature_documents.jsonl",
+    "sha256": "a2d0ca7085a1aa676d03cc102a0fe389aeaf7af2a97af50cf04c23223a4a6feb",
+    "documents": 4047,
+    "split_kind_counts": {
+      "dev:base_generation": 500,
+      "dev:matched_attack": 500,
+      "dev:mixed_document": 50,
+      "train:base_generation": 1500,
+      "train:matched_attack": 1497
+    },
+    "calibration_documents": 0,
+    "test_documents": 0
+  },
+  "feature_resume": {
+    "source": "I-03-canary",
+    "documents": 810,
+    "remaining_documents": 3237,
+    "manifest_path": "artifacts/i05_train_dev/features/feature_manifest.jsonl",
+    "manifest_sha256": "04537527636496e101858e0b399098746a077336df5278245f40d0fe9f66f4e1",
+    "copy_policy": "byte-identical-sha256-verified-v1"
+  },
+  "feature_code": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac"
+    },
+    {
+      "path": "src/cwr_eg/transformer_features.py",
+      "sha256": "dc802bf91cb7a5885c4a240f8c0ae7fb7d9d229958947d312cc7e924b716ae8b"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "model": {
+    "id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "local_files_only": true,
+    "dtype": "bfloat16"
+  },
+  "feature_settings": {
+    "maximum_tokens": 1024,
+    "microbatch_sequence": [
+      4,
+      2,
+      1
+    ],
+    "atomic_write": true,
+    "resume": true
+  },
+  "tensor_bundle_plans": {
+    "full": {
+      "train_examples": 2997,
+      "dev_examples": 1000,
+      "train_batches": 150,
+      "dev_batches": 50,
+      "train_shards": 10,
+      "dev_shards": 4,
+      "mixed_parent_features_excluded": 50
+    },
+    "lofo_kgw": {
+      "train_examples": 2397,
+      "dev_examples": 800,
+      "train_batches": 150,
+      "dev_batches": 50,
+      "train_shards": 10,
+      "dev_shards": 4,
+      "mixed_parent_features_excluded": 50
+    },
+    "lofo_unigram": {
+      "train_examples": 2398,
+      "dev_examples": 800,
+      "train_batches": 150,
+      "dev_batches": 50,
+      "train_shards": 10,
+      "dev_shards": 4,
+      "mixed_parent_features_excluded": 50
+    },
+    "lofo_unbiased": {
+      "train_examples": 2397,
+      "dev_examples": 800,
+      "train_batches": 150,
+      "dev_batches": 50,
+      "train_shards": 10,
+      "dev_shards": 4,
+      "mixed_parent_features_excluded": 50
+    },
+    "lofo_synthid": {
+      "train_examples": 2397,
+      "dev_examples": 800,
+      "train_batches": 150,
+      "dev_batches": 50,
+      "train_shards": 10,
+      "dev_shards": 4,
+      "mixed_parent_features_excluded": 50
+    }
+  },
+  "training": {
+    "positions": 256,
+    "batch_size": 20,
+    "hidden_dim": 256,
+    "invariant_dim": 128,
+    "private_dim": 128,
+    "learning_rate": 0.0003,
+    "maximum_epochs": 20,
+    "minimum_epochs": 5,
+    "early_stopping_patience": 4,
+    "dependent_scope_policy": "bind exact bundle index hash after tensorization"
+  },
+  "dev_policy": {
+    "allowed_splits": [
+      "train",
+      "dev"
+    ],
+    "ensemble_rule": "arithmetic_mean_character_logits",
+    "test_based_selection": false
+  },
+  "calibration_sealed": true,
+  "test_sealed": true,
+  "deviation_audit": {
+    "status": "pass",
+    "objective_changed": false,
+    "sample_or_split_changed": false,
+    "model_asset_changed": false,
+    "training_matrix_changed": false,
+    "calibration_or_test_unsealed": false
+  },
+  "content_hash": "8eba4b8981aacf52b9f7027fb54e7f64e83b95636a72fdcfd0ac408b94d79385"
+}

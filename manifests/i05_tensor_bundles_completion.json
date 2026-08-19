@@ -1,0 +1,72 @@
+{
+  "completed_at": "2026-08-15T14:43:32.995734+08:00",
+  "deviation_audit": {
+    "bundle_variants_changed": false,
+    "calibration_or_test_unsealed": false,
+    "status": "pass",
+    "train_dev_only": true
+  },
+  "task_id": "I-05-tensor-bundles",
+  "variants": {
+    "full": {
+      "approval_fingerprint": "6ce3a4f6b2dc95f63df799df2211bfd95cc6f1843c8620e10114efc03fa1c3f6",
+      "bundle_content_hash": "ffb393a9e36f30141cd91e39bb42205f83efdda142130a0f8012b8ad15394c11",
+      "bundle_index_sha256": "c86049dc82056840b5763ba5984436be80c6408161f8e1960a0c523b8b1988c0",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_full",
+      "dev_consistency_pairs": 500,
+      "dev_examples": 1000,
+      "result_sha256": "033e40b61b462a4e1115dde5b5d9b6b61810e7455a7b430e2a595b4719cbd6fa",
+      "scope_sha256": "73cf9254027c252b8ba0d6a0b7684ff3b845eba86576c84e876c64375fdf038f",
+      "train_consistency_pairs": 1497,
+      "train_examples": 2997
+    },
+    "lofo_kgw": {
+      "approval_fingerprint": "f613f36997a7a0884e74fce2ca2ac8341f90015ecc2954c33aac28a745898fa6",
+      "bundle_content_hash": "bb01a2a515cb5d94b467567dd84c787c8ee071c6dc84c5166b7ee57fc536ee71",
+      "bundle_index_sha256": "8cdb97f7c3df95a15e90435cbc30272020b9f32434d072925551dcefd69136bd",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_kgw",
+      "dev_consistency_pairs": 400,
+      "dev_examples": 800,
+      "result_sha256": "0649469d19818b4d4e382bb1ffbe51195211c62f5021c3e976727a6c79159873",
+      "scope_sha256": "4d51d85d1d3513f3836a65e56446d68f88aa978b2996c8cdd2a9473915b37803",
+      "train_consistency_pairs": 1197,
+      "train_examples": 2397
+    },
+    "lofo_synthid": {
+      "approval_fingerprint": "4ae38fc15caa5b03b95cc56d9b87ef7f0513f7efe6cfd4236e8852a20cfd9551",
+      "bundle_content_hash": "a38e50333425319dc66ce5262a940d82983f05990229f90678a5e7186e20062d",
+      "bundle_index_sha256": "98a143e7cac63310ba22056609c03213fbe0cd1a36f5cde9350e3761c29dd4ab",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_synthid",
+      "dev_consistency_pairs": 400,
+      "dev_examples": 800,
+      "result_sha256": "b7fc8216915eab122a9a380492e3fef9568ad4946b5eba73adc11a3a73d8c507",
+      "scope_sha256": "06f5375edb8ce1c3ce81d824d554d7b776707c86b703cc2d9dc38731abee53bd",
+      "train_consistency_pairs": 1197,
+      "train_examples": 2397
+    },
+    "lofo_unbiased": {
+      "approval_fingerprint": "747ab529201e1ca5d870a805675917211ef485effc51631ac1ca6e97665bd72f",
+      "bundle_content_hash": "5f842f79f303f7d4748d8859605b7d4e12fe9abe9406aeb0475f18dc2b277b2c",
+      "bundle_index_sha256": "c91fbb70a7d5eb6dc24e4380e23a6d3095931ec972ae2febc87fb233f54c3e98",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_unbiased",
+      "dev_consistency_pairs": 400,
+      "dev_examples": 800,
+      "result_sha256": "b87a2d054f11391cf780b1a572d88e7468ed5f69c8ab00b4b057ec2ec289f7d1",
+      "scope_sha256": "1ccbbe52938ad0e9dad79861cea6dd75f7314dc70b69c655893637ba4e1b1937",
+      "train_consistency_pairs": 1197,
+      "train_examples": 2397
+    },
+    "lofo_unigram": {
+      "approval_fingerprint": "b1b4b36fae466f88a1d52300d8e7e59855370b57c3348b818f98e353f1136537",
+      "bundle_content_hash": "e92babb5896b1dd42b46136d23f12ad0f32c34875e1115611d25a40cdea969fc",
+      "bundle_index_sha256": "08f05fad9d78d8090d8d813dc384c1fe485c680c8691bc5f9adc041602bea44f",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_unigram",
+      "dev_consistency_pairs": 400,
+      "dev_examples": 800,
+      "result_sha256": "ea7e2d69890d18e3c8f20245ef9b31f0d733515374bfce007f2ebecc7c0b8d9d",
+      "scope_sha256": "2575d8314c5f497a13910e7217e5d66523b386f945b7d5e2f4397566f205a08c",
+      "train_consistency_pairs": 1198,
+      "train_examples": 2398
+    }
+  }
+}

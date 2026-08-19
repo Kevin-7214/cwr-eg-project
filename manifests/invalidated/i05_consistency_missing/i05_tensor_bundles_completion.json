@@ -1,0 +1,62 @@
+{
+  "completed_at": "2026-08-15T14:15:04.737702+08:00",
+  "deviation_audit": {
+    "bundle_variants_changed": false,
+    "calibration_or_test_unsealed": false,
+    "status": "pass",
+    "train_dev_only": true
+  },
+  "task_id": "I-05-tensor-bundles",
+  "variants": {
+    "full": {
+      "approval_fingerprint": "2606fb79e0da35e0a7a1391e8f43046f77c0ad6e3b24cf4f3684925ac6f3e5e0",
+      "bundle_content_hash": "11f4776762af1ff935971880ecd037b878e392602fd275a80e93c04797c1a3cb",
+      "bundle_index_sha256": "7075a3fe079dedb6b8f38db11277c66d5e07b1112379386741be3d9bf752fc4a",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_full",
+      "dev_examples": 1000,
+      "result_sha256": "357c32171804d78487a053734aedf8c77c4f08ba3b432b72f38f9ec5a3c92e82",
+      "scope_sha256": "7dcf16190b460843cb043ad322ada1eb45e9f1d3912378e9a3bd70c632ab6155",
+      "train_examples": 2997
+    },
+    "lofo_kgw": {
+      "approval_fingerprint": "d153c3efa747fbc9393a717eedc3a808d45b6813f2f9c96ba6d80636027a5f83",
+      "bundle_content_hash": "bd1bbb9076f9df9c77bf9d97ed2e7f951da98acb2a56efad09f1300675451689",
+      "bundle_index_sha256": "344f4aaba20886845bb5764763bc2883ee713a0e4fd23c0d8435ac665e50dc97",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_kgw",
+      "dev_examples": 800,
+      "result_sha256": "40ddcf3aba740fbc7a1f83f6565e9570af52201d3ca072091ac1ad15eba67818",
+      "scope_sha256": "9a596cd2ad2d16b2ca9b4f5d114724404372bf1c78fd4944eeb261edc0732e19",
+      "train_examples": 2397
+    },
+    "lofo_synthid": {
+      "approval_fingerprint": "550f19575cbf77199c2b6d2beaf1497939a7bb18f8b71afe07cdc2dcc1b578ff",
+      "bundle_content_hash": "247b151613f1ae5df7e75c53e8492fdedcda0681e6db893453d7626056262f3f",
+      "bundle_index_sha256": "57b76681435826b51051ad03980c31b214f8718ab5fbadb45a83b9094d85d7d0",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_synthid",
+      "dev_examples": 800,
+      "result_sha256": "f19973f0188890553d865e632748e4afb4e9a76ab74fe16d8a999973b0adf085",
+      "scope_sha256": "fdee3ebf83f11327fcbb6ffd964c91aeac2d32370ab504adfb4e8e952dc7a7f2",
+      "train_examples": 2397
+    },
+    "lofo_unbiased": {
+      "approval_fingerprint": "aee44d473509927eedee2f4a7f7770d0543a530a1a8a7cf09a8990f7d8ad859b",
+      "bundle_content_hash": "ac161d217beebd7d16f36466f1452899290cc4d6eb6f5e7a6c764f8bb7b913c7",
+      "bundle_index_sha256": "097811abef3578eed664a387fe22e4346476ab20da15002482e8be0a17acaa29",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_unbiased",
+      "dev_examples": 800,
+      "result_sha256": "88d6d0d5019d8faf719ee84c48eb4b8e6c3ff6f4fea470236127714b7b7c51f0",
+      "scope_sha256": "350ad3540cb234efe2027daefcb4da9fb566cbef71543bfb39348bb8c81517d0",
+      "train_examples": 2397
+    },
+    "lofo_unigram": {
+      "approval_fingerprint": "b713795e5b667aabf6d427930e71b3f2356ef56430c8adc2a8d4f5ad30620820",
+      "bundle_content_hash": "ffae7923639998de09cf82c30682edf13df2875f2357b2396337bb32ac497def",
+      "bundle_index_sha256": "1a9832623b4a0a299c1d8cbd00538220ced2d0d834bd92aa8a9c43735c446d24",
+      "bundle_path": "artifacts/i05_train_dev/tensor_bundle_lofo_unigram",
+      "dev_examples": 800,
+      "result_sha256": "1a318da1dbb03378c12e44e2a783c6e71ae9c1c4e59dec1735e11436b5ae6fc7",
+      "scope_sha256": "37e6a17998d6a18cd33ef04bffcb9fe9c049a74fbb7e2a2a1e115c5eb2666e39",
+      "train_examples": 2398
+    }
+  }
+}

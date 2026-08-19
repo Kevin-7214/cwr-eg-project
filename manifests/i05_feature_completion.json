@@ -1,0 +1,44 @@
+{
+  "completed_at": "2026-08-15T14:07:12.127441+08:00",
+  "deviation_audit": {
+    "calibration_or_test_unsealed": false,
+    "model_or_feature_settings_changed": false,
+    "status": "pass",
+    "train_dev_only": true
+  },
+  "documents": 4047,
+  "feature_manifest": "artifacts/i05_train_dev/features/feature_manifest.jsonl",
+  "feature_manifest_sha256": "7532f211580e6517df6d1092798907afd7d5f1fe99a4284d4bdab253e53f4e80",
+  "new_documents": 3237,
+  "resources": {
+    "first_recorded_at": "2026-08-15T13:51:59+08:00",
+    "last_recorded_at": "2026-08-15T14:06:58+08:00",
+    "maximum_gpu_temperature_c": 60.0,
+    "maximum_used_ram_gib": 15.222221374511719,
+    "minimum_free_disk_gib": 530.0827255249023,
+    "monitor_points": 82
+  },
+  "result_sha256": "8c63b2ecc6d9432a092d678e154d5175152f187dc3310b3150fc2f135c55d1ff",
+  "resumed_documents": 810,
+  "runtime_result": {
+    "action": "extract-features",
+    "approved_execution": true,
+    "code_files_verified": 5,
+    "documents": 4047,
+    "feature_manifest": "artifacts\\i05_train_dev\\features\\feature_manifest.jsonl",
+    "feature_manifest_sha256": "7532f211580e6517df6d1092798907afd7d5f1fe99a4284d4bdab253e53f4e80",
+    "final_microbatch": 4,
+    "freeze_manifest_sha256": "5e45b6ea927b51220fd5e1964c154f4f6621bf1a08e4841d973ad51f8d6cfd89",
+    "input_sha256": "a2d0ca7085a1aa676d03cc102a0fe389aeaf7af2a97af50cf04c23223a4a6feb",
+    "model_files_verified": 7,
+    "resumed_documents": 810,
+    "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac",
+    "view_dims": {
+      "perturbation": 4,
+      "proxy": 4,
+      "representation": 1536,
+      "validity": 4
+    }
+  },
+  "task_id": "I-05-features"
+}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import math
 import os
 from pathlib import Path
 import sys
@@ -43,7 +44,7 @@ def _key_override(key_id: str, secret: Any | None = None) -> dict[str, Any]:
     if family == "synthid":
         keys = json.loads(raw) if isinstance(raw, str) else raw
         if not isinstance(keys, list) or not keys or not all(isinstance(item, int) for item in keys):
-            raise ValueError(f"{environment_name} must be a JSON integer list")
+            raise ValueError(f"CWR_EG_KEY_{key_id.upper()} must be a JSON integer list")
         return {"keys": keys}
     raise ValueError(f"Unsupported key family in {key_id}")
 
@@ -60,6 +61,25 @@ class MarkLlmSettings:
     top_p: float = 0.95
     no_repeat_ngram_size: int = 4
     local_files_only: bool = True
+
+
+def oriented_evidence_strength(family: str, raw_statistic: float) -> dict[str, Any]:
+    value = float(raw_statistic)
+    if not math.isfinite(value):
+        raise ValueError("Detector statistic must be finite")
+    if family == "unbiased":
+        return {
+            "raw_tail_direction": "lower",
+            "evidence_strength": -value,
+            "evidence_transform_version": "negate-lower-tail-statistic-v1",
+        }
+    if family not in ALGORITHM_NAMES:
+        raise ValueError(f"Unsupported watermark family: {family}")
+    return {
+        "raw_tail_direction": "upper",
+        "evidence_strength": value,
+        "evidence_transform_version": "identity-upper-tail-v1",
+    }
 
 
 class MarkLlmBridge:
@@ -107,13 +127,21 @@ class MarkLlmBridge:
             no_repeat_ngram_size=settings.no_repeat_ngram_size,
             pad_token_id=self.tokenizer.eos_token_id,
         )
+        self._watermark_cache: dict[tuple[str, str | None, str], Any] = {}
 
     def load_watermark(self, family: str, key_id: str | None, secret: Any | None = None):
         from watermark.auto_watermark import AutoWatermark
 
         algorithm_name = ALGORITHM_NAMES[family]
+        raw_secret = None if key_id is None else _raw_secret(key_id, secret)
+        cache_secret = json.dumps(raw_secret, sort_keys=True) if isinstance(
+            raw_secret, (dict, list)
+        ) else str(raw_secret)
+        cache_key = (family, key_id, cache_secret)
+        if cache_key in self._watermark_cache:
+            return self._watermark_cache[cache_key]
         config_path = self.settings.repository / "config" / f"{algorithm_name}.json"
-        overrides = {} if key_id is None else _key_override(key_id, secret)
+        overrides = {} if key_id is None else _key_override(key_id, raw_secret)
         watermark = AutoWatermark.load(
             algorithm_name,
             algorithm_config=str(config_path),
@@ -121,7 +149,8 @@ class MarkLlmBridge:
             **overrides,
         )
         if family == "unbiased" and key_id is not None:
-            watermark.config.hash_key = _unbiased_key_bytes(_raw_secret(key_id, secret))
+            watermark.config.hash_key = _unbiased_key_bytes(raw_secret)
+        self._watermark_cache[cache_key] = watermark
         return watermark
 
     def generate(
@@ -157,9 +186,22 @@ class MarkLlmBridge:
     def detect(
         self, text: str, family: str, key_id: str, secret: Any | None = None
     ) -> dict[str, Any]:
-        result = self.load_watermark(family, key_id, secret).detect_watermark(
-            text, return_dict=True
-        )
+        watermark = self.load_watermark(family, key_id, secret)
+        if family == "unbiased":
+            watermark.utils.state_indicator = 0
+            watermark.utils.cc_history.clear()
+        try:
+            result = watermark.detect_watermark(text, return_dict=True)
+        finally:
+            if family == "unbiased":
+                watermark.utils.state_indicator = 0
+                watermark.utils.cc_history.clear()
         if not isinstance(result, dict) or "score" not in result:
             raise RuntimeError("MarkLLM detector returned an unsupported result")
-        return {"is_watermarked": bool(result["is_watermarked"]), "score": float(result["score"])}
+        raw_statistic = float(result["score"])
+        return {
+            "is_watermarked": bool(result["is_watermarked"]),
+            "score": raw_statistic,
+            "raw_statistic": raw_statistic,
+            **oriented_evidence_strength(family, raw_statistic),
+        }

@@ -1,0 +1,148 @@
+profile: rtx5060-24h-intermediate
+protocol_version: 0.2.0-intermediate
+seed: 20260815
+
+data:
+  parent_manifest: manifests/intermediate_parents.jsonl
+  recipe_manifest: manifests/intermediate_recipes.jsonl
+  excluded_parent_manifest: manifests/pilot_parents.jsonl
+  split_unit: parent_id
+  parents_per_source: 200
+  split_counts_per_source:
+    train: 75
+    dev: 25
+    calibration: 50
+    test: 50
+  split_counts:
+    train: 300
+    dev: 100
+    calibration: 200
+    test: 200
+  languages: [en, zh]
+  sources: [c4_en, wikipedia_en, thucnews_zh, wikipedia_zh]
+  minimum_characters: 2000
+  maximum_characters: 6000
+  base_documents: 4000
+  matched_attacks: 4000
+  mixed_documents: 400
+  total_recipes: 8400
+  test_usage: sealed_once_after_freeze
+
+assets:
+  generation_model: Qwen/Qwen2.5-1.5B-Instruct
+  generation_revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+  attacker_model: Qwen/Qwen2.5-0.5B-Instruct
+  attacker_revision: 7ae557604adf67be50417f59c2c2f167def9a775
+  feature_model: Qwen/Qwen2.5-1.5B-Instruct
+  feature_revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+  local_files_only: true
+  trust_remote_code: false
+  allow_model_download: false
+
+model:
+  view_names: [proxy, representation, perturbation, validity]
+  hidden_dim: 256
+  invariant_dim: 128
+  private_dim: 128
+  dropout: 0.1
+  proxy_trainable: false
+  losses:
+    watermark_weight: 1.0
+    null_weight: 1.0
+    margin_weight: 1.0
+    contrastive_weight: 0.2
+    reconstruction_weight: 0.1
+    orthogonality_weight: 0.05
+    scheme_adv_weight: 0.1
+    private_scheme_weight: 0.1
+    nuisance_adv_weight: 0.1
+    boundary_weight: 0.5
+    consistency_weight: 0.2
+    variance_floor_weight: 0.01
+    grl_scale: 1.0
+    invariant_margin: 1.5
+
+feature_extraction:
+  maximum_tokens: 1024
+  initial_microbatch: 4
+  oom_fallback_microbatches: [2, 1]
+  atomic_write: true
+  resume: true
+  minimum_mapping_coverage: 0.98
+
+tensor_bundle:
+  format: sharded-v1
+  maximum_batches_per_shard: 16
+
+training:
+  positions: 256
+  batch_size: 20
+  learning_rate: 0.0003
+  maximum_epochs: 20
+  minimum_epochs: 5
+  early_stopping_patience: 4
+  deterministic_algorithms: true
+  full_seeds: [20260815, 20260816, 20260817]
+  ensemble_rule: arithmetic_mean_character_logits
+  ablations: [no_contrastive, no_scheme_language_adversary, no_reconstruction_orthogonality]
+  leave_one_family_out: [kgw, unigram, unbiased, synthid]
+
+search:
+  window_char_lengths: [256, 512, 1024]
+  stride_fraction: 0.25
+  candidate_quantile: 0.95
+  merge_gap_chars: 32
+  boundary_refinement: evidence_change_point
+
+registered:
+  registry: configs/registered_registry.yaml
+  adjust_method: parent_search_maximum
+  unbiased_evidence_transform: negate-lower-tail-statistic-v1
+
+calibration:
+  alpha: 0.01
+  fwer_upper_acceptance: 0.015
+  confidence_level: 0.95
+  empirical_smoothing: plus_one
+  aggregation_unit: parent_id
+  null_strata: [language]
+  search_aware: true
+  merge_clean_and_attacked_clean: true
+  minimum_parents_per_stratum: 100
+  pseudo_unknown_in_formal_gap_null: false
+
+validity:
+  minimum_effective_length: 64
+  minimum_mapping_coverage: 0.98
+  maximum_repetition_ratio: 0.35
+  supported_languages: [en, zh]
+  warning_forces_uncertain: false
+
+decision:
+  labels:
+    - known_scheme_known_key
+    - known_scheme_unknown_key
+    - suspected_unknown_scheme
+    - uncertain
+    - none
+  conflict_label: uncertain
+  document_conflict_forces_uncertain: true
+  authorized_key_scenarios: [a_and_b, a_only, b_only]
+
+evaluation:
+  bootstrap_unit: parent_id
+  bootstrap_replicates: 2000
+  localization_metrics: [character_iou, boundary_error, event_f1]
+  open_set_metrics: [macro_f1, oscr, parent_fwer]
+  stratify_by: [source, language, watermark_family, key_id, attack_id]
+
+monitoring:
+  status_interval_percent: 1
+  status_interval_minutes: 5
+  maximum_gpu_temperature_c: 85
+  temperature_grace_seconds: 120
+  maximum_ram_gib: 26
+  minimum_free_disk_gib: 100
+  maximum_failure_rate: 0.01
+  maximum_predicted_hours: 24
+  preserve_partial_on_stop: true

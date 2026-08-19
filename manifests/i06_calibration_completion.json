@@ -1,0 +1,23 @@
+{
+  "calibration_documents": 400,
+  "calibration_manifest_sha256": "7c391ab8aea74e6f7a49949dbf3611dca1216d0b36fe2ad2e6d3cce855003e37",
+  "calibration_parents": 200,
+  "completed_at": "2026-08-20T02:17:28.831568+08:00",
+  "deviation_audit": {
+    "aggregation_unit": "parent_id",
+    "calibration_strata_changed": false,
+    "clean_and_attacked_clean_merged_by_parent_maximum": true,
+    "status": "pass",
+    "test_features_or_scores_computed": false
+  },
+  "gate_freeze_sha256": "300fb880418fbd5ec6a90c766ba801f5715e904ceb9b2ece7a2ebabff2e32b40",
+  "minimum_empirical_p": 0.009900990099009901,
+  "null_distributions_sha256": "200542d5ac48763e874f7809431c6742f9ad26c137473fbf8c3bde4734bc5c64",
+  "parent_counts_by_stratum": {
+    "en:all": 100,
+    "zh:all": 100
+  },
+  "task_id": "I-06",
+  "test_execution_remained_sealed": true,
+  "test_input_sha256": "5539327e22bee3e46724bdadd4519f8a1ce9ee03c8fcdad790340e074f539a33"
+}

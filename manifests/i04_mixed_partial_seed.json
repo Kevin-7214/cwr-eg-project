@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-08-14T16:48:47.004225+08:00",
+  "kind": "mixed_document",
+  "output_path": "artifacts\\i04_full\\mixed_generated.jsonl.partial",
+  "output_sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c",
+  "recipe_manifest": "manifests\\intermediate_recipes.jsonl",
+  "recipe_manifest_sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5",
+  "resumed_documents": 40,
+  "source_path": "artifacts\\i03_canary\\mixed_generated.jsonl",
+  "source_sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c"
+}

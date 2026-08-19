@@ -1,0 +1,17 @@
+{
+  "artifacts_git_ignored": true,
+  "final_explicit_failures": 9,
+  "pytest": ".......                                                                  [100%]",
+  "repair_isolation_verified": true,
+  "required_hashes": {
+    "artifacts/i07_test/i07_results.json": "39fe12764747919d7aab7dac3e03758a256dc9fdba485d85b827e42a73a894b6",
+    "manifests/i04_completion.json": "c1fb6dbc78444c0e7037cdbf3c7fd1614e95cde46beb5e10f12fa14e42ccd7a2",
+    "manifests/i05_checkpoint_scoring_completion.json": "cd8842f05360cddc7a62138a24080c5fbb48aedd86bd5037737575afd1eeb558",
+    "manifests/i05_training_matrix_completion.json": "b70fcfe861df1a916b152cd4b3e37142481b7e85c9c7bef0930a71c8667e5f12",
+    "manifests/i06_calibration_completion.json": "52b4f4a1c69852ea9bf285624e9319e5f972b35254a547b232e218ec3c84d081",
+    "manifests/i07_test_completion.json": "1723b69aa035f933d83505810d957bb66d0e24f6d0b85637911cec1e73b562c1",
+    "manifests\\i04_gate_d_repair_completion.json": "8b066f58b8ab50eafd18a64dd00ba89c44857f1d39628d2920f176319d8cc28b"
+  },
+  "test_leakage": false,
+  "test_parents": 200
+}

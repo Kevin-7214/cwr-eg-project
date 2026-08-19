@@ -1,0 +1,14 @@
+{
+  "analysis_sha256": "84d1ffead830a759dc4ba563c1df9487606d81c3b47f2bdcbd04f46f3ba63dcf",
+  "completed_at": "2026-08-15T17:01:14.564543+08:00",
+  "deviation_audit": {
+    "calibration_or_test_read": false,
+    "dev_used_for_selection_and_analysis_only": true,
+    "ensemble_rule_changed": false,
+    "mixed_dev_excluded_from_document_classification": 50,
+    "status": "pass",
+    "train_used_for_fit_only": true
+  },
+  "report_sha256": "85779dbcdccbe8db69465dde6d26c9e5acba03f959b41cf44b2fa7e51b57c2d2",
+  "task_id": "I-05-dev-analysis"
+}

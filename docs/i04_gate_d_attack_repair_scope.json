@@ -1,0 +1,94 @@
+{
+  "attack_ids": [
+    "translation_roundtrip"
+  ],
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "device": "cuda:0",
+  "do_sample": false,
+  "dtype": "bfloat16",
+  "expected_recipe_count": 1,
+  "freeze_manifest": "manifests/intermediate_freeze_amendment_05.json",
+  "freeze_manifest_sha256": "fe7380aa7aa1a1876fd9c44b4ef209c1e23edefce8622ca284f504002834b43f",
+  "input_path": "artifacts/i04_full/base_gate_d_repaired.tmp.jsonl",
+  "input_sha256": "7d3094f9221de5215951bcd44139e4a34c49814f0937b38b2b226b547ea5c1c2",
+  "limit": 1,
+  "local_files_only": true,
+  "max_new_tokens": 256,
+  "maximum_failure_rate": 1.0,
+  "maximum_input_tokens": 1024,
+  "model_files": [
+    {
+      "bytes": 659,
+      "path": "config.json",
+      "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45"
+    },
+    {
+      "bytes": 242,
+      "path": "generation_config.json",
+      "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+    },
+    {
+      "bytes": 1671839,
+      "path": "merges.txt",
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "bytes": 988097824,
+      "path": "model.safetensors",
+      "sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe"
+    },
+    {
+      "bytes": 7031645,
+      "path": "tokenizer.json",
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "bytes": 7305,
+      "path": "tokenizer_config.json",
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "bytes": 2776833,
+      "path": "vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "model_path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/models/Qwen2.5-0.5B-Instruct",
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "progress_path": "status/progress.jsonl",
+    "status_interval_minutes": 5,
+    "status_interval_percent": 1,
+    "temperature_grace_seconds": 120
+  },
+  "output_path": "artifacts/i04_full/attack_retry_gate_d.jsonl",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "recipe_manifest": "manifests/i04_gate_d_attack_repair_recipe.jsonl",
+  "recipe_manifest_sha256": "6003a2241ee2d19ece14461e8fe83e2642a2e480cdf0ee41fc1fdc6bed3766d5",
+  "result_path": "artifacts/i04_full/attack_retry_gate_d_result.json",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "task_id": "I-FIX-05-attacked-clean-restoration",
+  "truncation_fraction": 0.75,
+  "trust_remote_code": false
+}

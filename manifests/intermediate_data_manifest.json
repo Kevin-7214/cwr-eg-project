@@ -1,0 +1,72 @@
+{
+  "excluded_parent_count": 32,
+  "excluded_parent_manifest": {
+    "bytes": 248578,
+    "path": "manifests/pilot_parents.jsonl",
+    "sha256": "7c516ac55e43eb42f55782482932dcbf28edc8585c4eb9ba048c3b137999a41c"
+  },
+  "experiment_executed": false,
+  "manifest_version": "intermediate-v1",
+  "maximum_characters": 6000,
+  "minimum_characters": 2000,
+  "outputs": [
+    {
+      "bytes": 6073913,
+      "path": "manifests/intermediate_parents.jsonl",
+      "sha256": "02fd389173f76e2113e40601e1be8324d9a3359fb3b58a11fc48eeb0aa87276d"
+    },
+    {
+      "bytes": 3208227,
+      "path": "manifests/intermediate_recipes.jsonl",
+      "sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5"
+    }
+  ],
+  "overlap_with_excluded": 0,
+  "parent_audit": {
+    "manifest_content_hash": "f42cfeacc1ff0d62026dcac26a091471c4a31975d0ec6c8ed57291fa71e7a66d",
+    "rows": 800,
+    "split_counts": {
+      "calibration": 200,
+      "dev": 100,
+      "test": 200,
+      "train": 300
+    },
+    "unique_parent_ids": 800
+  },
+  "profile": "rtx5060-24h-intermediate",
+  "recipe_counts": {
+    "base_generation": 4000,
+    "matched_attack": 4000,
+    "mixed_document": 400
+  },
+  "seed": 20260815,
+  "source_count": 200,
+  "source_files": [
+    {
+      "bytes": 124341851,
+      "path": "../../../project1/data/corpus/c4_en.jsonl",
+      "sha256": "4e5b64420becf5080a51e2b424531aa27563e635aaa77a28c776c068d0084678"
+    },
+    {
+      "bytes": 211895072,
+      "path": "../../../project1/data/corpus/wikipedia_en.jsonl",
+      "sha256": "ecdf89f10233f0601dcb790929fc3c4b3c4b41d842fc50ba7f51fb81a0989add"
+    },
+    {
+      "bytes": 61841128,
+      "path": "../../../project1/data/corpus/thucnews_zh.jsonl",
+      "sha256": "21171f2e2467e1c664e5821ea038b256007665be76bf39db1092e81c85d80de7"
+    },
+    {
+      "bytes": 138811829,
+      "path": "../../../project1/data/corpus/wikipedia_zh.jsonl",
+      "sha256": "de27c4165d8e16a2ea98066b29fe2f7adfba79433bd479bb1f3fbe7d18353bbb"
+    }
+  ],
+  "split_counts_per_source": {
+    "calibration": 50,
+    "dev": 25,
+    "test": 50,
+    "train": 75
+  }
+}

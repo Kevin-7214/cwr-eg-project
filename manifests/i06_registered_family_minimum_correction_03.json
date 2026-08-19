@@ -1,0 +1,39 @@
+{
+  "content_hash": "db6efcb83ec05bbd4fc41ed4c3fdb41c26a87b0a8cb1089179dc8df2f9e7184b",
+  "correction": {
+    "behavior": "Before registered detector calls, tokenize the exact candidate segment with the detector tokenizer and add_special_tokens=False. Compare the count against a per-family minimum derived from the pinned MarkLLM configs (KGW 2, Unigram 1, Unbiased 6, SynthID 5). If the count is below the family minimum, record each family/key detector test for that interval as applicability=invalid with reason zero_detector_tokens (count 0) or insufficient_detector_tokens (count 1..min-1) and do not call MarkLLM. Preserve the prior KGW min_prefix_len ValueError handling as defense-in-depth. All other exceptions re-raise.",
+    "completed_rows_verified_short_segment_free": true,
+    "new_approval": "status/approvals/i06_calibration_registered_scoring_v4.json",
+    "new_approval_sha256": "c23c52603af7caa85c3e4804a58f1146655039b53e52ecde29bac99c1e3024e3",
+    "new_registered_scoring_sha256": "c824145676dc7b452771ab9bd5a9fb0f73bf6fa1eca1c92995bf82cc9a0b8c4a",
+    "new_scope": "docs/i06_calibration_registered_scoring_scope_v4.json",
+    "new_scope_sha256": "adebab5ca25c3bc78e16827250d0f964533d3b06bff08fc5a811bdb9712cb3ea",
+    "partial_documents_at_correction": 389,
+    "partial_path": "artifacts/i06_calibration/registered_scores_a_and_b.jsonl.partial",
+    "partial_sha256_at_correction": "71f3b7526114638a20770617368a152a1c83193fa9034de7c9ed6162f389f14b",
+    "previous_correction_path": "manifests/i06_registered_zero_token_correction_02.json",
+    "previous_correction_sha256": "0fe42f6f28b5850b8b8529a5a4c98f5b947c8788f4a18430c8b0bff0e2b53ab8",
+    "previous_registered_scoring_sha256": "bdb369a69f99b076a180d2a3e00159a46bc7431787740f5a17bfff77ed44868c",
+    "resume_preserves_completed_rows": true
+  },
+  "created_at": "2026-08-20T02:16:31.701415+08:00",
+  "isolation_audit": {
+    "calibration_input_changed": false,
+    "checkpoint_scores_changed": false,
+    "model_or_checkpoint_selection_changed": false,
+    "test_features_or_scores_computed": false,
+    "test_input_changed": false,
+    "test_remains_sealed": true,
+    "train_or_dev_changed": false
+  },
+  "manifest_version": "i06-registered-family-minimum-correction-v1",
+  "root_cause": "The prior zero-token precheck guarded only detector_token_count == 0. MarkLLM's Unbiased detector drops the final token before scoring (input_ids[..., :-1]), so a refined character interval that tokenizes to exactly one token reached Qwen2 with sequence length zero and failed during attention projection reshape. Intervals below a family-specific minimum must be treated as explicit detector non-applicability before any MarkLLM call, not only the zero-token case.",
+  "task_id": "I-06-registered-family-minimum-correction",
+  "trigger": {
+    "detector_family": "unbiased",
+    "error_message": "cannot reshape tensor of 0 elements into shape [1, 0, -1, 128] because the unspecified dimension size -1 can be any value and is ambiguous",
+    "error_type": "RuntimeError",
+    "expected_documents": 400,
+    "observed_completed_documents_before_failure": 389
+  }
+}

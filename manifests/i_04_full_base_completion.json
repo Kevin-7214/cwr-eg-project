@@ -1,0 +1,33 @@
+{
+  "completed_at": "2026-08-15T13:47:19.326075+08:00",
+  "deviation_audit": {
+    "calibration_or_test_unsealed": false,
+    "model_or_generation_parameters_changed": false,
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "status": "pass_with_explicit_failures"
+  },
+  "qa": {
+    "bytes": 6394469,
+    "failed_recipe_ids": [
+      "base-clean-52812039e5522400"
+    ],
+    "failed_rows": 1,
+    "generated_rows": 3999,
+    "path": "artifacts\\i04_full\\base_generated_reconciled.jsonl",
+    "rows": 4000,
+    "sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177",
+    "unique_recipe_ids": 4000
+  },
+  "reconciliation_manifest": "manifests/i04_base_retry_reconciliation.json",
+  "reconciliation_manifest_sha256": "a4711bf1d2d17e87c5562575f628179063445992a3279ed2c283c751d30b3ed4",
+  "resources": {
+    "first_recorded_at": "2026-08-14T16:55:30+08:00",
+    "last_recorded_at": "2026-08-14T23:33:16+08:00",
+    "maximum_gpu_temperature_c": 61.0,
+    "maximum_used_ram_gib": 15.930702209472656,
+    "minimum_free_disk_gib": 532.6970558166504,
+    "monitor_points": 93
+  },
+  "task_id": "I-04-full-base"
+}

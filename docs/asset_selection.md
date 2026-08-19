@@ -32,3 +32,9 @@ The exact commits and source policies are recorded in `manifests/repository_regi
 - TTP-Detect remains conditional because no public implementation was confirmed in the official paper record.
 
 The executable/readiness status of every baseline is frozen in `configs/baselines.yaml`.
+
+## RTX 5060 intermediate selection
+
+The 24-hour intermediate profile deliberately narrows the asset set to files already present and hash-verified. Qwen2.5-1.5B-Instruct generates base and mixed documents; Qwen2.5-0.5B-Instruct performs paraphrase and translation-roundtrip attacks. Neither role permits a download or remote-code load.
+
+The enabled intermediate baselines are direct statistics, Logistic Regression, maximum softmax, Energy, Mahalanobis, one-class SVM, prototype distance, generic-only, registered-only, linear evidence fusion, direct-feature MLP, and the four MarkLLM registered detectors. DetectGPT, Binoculars, BLOOM, multilingual E5, official GCD/AOL, and WaterSeeker are excluded for the exact reasons frozen in `configs/intermediate_baselines.yaml`; their exclusion is a resource/protocol boundary, not a negative performance claim.

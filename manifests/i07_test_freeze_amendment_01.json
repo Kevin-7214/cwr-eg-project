@@ -1,0 +1,36 @@
+{
+  "base_freeze_path": "manifests/i07_test_freeze.json",
+  "base_freeze_sha256": "c6ec4cbdf0c878664d9238e6ecf8f244dfa00ae8c0074be295d04f916fad4072",
+  "content_hash": "946283c010e3e145f67ff242ca97506f23bc94df0c64a3e01c58e04adeaddc04",
+  "created_at": "2026-08-20T03:38:48.145684+08:00",
+  "deviation_audit": {
+    "all_lofo_calibrations_fit_before_test_feature_extraction": true,
+    "status": "pass",
+    "test_used_for_calibration": false
+  },
+  "lofo_calibration_bundles": {
+    "kgw": {
+      "calibration_manifest_sha256": "0d9b58f10ca1a7fa0eddb00352ce1e9b50af925f3b855b6e07e380e9477d079c",
+      "null_distributions_sha256": "7685002c991f7f372d6b3eee9c9df37d52d4732808fc793e75a74509cdc27a39",
+      "path": "artifacts/i06_calibration/lofo/kgw/calibration_bundle"
+    },
+    "synthid": {
+      "calibration_manifest_sha256": "d559f0dcd6d8ec70b2b7fc6821d8f7c5d1c64c4de0d83f8bcf7cb114bba1c6f9",
+      "null_distributions_sha256": "900f064c955da69fd0bcd02c98e122e498da29b3a08c010b3719fdfca688e851",
+      "path": "artifacts/i06_calibration/lofo/synthid/calibration_bundle"
+    },
+    "unbiased": {
+      "calibration_manifest_sha256": "566bf41b811485282c50448342921855015e0e4f559344409465851a5c321815",
+      "null_distributions_sha256": "7e12dd0c9a5f302dd8168207b7fedbde9f1d159222c6e091ea94d6411d49d62a",
+      "path": "artifacts/i06_calibration/lofo/unbiased/calibration_bundle"
+    },
+    "unigram": {
+      "calibration_manifest_sha256": "242bdf85245185de9d5336705577fb5228b1906be28137f5d958a855fa47f851",
+      "null_distributions_sha256": "8d4f66fda13f6b722237ce82b83b7b27f81333275d7b5827290ab313c793cc1a",
+      "path": "artifacts/i06_calibration/lofo/unigram/calibration_bundle"
+    }
+  },
+  "manifest_version": "i07-test-freeze-amendment-v1",
+  "task_id": "I-GATE-D-final-test-amendment",
+  "test_execution_still_sealed": true
+}

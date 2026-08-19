@@ -1,0 +1,39 @@
+{
+  "content_hash": "d476d87e22a3b52845a21e64e19b6467cdff3ebead385daabb603cfb82cdb74e",
+  "correction": {
+    "behavior": "Catch only the observed MarkLLM min-prefix short-segment ValueError; record that exact registered detector test as applicability=invalid and omit it from registered maxima. Re-raise every other detector error.",
+    "new_approval": "status/approvals/i06_calibration_registered_scoring_v2.json",
+    "new_approval_sha256": "d9118bc177483a3865210fdcbd6451a4c3c138460b57e818cdfdb18951cbc5ff",
+    "new_registered_scoring_sha256": "90d8963aafcdc6ce29e4f922db668fb8d01766d519246fbe1b29a0ce8e31019a",
+    "new_scope": "docs/i06_calibration_registered_scoring_scope_v2.json",
+    "new_scope_sha256": "0a6ce86c9bd8c7fa4ff66e97b1a2b53eaba8f67fcd48a47689a8b737054cff1c",
+    "old_approval": "status/approvals/i06_calibration_registered_scoring.json",
+    "old_approval_sha256": "02e60a4f20edf8ba0bb832d5cb3812582d01c10dcded1c7a0790a23af63a3251",
+    "old_registered_scoring_sha256": "8d041447e32f4ea773f39b39c3b35f1e2882e0cff9a267307d2a1f9866ab1462",
+    "old_scope": "docs/i06_calibration_registered_scoring_scope.json",
+    "old_scope_sha256": "6736bbb500fcbd68f3f67e19eafa8912cc4c6805d1df0d953c312d265c57286c",
+    "partial_documents_at_correction": 389,
+    "partial_path": "artifacts/i06_calibration/registered_scores_a_and_b.jsonl.partial",
+    "partial_sha256_at_correction": "71f3b7526114638a20770617368a152a1c83193fa9034de7c9ed6162f389f14b",
+    "resume_preserves_completed_rows": true
+  },
+  "created_at": "2026-08-15T22:20:06.265563+08:00",
+  "isolation_audit": {
+    "calibration_input_changed": false,
+    "checkpoint_scores_changed": false,
+    "model_or_checkpoint_selection_changed": false,
+    "test_features_or_scores_computed": false,
+    "test_input_changed": false,
+    "test_remains_sealed": true,
+    "train_or_dev_changed": false
+  },
+  "manifest_version": "i06-registered-short-segment-correction-v1",
+  "root_cause": "A refined candidate interval can be too short for MarkLLM KGW's min_prefix_len seeding requirement. The registered scorer previously treated this detector-level non-applicability as a fatal pipeline error.",
+  "task_id": "I-06-registered-short-segment-correction",
+  "trigger": {
+    "error_message_prefix": "Must have at least 1 token to score after the first min_prefix_len=",
+    "error_type": "ValueError",
+    "expected_documents": 400,
+    "observed_completed_documents_before_failure": 389
+  }
+}

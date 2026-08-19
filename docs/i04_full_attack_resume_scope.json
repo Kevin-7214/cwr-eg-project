@@ -1,0 +1,105 @@
+{
+  "task_id": "I-04-full-attack-resume-1",
+  "freeze_manifest": "manifests/intermediate_freeze_amendment_04.json",
+  "freeze_manifest_sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb",
+  "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "model_path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/models/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "model_files": [
+    {
+      "path": "config.json",
+      "bytes": 659,
+      "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45"
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 242,
+      "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 1671839,
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 988097824,
+      "sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 7031645,
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 7305,
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 2776833,
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "input_path": "artifacts/i04_full/base_generated_reconciled.jsonl",
+  "input_sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177",
+  "recipe_manifest": "manifests/intermediate_recipes.jsonl",
+  "recipe_manifest_sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5",
+  "attack_ids": [
+    "paraphrase",
+    "translation_roundtrip",
+    "copy_edit",
+    "truncation"
+  ],
+  "expected_recipe_count": 4000,
+  "limit": 4000,
+  "device": "cuda:0",
+  "dtype": "bfloat16",
+  "maximum_input_tokens": 1024,
+  "max_new_tokens": 256,
+  "do_sample": false,
+  "truncation_fraction": 0.75,
+  "maximum_failure_rate": 0.01,
+  "local_files_only": true,
+  "trust_remote_code": false,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i04_full/attacked_generated.jsonl",
+  "result_path": "artifacts/i04_full/attack_generation_result.json",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "expected_resumed_documents": 727,
+  "resume_partial_sha256": "1afb6e918c428e37405ba6e08a065f8fc8f22c9c8338ee61bec6a404550ef46c",
+  "reuse_source_task": "I-03",
+  "reuse_policy": "hash-and-frozen-recipe-bound-v1",
+  "resume_explicit_failures": true,
+  "resume_source_scope_sha256": "be350e3ff933e634f4240434485e0d7acbd8f7683eeb8ef4b6c984105aa1683f",
+  "resume_policy": "hash-bound-explicit-failures-v1",
+  "interrupted_recipe_id": "attack-base-clean-77152e4e6f27494f"
+}

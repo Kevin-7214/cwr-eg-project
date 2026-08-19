@@ -1,0 +1,60 @@
+{
+  "task_id": "I-04-full-assemble",
+  "freeze_manifest": "manifests/intermediate_freeze_amendment_04.json",
+  "freeze_manifest_sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb",
+  "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac"
+    },
+    {
+      "path": "src/cwr_eg/generated_data.py",
+      "sha256": "4b0d1eb58f2c62ab6ee9d4c4f6e9ef48513f7d1cd4ab8d4a9417de9abdea2953"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "recipe_manifest": "manifests/intermediate_recipes.jsonl",
+  "recipe_manifest_sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5",
+  "inputs": [
+    {
+      "path": "artifacts/i04_full/base_generated_reconciled.jsonl",
+      "sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177"
+    },
+    {
+      "path": "artifacts/i04_full/attacked_generated.jsonl",
+      "sha256": "dc593c2945915c30390c497a6f6c7d6b28aa4190dfd3655b80284cbd08fdd6da"
+    },
+    {
+      "path": "artifacts/i04_full/mixed_generated.jsonl",
+      "sha256": "6fce39f278dd520b219d12ab472620b2cf1e501638fbfee527099146c248f02f"
+    }
+  ],
+  "expected_recipe_count": 8400,
+  "expected_feature_documents": 8239,
+  "expected_train_mixed_excluded": 150,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i04_full/all_generated.jsonl",
+  "feature_documents_path": "artifacts/i04_full/feature_documents.jsonl",
+  "result_path": "artifacts/i04_full/assemble_result.json",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324"
+}

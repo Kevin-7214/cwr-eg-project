@@ -1,0 +1,96 @@
+{
+  "candidates": [
+    {
+      "dev_auc": 0.704109375,
+      "weight_generic": 0.0
+    },
+    {
+      "dev_auc": 0.7070406249999999,
+      "weight_generic": 0.05
+    },
+    {
+      "dev_auc": 0.7091937500000001,
+      "weight_generic": 0.1
+    },
+    {
+      "dev_auc": 0.710703125,
+      "weight_generic": 0.15000000000000002
+    },
+    {
+      "dev_auc": 0.7119656249999999,
+      "weight_generic": 0.2
+    },
+    {
+      "dev_auc": 0.712478125,
+      "weight_generic": 0.25
+    },
+    {
+      "dev_auc": 0.7136374999999999,
+      "weight_generic": 0.30000000000000004
+    },
+    {
+      "dev_auc": 0.71484375,
+      "weight_generic": 0.35000000000000003
+    },
+    {
+      "dev_auc": 0.71568125,
+      "weight_generic": 0.4
+    },
+    {
+      "dev_auc": 0.71485,
+      "weight_generic": 0.45
+    },
+    {
+      "dev_auc": 0.71361875,
+      "weight_generic": 0.5
+    },
+    {
+      "dev_auc": 0.7083656249999999,
+      "weight_generic": 0.55
+    },
+    {
+      "dev_auc": 0.70113125,
+      "weight_generic": 0.6000000000000001
+    },
+    {
+      "dev_auc": 0.69290625,
+      "weight_generic": 0.65
+    },
+    {
+      "dev_auc": 0.683884375,
+      "weight_generic": 0.7000000000000001
+    },
+    {
+      "dev_auc": 0.6731499999999999,
+      "weight_generic": 0.75
+    },
+    {
+      "dev_auc": 0.6623,
+      "weight_generic": 0.8
+    },
+    {
+      "dev_auc": 0.650846875,
+      "weight_generic": 0.8500000000000001
+    },
+    {
+      "dev_auc": 0.639590625,
+      "weight_generic": 0.9
+    },
+    {
+      "dev_auc": 0.628178125,
+      "weight_generic": 0.9500000000000001
+    },
+    {
+      "dev_auc": 0.61575625,
+      "weight_generic": 1.0
+    }
+  ],
+  "completed_at": "2026-08-20T03:34:45.522856+08:00",
+  "registered_only_dev_auc": 0.704109375,
+  "selected": {
+    "dev_auc": 0.71568125,
+    "weight_generic": 0.4
+  },
+  "task_id": "I-06-dev-fusion-selection",
+  "test_read": false
+}

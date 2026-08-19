@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from cwr_eg.approval import approval_fingerprint, require_approval
+from cwr_eg.approval import EXPERIMENT_ACTIONS, approval_fingerprint, require_approval
 
 
 def test_exact_user_approval_scope_is_required(tmp_path) -> None:
@@ -42,3 +42,19 @@ def test_exact_user_approval_scope_is_required(tmp_path) -> None:
         require_approval(path, action="train", expected_fingerprint=fingerprint, now=now)
     with pytest.raises(PermissionError):
         require_approval(path, action="model-smoke", expected_fingerprint="other", now=now)
+
+
+def test_checkpoint_scoring_is_a_separately_gated_action(tmp_path) -> None:
+    assert "score-checkpoint" in EXPERIMENT_ACTIONS
+    fingerprint = approval_fingerprint(
+        action="score-checkpoint",
+        config_hash="config",
+        resource_class="local-rtx5060",
+        scope={"checkpoint": "frozen", "documents": 80},
+    )
+    with pytest.raises(FileNotFoundError):
+        require_approval(
+            tmp_path / "missing.json",
+            action="score-checkpoint",
+            expected_fingerprint=fingerprint,
+        )

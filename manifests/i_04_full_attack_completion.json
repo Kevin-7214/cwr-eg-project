@@ -1,0 +1,58 @@
+{
+  "completed_at": "2026-08-15T12:50:42.556727+08:00",
+  "deviation_audit": {
+    "calibration_or_test_unsealed": false,
+    "frozen_recipe_fields_changed": false,
+    "model_or_generation_parameters_changed": false,
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "status": "pass_with_explicit_failures",
+    "stop_condition_bypassed": false
+  },
+  "new_documents": 3600,
+  "qa": {
+    "bytes": 6788630,
+    "failed_recipe_ids": [
+      "attack-base-clean-52812039e5522400",
+      "attack-base-clean-77152e4e6f27494f",
+      "attack-base-clean-ddad8c138dad37c6",
+      "attack-base-kgw-23bc6f807172d76e",
+      "attack-base-unbiased-1e67cca8bedf0e20",
+      "attack-base-unbiased-21e494f99ebc76a4",
+      "attack-base-unbiased-7a431506a7b68e26",
+      "attack-base-unigram-43016943052ecc08",
+      "attack-base-unigram-49edee33a1661423",
+      "attack-base-unigram-a658f69a4d972c68"
+    ],
+    "failed_rows": 10,
+    "generated_rows": 3990,
+    "path": "artifacts\\i04_full\\attacked_generated.jsonl",
+    "rows": 4000,
+    "sha256": "dc593c2945915c30390c497a6f6c7d6b28aa4190dfd3655b80284cbd08fdd6da",
+    "unique_recipe_ids": 4000
+  },
+  "resources": {
+    "first_recorded_at": "2026-08-14T23:47:01+08:00",
+    "last_recorded_at": "2026-08-15T00:01:23+08:00",
+    "maximum_gpu_temperature_c": 51.0,
+    "maximum_used_ram_gib": 11.730510711669922,
+    "minimum_free_disk_gib": 532.6879577636719,
+    "monitor_points": 9
+  },
+  "result_path": "artifacts\\i04_full\\attack_generation_result.json",
+  "result_sha256": "91dd2722a42d11ecb4460d3843c08d370851361b1f3dd4066feef900f2c10bfa",
+  "resumed_documents": 400,
+  "runtime_result": {
+    "action": "attack-generate",
+    "approved_execution": true,
+    "attacked": 3990,
+    "code_files_verified": 4,
+    "failed": 10,
+    "freeze_manifest_sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb",
+    "model_files_verified": 7,
+    "output_path": "artifacts\\i04_full\\attacked_generated.jsonl",
+    "resumed_documents": 727,
+    "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac"
+  },
+  "task_id": "I-04-full-attack"
+}

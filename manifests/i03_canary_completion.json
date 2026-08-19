@@ -1,0 +1,69 @@
+{
+  "task_id": "I-03",
+  "completed_at": "2026-08-14T16:44:05+08:00",
+  "status": "complete",
+  "scope": {
+    "parents": 80,
+    "recipes": 840,
+    "base_documents": 400,
+    "attacked_documents": 400,
+    "mixed_documents": 40,
+    "feature_documents": 810,
+    "training_runs": 1,
+    "checkpoint_scored_documents": 810,
+    "splits": ["train", "dev"]
+  },
+  "artifacts": {
+    "base_sha256": "96568c596c078aa9280deb665e578680aa99f281625a36c9e66435bb222f10d3",
+    "attacked_sha256": "c6f4ad8a06da5c061a3a2601f8074d5077e07971df62f46d5d9c9236f494803a",
+    "mixed_sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c",
+    "assembled_sha256": "2532f5126c9abab0a1696f58ca1551ccd6c45550dc3f29caa64e5c8a0393f2ad",
+    "feature_documents_sha256": "9473e9b97e7148df446d23f40a211718a5ef23482c9a893625ff0e965064666d",
+    "feature_manifest_sha256": "3ea23fe09a7b4df9ff54ed4adb461372b317f1c8bb2efa9290190cc5469ab297",
+    "tensor_bundle_index_sha256": "d719ede3674ade618ce7446a48bb0b013445ce28b4b7e76fab13c418b90c542b",
+    "best_checkpoint_sha256": "ed284dd871c44e3c12786ba6a26c0f0a6493f3de5151bcd2afe5483820a581ae",
+    "checkpoint_scores_sha256": "0ba04c9e08c1bf4eee0299de272252688e025a4179ccb3cafdb694b7958ec231"
+  },
+  "quality": {
+    "generation_failures": 0,
+    "silent_drops": 0,
+    "non_finite_features": 0,
+    "non_finite_training_values": 0,
+    "non_finite_score_rows": 0,
+    "score_character_length_mismatches": 0,
+    "mapping_below_0_98_marked_uncertain": 8,
+    "mapping_flag_mismatches": 0,
+    "recoverable_pre_completion_stops": 3,
+    "unrecoverable_oom_events": 0
+  },
+  "resources": {
+    "observed_generation_seconds": 3949,
+    "observed_feature_seconds": 248,
+    "observed_training_seconds": 49,
+    "observed_checkpoint_scoring_seconds": 208.4,
+    "maximum_gpu_temperature_c": 63.0,
+    "maximum_used_ram_gib": 15.82699966430664,
+    "minimum_free_disk_gib": 533.9931144714355,
+    "projected_full_generation_hours": 10.97,
+    "projected_full_stage_hours_low": 18.6,
+    "projected_full_stage_hours_high": 21.6,
+    "maximum_allowed_hours": 24,
+    "projection_gate": "pass"
+  },
+  "reuse": {
+    "status": "ready_after_hash_bound_partial_seeding",
+    "rule": "Only exact canary rows whose hashes and recipe ids match the full frozen manifests may seed full-run partials.",
+    "regeneration_of_valid_canary_rows_allowed": false
+  },
+  "deviation_audit": {
+    "status": "pass_with_frozen_amendment",
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "frozen_recipe_set_changed": false,
+    "model_assets_changed": false,
+    "training_protocol_changed": false,
+    "calibration_or_test_unsealed": false,
+    "stop_conditions_bypassed": false,
+    "notes": "The one-token edge case was fixed through frozen amendment 01 without altering normal-document computation. Two other stops occurred before computation and preserved the exact approved scopes. Canary completion, failure rate, resources, and throughput satisfy the gate to freeze full generation."
+  }
+}

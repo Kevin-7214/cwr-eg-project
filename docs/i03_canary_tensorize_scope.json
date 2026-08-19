@@ -1,0 +1,39 @@
+{
+  "task_id": "I-03-canary-tensorize",
+  "freeze_manifest": "manifests/intermediate_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "a1b7c76eaf6c9c78189f86202d4c0ae366b3bcf13c1b1df9e9cbfd844ba7aad3",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "runner_sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78",
+  "code_files": [
+    {"path": "src/cwr_eg/runtime.py", "sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78"},
+    {"path": "src/cwr_eg/tensor_bundle.py", "sha256": "c48d140d98dff58a2b51ccdb264aae891c15d2154f4d9970633730a5d317125e"},
+    {"path": "src/cwr_eg/monitoring.py", "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"},
+    {"path": "src/cwr_eg/manifest.py", "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"},
+    {"path": "src/cwr_eg/hashing.py", "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"}
+  ],
+  "feature_manifest": "artifacts/i03_canary/features/feature_manifest.jsonl",
+  "feature_manifest_sha256": "3ea23fe09a7b4df9ff54ed4adb461372b317f1c8bb2efa9290190cc5469ab297",
+  "bundle_format": "sharded-v1",
+  "positions": 256,
+  "maximum_batch_examples": 20,
+  "maximum_batches_per_shard": 16,
+  "excluded_watermark_families": [],
+  "expected_train_batches": 30,
+  "expected_dev_batches": 10,
+  "expected_train_examples": 600,
+  "expected_dev_examples": 200,
+  "expected_train_shards": 2,
+  "expected_dev_shards": 1,
+  "expected_mixed_parent_features_excluded": 10,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i03_canary/tensor_bundle_full",
+  "result_path": "artifacts/i03_canary/tensorize_result.json"
+}

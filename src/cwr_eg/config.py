@@ -21,6 +21,15 @@ def config_hash(path: str | Path) -> str:
 
 
 def validate_pilot_config(config: dict[str, Any]) -> None:
+    validate_experiment_config(config)
+    if config.get("profile", "pilot") != "pilot":
+        raise ValueError("validate_pilot_config accepts only the pilot profile")
+    counts = config["data"]["split_counts"]
+    if counts != {"train": 16, "dev": 8, "calibration": 4, "test": 4}:
+        raise ValueError("Pilot split counts must remain 16/8/4/4")
+
+
+def validate_experiment_config(config: dict[str, Any]) -> None:
     required = {
         "protocol_version",
         "seed",
@@ -37,8 +46,10 @@ def validate_pilot_config(config: dict[str, Any]) -> None:
     if missing:
         raise ValueError(f"Missing configuration sections: {sorted(missing)}")
     counts = config["data"]["split_counts"]
-    if counts != {"train": 16, "dev": 8, "calibration": 4, "test": 4}:
-        raise ValueError("Pilot split counts must remain 16/8/4/4")
+    if set(counts) != {"train", "dev", "calibration", "test"}:
+        raise ValueError("Split counts must define Train, Dev, Calibration, and Test")
+    if any(int(value) < 1 for value in counts.values()):
+        raise ValueError("Every split must contain at least one parent")
     alpha = float(config["calibration"]["alpha"])
     if alpha != 0.01:
         raise ValueError("Protocol fixes document-level alpha at 0.01")
@@ -52,3 +63,27 @@ def validate_pilot_config(config: dict[str, Any]) -> None:
     ]
     if labels != expected:
         raise ValueError("The five decision labels or their order changed")
+
+    profile = str(config.get("profile", "pilot"))
+    if profile == "rtx5060-24h-intermediate":
+        expected_counts = {"train": 300, "dev": 100, "calibration": 200, "test": 200}
+        if counts != expected_counts:
+            raise ValueError("Intermediate split counts must remain 300/100/200/200")
+        if int(config["seed"]) != 20260815:
+            raise ValueError("Intermediate seed must remain 20260815")
+        tensor = config.get("tensor_bundle", {})
+        if tensor.get("format") != "sharded-v1" or int(
+            tensor.get("maximum_batches_per_shard", 0)
+        ) != 16:
+            raise ValueError("Intermediate tensor bundle must use sharded-v1 with 16 batches")
+        training = config.get("training", {})
+        frozen_training = {
+            "positions": 256,
+            "batch_size": 20,
+            "maximum_epochs": 20,
+            "minimum_epochs": 5,
+            "early_stopping_patience": 4,
+        }
+        for key, expected_value in frozen_training.items():
+            if int(training.get(key, -1)) != expected_value:
+                raise ValueError(f"Intermediate training value changed: {key}")

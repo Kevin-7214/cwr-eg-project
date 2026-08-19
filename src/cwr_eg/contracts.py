@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from enum import Enum
+import math
 from typing import Any, Mapping, Sequence
 
 from cwr_eg.enums import (
@@ -87,6 +88,8 @@ class RegisteredEvidence:
     adjusted_p: float | None
     applicability: Applicability
     reason_codes: tuple[str, ...] = ()
+    evidence_strength: float | None = None
+    evidence_transform_version: str | None = None
 
     def __post_init__(self) -> None:
         _probability(self.single_test_p, "single_test_p")
@@ -95,6 +98,14 @@ class RegisteredEvidence:
             raise ValueError("Registered-key evidence requires key_id_hash")
         if self.key_status is not KeyStatus.REGISTERED and self.key_id_hash:
             raise ValueError("Only registered-key evidence may expose key_id_hash")
+        if self.evidence_strength is not None and not math.isfinite(
+            self.evidence_strength
+        ):
+            raise ValueError("evidence_strength must be finite")
+        if (self.evidence_strength is None) != (
+            self.evidence_transform_version is None
+        ):
+            raise ValueError("Evidence strength and transform version must be paired")
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)

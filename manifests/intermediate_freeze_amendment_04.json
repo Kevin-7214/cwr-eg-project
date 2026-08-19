@@ -1,0 +1,75 @@
+{
+  "manifest_version": "intermediate-freeze-amendment-v1",
+  "amendment_id": "I-FIX-04-explicit-attack-empty-output-resume",
+  "created_at": "2026-08-15T10:16:19.513477+08:00",
+  "applies_from": "I-04-attack-resume",
+  "parent_amendment": {
+    "path": "manifests/intermediate_freeze_amendment_03.json",
+    "sha256": "1ae7208f117e482040005983cb895661ade88b39cd07f4aee656495fb3d28137",
+    "amendment_content_hash": "3b85cf6e0e07e5cfd89b70f59d3c4b0164c11e042952df8a92b41b6c4472ba78"
+  },
+  "original_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "user_decision": "Continue from the previous attack interruption.",
+  "test_sealed": true,
+  "calibration_sealed": true,
+  "trigger": {
+    "source_scope_path": "docs/i04_full_attack_generation_scope.json",
+    "source_scope_sha256": "be350e3ff933e634f4240434485e0d7acbd8f7683eeb8ef4b6c984105aa1683f",
+    "source_approval_sha256": "e89b0123b32f984589eb5401b9e56d003fd215e4f8061573fea130302a063896",
+    "partial_path": "artifacts/i04_full/attacked_generated.jsonl.partial",
+    "partial_sha256": "1afb6e918c428e37405ba6e08a065f8fc8f22c9c8338ee61bec6a404550ef46c",
+    "rows": 727,
+    "generated_rows": 726,
+    "failed_rows": 1,
+    "failed_recipe_ids": [
+      "attack-base-clean-52812039e5522400"
+    ],
+    "interrupted_recipe_id": "attack-base-clean-77152e4e6f27494f",
+    "interrupted_attack_id": "translation_roundtrip",
+    "error": "Attack produced empty text"
+  },
+  "recovery_policy": {
+    "resume_completed_rows": 727,
+    "recompute_completed_rows": false,
+    "allow_explicit_failed_rows_only_when_scope_enabled": true,
+    "empty_attack_output_policy": "record_explicit_failure_and_continue",
+    "maximum_failure_rate": 0.01,
+    "same_model": true,
+    "same_revision": true,
+    "same_attack_parameters": true,
+    "test_unsealed": false
+  },
+  "code_changes": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "previous_sha256": "48f96a2881733b670bc740bff771d7aebbd46e32434afa3210d063d7c7c90d16",
+      "current_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac",
+      "bytes": 78763,
+      "purpose": "scope-gated failed-row resume and explicit empty-attack failure recording"
+    },
+    {
+      "path": "scripts/continue_i04_after_retry.py",
+      "sha256": "7ec1a5a40ca388eb521c9d7755fb5ab656d5cbf6aa9e02bd66a6bcec06f3184a",
+      "bytes": 8878,
+      "purpose": "continue with the amendment-04 mixed and assembly freeze"
+    }
+  ],
+  "tests": {
+    "path": "tests/test_generation_resume_scope.py",
+    "sha256": "49cdb99040d399abb523dccfbd4e6b12276bbe5fe466c7188ccdc1ec01ba99a0",
+    "passed": 68,
+    "failed": 0,
+    "cuda_visible_devices": ""
+  },
+  "deviation_audit": {
+    "status": "approved_minimal_recovery",
+    "objective_changed": false,
+    "sample_or_recipe_set_changed": false,
+    "completed_attack_outputs_changed": false,
+    "model_asset_changed": false,
+    "attack_parameters_changed": false,
+    "failure_threshold_changed": false,
+    "calibration_or_test_unsealed": false
+  },
+  "amendment_content_hash": "02f0d26d7b310808b2c02b07d75203f531cd0336a8e1c635fb2889e4465b2df2"
+}

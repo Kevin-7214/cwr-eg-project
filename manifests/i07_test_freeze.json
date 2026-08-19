@@ -1,0 +1,65 @@
+{
+  "authorization_scenarios": [
+    "a_and_b",
+    "a_only",
+    "b_only"
+  ],
+  "baseline_bundle_sha256": "7fd90062089f179ad689ef0f41cd3ba003c4db63b68e3d6c61c5d33515262699",
+  "calibration_completion_sha256": "52b4f4a1c69852ea9bf285624e9319e5f972b35254a547b232e218ec3c84d081",
+  "calibration_manifest_sha256": "7c391ab8aea74e6f7a49949dbf3611dca1216d0b36fe2ad2e6d3cce855003e37",
+  "content_hash": "6a64009e59fa259e74ee61b1b07f79211d0dab2e3c17245abb35a580d43f526b",
+  "created_at": "2026-08-20T03:34:45.545874+08:00",
+  "deviation_audit": {
+    "ensemble_rule_changed": false,
+    "model_or_baseline_selected_on_test": false,
+    "status": "pass",
+    "test_used_before_freeze": false
+  },
+  "ensemble_rule": "arithmetic_mean_character_logits_for_three_full_models",
+  "full_checkpoints": [
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260815\\best_checkpoint.pt",
+      "run_id": "full_seed_20260815",
+      "sha256": "5e3d183d3a0384fe5d180745c5fdee7538a1d7df9cecdd155d3a760c5024ea4e"
+    },
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260816\\best_checkpoint.pt",
+      "run_id": "full_seed_20260816",
+      "sha256": "15fda981308cf2d3bd5287873703bbf6f6a99d87bd500ff5565cfcbfb966eb34"
+    },
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260817\\best_checkpoint.pt",
+      "run_id": "full_seed_20260817",
+      "sha256": "f13e1a73950e4ed871bf9cbd2bced81fc2fb177b3f22e2fe977efbf62a0ad99b"
+    }
+  ],
+  "fusion_selection_sha256": "b51291cd3711a11d6582da3a3361b780116d03befc656ec5738bb2d2e57882cd",
+  "fusion_weight_generic": 0.4,
+  "gate_d_sha256": "300fb880418fbd5ec6a90c766ba801f5715e904ceb9b2ece7a2ebabff2e32b40",
+  "lofo_checkpoints": {
+    "kgw": {
+      "path": "artifacts\\i05_train_dev\\training\\lofo_kgw\\best_checkpoint.pt",
+      "sha256": "d635fe335e54a95d1f8595d43668cba00c3b1abdec45398c16a07a13c238b70a"
+    },
+    "synthid": {
+      "path": "artifacts\\i05_train_dev\\training\\lofo_synthid\\best_checkpoint.pt",
+      "sha256": "dc709789d7f48c48ac42cb17ac0386e9721de1190006b5366e09f9c8f72c7a96"
+    },
+    "unbiased": {
+      "path": "artifacts\\i05_train_dev\\training\\lofo_unbiased\\best_checkpoint.pt",
+      "sha256": "3a3ddc08d52df41bb074a9170682f14a43a7b2abca84877593321d1cf706dd68"
+    },
+    "unigram": {
+      "path": "artifacts\\i05_train_dev\\training\\lofo_unigram\\best_checkpoint.pt",
+      "sha256": "9dad3f0a6cc7c8115e964ca471bf982d994bcf7d7d4512601146477fdc53fcbf"
+    }
+  },
+  "manifest_version": "i07-test-freeze-v1",
+  "null_distributions_sha256": "200542d5ac48763e874f7809431c6742f9ad26c137473fbf8c3bde4734bc5c64",
+  "task_id": "I-GATE-D-final-test",
+  "test_documents": 2096,
+  "test_execution_rule": "single_unseal_after_all_hashes_frozen",
+  "test_input_path": "artifacts/i07_test/feature_documents.jsonl",
+  "test_input_sha256": "5539327e22bee3e46724bdadd4519f8a1ce9ee03c8fcdad790340e074f539a33",
+  "test_parents": 200
+}

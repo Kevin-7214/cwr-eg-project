@@ -1,0 +1,58 @@
+{
+  "task_id": "I-05-tensorize-lofo_kgw",
+  "freeze_manifest": "manifests/i_gate_c_freeze.json",
+  "freeze_manifest_sha256": "5e45b6ea927b51220fd5e1964c154f4f6621bf1a08e4841d973ad51f8d6cfd89",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/tensor_bundle.py",
+      "sha256": "185fb562604bd05c5fd28a65833f1977744db74d22fdf55eaad282df574b949d"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "feature_manifest": "artifacts/i05_train_dev/features/training_feature_manifest_v2.jsonl",
+  "feature_manifest_sha256": "a79aa001f60baebf56754aaf71be23e052d957b02604ba6e3ac5b1c9e9269211",
+  "bundle_format": "sharded-v1",
+  "positions": 256,
+  "maximum_batch_examples": 20,
+  "maximum_batches_per_shard": 16,
+  "excluded_watermark_families": [
+    "kgw"
+  ],
+  "expected_train_batches": 150,
+  "expected_dev_batches": 50,
+  "expected_train_examples": 2397,
+  "expected_dev_examples": 800,
+  "expected_train_shards": 10,
+  "expected_dev_shards": 4,
+  "expected_mixed_parent_features_excluded": 50,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i05_train_dev/tensor_bundle_lofo_kgw",
+  "result_path": "artifacts/i05_train_dev/tensorize_lofo_kgw_result.json",
+  "expected_train_consistency_pairs": 1197,
+  "expected_dev_consistency_pairs": 400
+}

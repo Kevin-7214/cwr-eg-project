@@ -1,0 +1,44 @@
+{
+  "task_id": "I-07-prepare-evaluation-a_only",
+  "freeze_manifest": "manifests/i07_test_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "00834b285f7835a47d416544e9727f18db4a82d2212c21296d74fcbfd4dddb18",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/evaluation_records.py",
+      "sha256": "2dc035ecbc0cc1bd9019f6a429717c9c07eea5365ca208d4645ae5c44f4da234"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "decisions_path": "artifacts/i07_test/decisions/a_only.jsonl",
+  "decisions_sha256": "bd73912769a6199285ca4334d825841081cfeeccd6d0ff85e8db8ff998586e12",
+  "documents_path": "artifacts/i07_test/feature_documents.jsonl",
+  "documents_sha256": "5539327e22bee3e46724bdadd4519f8a1ce9ee03c8fcdad790340e074f539a33",
+  "authorized_key_slots": [
+    "a"
+  ],
+  "held_out_family": null,
+  "expected_parent_count": 200,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i07_test/evaluation_records/a_only.jsonl",
+  "result_path": "artifacts/i07_test/evaluation_prepare_results/a_only.json"
+}

@@ -1,0 +1,71 @@
+matrix_version: intermediate-training-v1
+frozen_before_test: true
+shared:
+  positions: 256
+  maximum_batch_examples: 20
+  hidden_dim: 256
+  invariant_dim: 128
+  private_dim: 128
+  learning_rate: 0.0003
+  epochs: 20
+  minimum_epochs: 5
+  early_stopping_patience: 4
+  deterministic_algorithms: true
+  ensemble_rule: arithmetic_mean_character_logits
+runs:
+  - run_id: full_seed_20260815
+    seed: 20260815
+    bundle_variant: full
+    role: full
+  - run_id: full_seed_20260816
+    seed: 20260816
+    bundle_variant: full
+    role: full
+  - run_id: full_seed_20260817
+    seed: 20260817
+    bundle_variant: full
+    role: full
+  - run_id: ablation_no_contrastive
+    seed: 20260815
+    bundle_variant: full
+    role: ablation
+    loss_overrides:
+      contrastive_weight: 0.0
+  - run_id: ablation_no_scheme_language_adversary
+    seed: 20260815
+    bundle_variant: full
+    role: ablation
+    loss_overrides:
+      scheme_adv_weight: 0.0
+      nuisance_adv_weight: 0.0
+  - run_id: ablation_no_reconstruction_orthogonality
+    seed: 20260815
+    bundle_variant: full
+    role: ablation
+    loss_overrides:
+      reconstruction_weight: 0.0
+      orthogonality_weight: 0.0
+  - run_id: lofo_kgw
+    seed: 20260815
+    bundle_variant: lofo_kgw
+    role: leave_one_family_out
+    excluded_watermark_family: kgw
+    held_out_decision_label: suspected_unknown_scheme
+  - run_id: lofo_unigram
+    seed: 20260815
+    bundle_variant: lofo_unigram
+    role: leave_one_family_out
+    excluded_watermark_family: unigram
+    held_out_decision_label: suspected_unknown_scheme
+  - run_id: lofo_unbiased
+    seed: 20260815
+    bundle_variant: lofo_unbiased
+    role: leave_one_family_out
+    excluded_watermark_family: unbiased
+    held_out_decision_label: suspected_unknown_scheme
+  - run_id: lofo_synthid
+    seed: 20260815
+    bundle_variant: lofo_synthid
+    role: leave_one_family_out
+    excluded_watermark_family: synthid
+    held_out_decision_label: suspected_unknown_scheme

@@ -1,0 +1,96 @@
+{
+  "manifest_version": "intermediate-freeze-amendment-v1",
+  "amendment_content_hash": "3b85cf6e0e07e5cfd89b70f59d3c4b0164c11e042952df8a92b41b6c4472ba78",
+  "amendment_id": "I-FIX-03-deterministic-empty-generation-retry",
+  "created_at": "2026-08-14T23:40:29+08:00",
+  "applies_from": "I-04-base-retry",
+  "parent_amendment": {
+    "path": "manifests/intermediate_freeze_amendment_02.json",
+    "sha256": "94800e709be237e2ca978c3331d7a06a99bd5cba44a35a2ea6f53c079f1e2a99",
+    "amendment_content_hash": "f1f957c342b86668b252da52e48c178d9d3732e2304d932437bac78baa5405c9"
+  },
+  "original_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "user_decision": "Use one deterministic retry. If it still fails, retain the explicit failure and continue to the attack stage.",
+  "test_sealed": true,
+  "calibration_sealed": true,
+  "trigger": {
+    "base_output_path": "artifacts/i04_full/base_generated.jsonl",
+    "base_output_sha256": "e9442dd317d1bd89c660765599c2b171bfa6e4665fb78ee548f38c82fd63fba7",
+    "base_result_sha256": "2cddfdb7c56b0fc94059a5af96ebd58db65ac008ea5f473001852eb75d31179f",
+    "total_rows": 4000,
+    "generated_rows": 3997,
+    "failed_rows": 3,
+    "failure_rate": 0.00075,
+    "maximum_failure_rate": 0.01,
+    "failure_type": "RuntimeError",
+    "failure_message": "Model returned an empty continuation",
+    "failed_recipe_ids": [
+      "base-clean-399f2e1a9c4cf811",
+      "base-clean-52812039e5522400",
+      "base-unbiased-52812039e5522400"
+    ]
+  },
+  "retry_policy": {
+    "retry_count": 1,
+    "retry_index": 1,
+    "seed_payload_fields": ["seed", "recipe_id", "retry_index"],
+    "seed_derivation": "first-16-hex-of-canonical-content-hash-mod-2^31",
+    "same_model": true,
+    "same_revision": true,
+    "same_generation_parameters": true,
+    "successful_rows_recomputed": false,
+    "original_output_overwritten": false,
+    "residual_failure_policy": "retain_explicit_failure_and_continue",
+    "recursive_retry_allowed": false
+  },
+  "code_changes": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "previous_bytes": 77436,
+      "previous_sha256": "0f3fe852b5a34d07843010f87ed051d67df3e1e5cd6de4111a71f8e2034e70b6",
+      "current_bytes": 78306,
+      "current_sha256": "48f96a2881733b670bc740bff771d7aebbd46e32434afa3210d063d7c7c90d16",
+      "purpose": "derive a versioned retry seed and record retry provenance"
+    },
+    {
+      "path": "scripts/reconcile_generation_retry.py",
+      "bytes": 3840,
+      "sha256": "8cf91bf3d44b59fc63380871749b8c6d744e24e026a68040e7d4ce0657b662e7",
+      "purpose": "preserve the original output and reconcile only the exact failed ids"
+    },
+    {
+      "path": "scripts/write_i04_scope.py",
+      "bytes": 3727,
+      "sha256": "fa85beb0225bcdf851004b55891c5a398ae91595c97deac4a7900fdae5c0b483",
+      "purpose": "bind the reconciled base path and hash in the dependent attack scope"
+    },
+    {
+      "path": "scripts/continue_i04_after_base.py",
+      "bytes": 17932,
+      "sha256": "64ac195b4c864b3df12c8b5ce0c82073306f375171ff4a99123c0d63c465e777",
+      "purpose": "accept only explicit residual failures and compute the exact feature count"
+    }
+  ],
+  "new_tests": [
+    {
+      "path": "tests/test_generation_retry_seed.py",
+      "bytes": 666,
+      "sha256": "5e048cfc224b8b0d9535cb754aa279f9e6654aa1229bf97b8b053e946574e5d0"
+    }
+  ],
+  "cpu_test_result": {
+    "passed": 67,
+    "failed": 0,
+    "cuda_visible_devices": ""
+  },
+  "deviation_audit": {
+    "status": "approved_minimal_recovery",
+    "objective_changed": false,
+    "parent_or_recipe_set_changed": false,
+    "successful_documents_changed": false,
+    "model_asset_changed": false,
+    "generation_parameters_changed": false,
+    "test_unsealed": false,
+    "notes": "The retry is a one-shot rejection of an empty model continuation. Every original failure and retry outcome remains auditable."
+  }
+}

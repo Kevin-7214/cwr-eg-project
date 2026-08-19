@@ -1,0 +1,38 @@
+{
+  "task_id": "I-03-canary-assemble",
+  "completed_at": "2026-08-14T16:09:00+08:00",
+  "action": "assemble-data",
+  "approval_fingerprint": "1df0e66d79967942099541df83b5b2f4a8e56042ba6db771d92d50fd9a4e8211",
+  "scope_path": "docs/i03_canary_assemble_scope.json",
+  "freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "output_path": "artifacts/i03_canary/all_generated.jsonl",
+  "output_sha256": "2532f5126c9abab0a1696f58ca1551ccd6c45550dc3f29caa64e5c8a0393f2ad",
+  "feature_documents_path": "artifacts/i03_canary/feature_documents.jsonl",
+  "feature_documents_sha256": "9473e9b97e7148df446d23f40a211718a5ef23482c9a893625ff0e965064666d",
+  "result_path": "artifacts/i03_canary/assemble_result.json",
+  "result_sha256": "7c10b5dbd25dabab396b1ca75794f5043a10ab556978c8833fddf888f7460191",
+  "recipes": 840,
+  "generated_rows": 840,
+  "feature_documents": 810,
+  "train_mixed_excluded": 30,
+  "recipe_order_mismatches": 0,
+  "duplicate_recipe_ids": 0,
+  "excluded_rows_in_feature_input": 0,
+  "unexpected_feature_omissions": 0,
+  "calibration_or_test_rows": 0,
+  "kind_counts": {
+    "base_generation": 400,
+    "matched_attack": 400,
+    "mixed_document": 40
+  },
+  "feature_split_counts": {"train": 600, "dev": 210},
+  "deviation_audit": {
+    "status": "pass",
+    "scope_changed": false,
+    "sample_scale_changed": false,
+    "recipe_order_changed": false,
+    "train_mixed_rule_changed": false,
+    "calibration_or_test_unsealed": false,
+    "notes": "All 840 generated canary rows were assembled in frozen recipe order; the feature input contains exactly 810 rows after excluding all and only 30 Train mixed rows."
+  }
+}

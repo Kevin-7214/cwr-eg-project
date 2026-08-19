@@ -1,0 +1,48 @@
+{
+  "amendment_path": "manifests/intermediate_freeze_amendment_05.json",
+  "amendment_sha256": "fe7380aa7aa1a1876fd9c44b4ef209c1e23edefce8622ca284f504002834b43f",
+  "authorized_base_retry_index": 2,
+  "backup_path": "artifacts/_gate_d_repair_backup_20260815_190459",
+  "calibration_parents": 200,
+  "calibration_parents_by_language": {
+    "en": 100,
+    "zh": 100
+  },
+  "completed_at": "2026-08-15T19:04:59.590873+08:00",
+  "deviation_audit": {
+    "additional_retry_beyond_original_i04_policy": true,
+    "reason": "restore the exact frozen Calibration parent before I-GATE-D",
+    "status": "approved_protocol_amendment"
+  },
+  "historical_failures": 11,
+  "historical_i04_completion_sha256": "c1fb6dbc78444c0e7037cdbf3c7fd1614e95cde46beb5e10f12fa14e42ccd7a2",
+  "isolation_audit": {
+    "frozen_recipe_id_set_unchanged": true,
+    "i05_reused_without_retraining": true,
+    "parent_and_split_unchanged": true,
+    "test_rows_unchanged": true,
+    "test_unsealed": false,
+    "train_dev_rows_unchanged": true
+  },
+  "post_repair": {
+    "all_sha256": "8828aaacb691fa9d4d83bd19b1158d9e94dd43045d2b8dabfd8f7d48219bd198",
+    "attack_sha256": "ff4d9083ceb867bbc9ce96054bf2e1405dc4fa464035b8ed3e48a4f62bf7e555",
+    "base_sha256": "7d3094f9221de5215951bcd44139e4a34c49814f0937b38b2b226b547ea5c1c2",
+    "feature_sha256": "d811cbc31a608a189858988d55a4f19dfba664cf69b061aa3b5cf02138b5bf8d"
+  },
+  "post_repair_failures": 9,
+  "post_repair_feature_documents": 8241,
+  "post_repair_generated": 8391,
+  "pre_repair": {
+    "all_sha256": "68538829560886292a198c59f16eaafd5acce380523c142a5c2d369fd9139823",
+    "attack_sha256": "dc593c2945915c30390c497a6f6c7d6b28aa4190dfd3655b80284cbd08fdd6da",
+    "base_sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177",
+    "feature_sha256": "7cab862d913f3cbad8b08bb8df039bdc7b6f926396d1f870cbd16aa33416d30c"
+  },
+  "restored_parent": "allenai/c4:en:train:31408",
+  "restored_recipe_ids": [
+    "base-clean-52812039e5522400",
+    "attack-base-clean-52812039e5522400"
+  ],
+  "task_id": "I-FIX-05"
+}

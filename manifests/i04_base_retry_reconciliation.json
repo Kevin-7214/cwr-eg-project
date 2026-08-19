@@ -1,0 +1,15 @@
+{
+  "initial_failures": 3,
+  "original_path": "artifacts\\i04_full\\base_generated.jsonl",
+  "original_sha256": "e9442dd317d1bd89c660765599c2b171bfa6e4665fb78ee548f38c82fd63fba7",
+  "output_path": "artifacts\\i04_full\\base_generated_reconciled.jsonl",
+  "output_sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177",
+  "recovered": 2,
+  "retry_path": "artifacts\\i04_full\\base_retry_1.jsonl",
+  "retry_sha256": "a618f594b996d39a41cd9be791af8e4c6f511ea33827ed72498c70cf504660a8",
+  "rows": 4000,
+  "unresolved_failures": 1,
+  "unresolved_recipe_ids": [
+    "base-clean-52812039e5522400"
+  ]
+}

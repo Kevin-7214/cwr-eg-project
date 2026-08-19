@@ -78,4 +78,6 @@ class MarkLlmRegisteredAdapter(RegisteredDetectorAdapter):
             adjusted_p=None,
             applicability=Applicability.VALID,
             reason_codes=(),
+            evidence_strength=float(result["evidence_strength"]),
+            evidence_transform_version=str(result["evidence_transform_version"]),
         )

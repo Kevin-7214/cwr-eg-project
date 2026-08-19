@@ -1,0 +1,34 @@
+{
+  "amendment_id": "I-FIX-05-calibration-parent-restoration",
+  "content_hash": "c56be012f702ffc1dfb6c728bd406399c05b70e2b8280c10fcb17469108ba590",
+  "created_at": "2026-08-15T18:56:36.398456+08:00",
+  "invariants": {
+    "generation_parameters_changed_except_hash_derived_retry_seed": false,
+    "i05_retraining_required_if_train_dev_unchanged": false,
+    "model_assets_changed": false,
+    "parent_id_changed": false,
+    "recipe_id_changed": false,
+    "split_changed": false,
+    "test_documents_may_change": false,
+    "test_remains_sealed": true,
+    "train_dev_documents_may_change": false
+  },
+  "manifest_version": "intermediate-freeze-amendment-v1",
+  "parent_amendment": {
+    "path": "manifests/intermediate_freeze_amendment_04.json",
+    "sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb"
+  },
+  "protocol_amendment": {
+    "additional_deterministic_base_retry": true,
+    "authorized_repair_retry_index": 2,
+    "if_retry_fails": "stop_fail_closed_no_further_retry",
+    "previous_retry_index": 1,
+    "reason": "The sole residual failed clean Calibration base removed one frozen parent from the 200-parent Calibration null population. The extra retry is an explicit, audited post-I-05 repair and is not represented as part of the original I-04 run."
+  },
+  "trigger": {
+    "dependent_attacked_clean_recipe": "attack-base-clean-52812039e5522400",
+    "failed_clean_recipe": "base-clean-52812039e5522400",
+    "missing_calibration_parent": "allenai/c4:en:train:31408"
+  },
+  "user_authorization": "2026-08-15: user explicitly requested a one-click repair of the current I-GATE-D failure and continuation through the remaining I-stage tasks."
+}

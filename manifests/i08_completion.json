@@ -1,0 +1,15 @@
+{
+  "completed_at": "2026-08-20T05:51:20.671121+08:00",
+  "deviation_audit": {
+    "paper_final_claim_made": false,
+    "repair_amendment_disclosed": true,
+    "results_reported_regardless_of_performance": true,
+    "status": "pass"
+  },
+  "failure_table_sha256": "ce160337eaa294c108b1bf7a86f42ec0461b14a88635ef1709cb4ea123b599af",
+  "qa_sha256": "3eaaec1423ccbe750e6933627f41ee5455764506d734afd6c6a47f27a28fdbd3",
+  "repair_completion_sha256": "8b066f58b8ab50eafd18a64dd00ba89c44857f1d39628d2920f176319d8cc28b",
+  "resource_report_sha256": "7760d0c162823ef14cdb22e137d0318b3a1529c283cc9c0a3da08f6686ea872d",
+  "result_report_sha256": "bbd1526995fdfc3add51fe706c55ca88fa4318524b2602d643e028d44b9359fb",
+  "task_id": "I-08"
+}

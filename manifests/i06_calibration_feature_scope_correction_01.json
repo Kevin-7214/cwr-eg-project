@@ -1,0 +1,33 @@
+{
+  "content_hash": "91ecd1defa74c9f3b5120a950eec769079fca6d74402c2a7f5dbd30071d2643f",
+  "correction": {
+    "expected_document_count": 400,
+    "new_approval": "status/approvals/i06_calibration_features_v2.json",
+    "new_approval_sha256": "f49ccf00356665579c1e135221f6d46bfac061f7291fdd6ee5c8b8d4b3af813d",
+    "new_scope": "docs/i06_calibration_feature_scope_v2.json",
+    "new_scope_sha256": "2e1faec40b54bb4443e35e0afff11a6923383fa51daac4386cb2929463767f67",
+    "old_approval": "status/approvals/i06_calibration_features.json",
+    "old_approval_sha256": "edd089a1602adf8962d9ccedb8620dc92d2e4f0b312e831b219a9432b2848cac",
+    "old_scope": "docs/i06_calibration_feature_scope.json",
+    "old_scope_sha256": "9b1e145b7349ed3a4de4ee3905fb13907a2276c65335e1c86ca5476a248c6654",
+    "removed_field": "expected_resumed_documents"
+  },
+  "created_at": "2026-08-15T19:13:46.193461+08:00",
+  "isolation_audit": {
+    "calibration_input_changed": false,
+    "calibration_parent_population_changed": false,
+    "model_or_checkpoint_selection_changed": false,
+    "test_features_or_scores_computed": false,
+    "test_input_changed": false,
+    "test_remains_sealed": true,
+    "train_or_dev_changed": false
+  },
+  "manifest_version": "i06-scope-correction-v1",
+  "root_cause": "The I-06 Calibration feature scope was cloned from the I-GATE-C Train/Dev feature scope but did not remove expected_resumed_documents=810. The I-07 Test feature path already removes that stale template field.",
+  "task_id": "I-06-calibration-features-scope-correction",
+  "trigger": {
+    "actual_calibration_documents": 400,
+    "error": "Feature resumed-document count does not match the approved scope",
+    "stale_expected_resumed_documents": 810
+  }
+}

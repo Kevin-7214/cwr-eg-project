@@ -1,0 +1,63 @@
+{
+  "task_id": "I-07-score-lofo_synthid_calibration",
+  "role": "frozen_test_checkpoint_scoring",
+  "freeze_manifest": "manifests/i07_test_freeze.json",
+  "freeze_manifest_sha256": "c6ec4cbdf0c878664d9238e6ecf8f244dfa00ae8c0074be295d04f916fad4072",
+  "parent_freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/scoring.py",
+      "sha256": "21f8f9126a3282cf9dad5293a73a56498205735c6322b82bf3e5112cde70cdf2"
+    },
+    {
+      "path": "src/cwr_eg/modeling.py",
+      "sha256": "d7a526288391008e1ffe91e383f07a5c17c98582e3e9b5e8b469f3a6ca349769"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    },
+    {
+      "path": "src/cwr_eg/monitoring.py",
+      "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"
+    }
+  ],
+  "checkpoints": [
+    {
+      "path": "artifacts\\i05_train_dev\\training\\lofo_synthid\\best_checkpoint.pt",
+      "sha256": "dc709789d7f48c48ac42cb17ac0386e9721de1190006b5366e09f9c8f72c7a96"
+    }
+  ],
+  "ensemble_rule": "single_lofo_model",
+  "feature_manifest": "artifacts/i06_calibration/features/feature_manifest.jsonl",
+  "feature_manifest_sha256": "7978d84fd303da6185431c8ad0f6971d6683ffc8e33a3e0fe69d73f6af5b76d8",
+  "documents_path": "artifacts/i06_calibration/null_feature_documents.jsonl",
+  "documents_sha256": "7f717c3adc9338964fa8db1000bf07b15a5044844dbf169d125c7b043f28a65e",
+  "expected_document_count": 400,
+  "allowed_splits": [
+    "calibration"
+  ],
+  "positions": 256,
+  "minimum_mapping_coverage": 0.98,
+  "device": "cuda:0",
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i07_test/checkpoint_scores/lofo_synthid_calibration.jsonl",
+  "result_path": "artifacts/i07_test/checkpoint_score_results/lofo_synthid_calibration.json"
+}

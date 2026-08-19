@@ -1,0 +1,10 @@
+﻿recipe_id,kind,split,source,language,watermark_family,key_id,attack_id,failure_type,failure_message
+attack-base-clean-77152e4e6f27494f,matched_attack,train,thucnews_zh,zh,,,translation_roundtrip,RuntimeError,Attack produced empty text: attack-base-clean-77152e4e6f27494f
+attack-base-clean-ddad8c138dad37c6,matched_attack,train,thucnews_zh,zh,,,translation_roundtrip,RuntimeError,Attack produced empty text: attack-base-clean-ddad8c138dad37c6
+attack-base-kgw-23bc6f807172d76e,matched_attack,test,thucnews_zh,zh,kgw,kgw_key_a,paraphrase,RuntimeError,Attack produced empty text: attack-base-kgw-23bc6f807172d76e
+attack-base-unbiased-1e67cca8bedf0e20,matched_attack,calibration,thucnews_zh,zh,unbiased,unbiased_key_a,paraphrase,RuntimeError,Attack produced empty text: attack-base-unbiased-1e67cca8bedf0e20
+attack-base-unbiased-21e494f99ebc76a4,matched_attack,test,wikipedia_zh,zh,unbiased,unbiased_key_b,translation_roundtrip,RuntimeError,Attack produced empty text: attack-base-unbiased-21e494f99ebc76a4
+attack-base-unbiased-7a431506a7b68e26,matched_attack,calibration,wikipedia_en,en,unbiased,unbiased_key_a,translation_roundtrip,RuntimeError,Attack produced empty text: attack-base-unbiased-7a431506a7b68e26
+attack-base-unigram-43016943052ecc08,matched_attack,train,thucnews_zh,zh,unigram,unigram_key_b,paraphrase,RuntimeError,Attack produced empty text: attack-base-unigram-43016943052ecc08
+attack-base-unigram-49edee33a1661423,matched_attack,test,thucnews_zh,zh,unigram,unigram_key_a,paraphrase,RuntimeError,Attack produced empty text: attack-base-unigram-49edee33a1661423
+attack-base-unigram-a658f69a4d972c68,matched_attack,test,thucnews_zh,zh,unigram,unigram_key_a,paraphrase,RuntimeError,Attack produced empty text: attack-base-unigram-a658f69a4d972c68

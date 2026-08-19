@@ -1,0 +1,9 @@
+{
+  "backup": "status/code_backups/registered_scoring_pre_zero_token_fix_20260815_222912.py",
+  "created_at": "2026-08-15T22:29:12.704312+08:00",
+  "new_sha256": "bdb369a69f99b076a180d2a3e00159a46bc7431787740f5a17bfff77ed44868c",
+  "old_sha256": "90d8963aafcdc6ce29e4f922db668fb8d01766d519246fbe1b29a0ce8e31019a",
+  "reason": "Precheck detector token count; zero-token refined intervals are explicit detector non-applicability rather than calls into MarkLLM/Qwen2.",
+  "target": "src/cwr_eg/registered_scoring.py",
+  "test_remains_sealed": true
+}

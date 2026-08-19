@@ -1,0 +1,118 @@
+{
+  "task_id": "I-06-calibration-registered-scoring",
+  "freeze_manifest": "manifests/i_gate_d_freeze.json",
+  "freeze_manifest_sha256": "300fb880418fbd5ec6a90c766ba801f5715e904ceb9b2ece7a2ebabff2e32b40",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/registered_scoring.py",
+      "sha256": "c824145676dc7b452771ab9bd5a9fb0f73bf6fa1eca1c92995bf82cc9a0b8c4a"
+    },
+    {
+      "path": "src/cwr_eg/markllm_bridge.py",
+      "sha256": "8a1d29f7d331460146864f03fd62acac91fea2667e7424ed8aab83e7e4d411b3"
+    },
+    {
+      "path": "src/cwr_eg/candidates.py",
+      "sha256": "da9b193d43fbc9b38b2eaa6e00a49b08f942c603753b38c9a9daaaef70163489"
+    },
+    {
+      "path": "src/cwr_eg/contracts.py",
+      "sha256": "c22de8aaaec648cbda98d86029df40d3405f23d323e17e3f100319e585bd645c"
+    },
+    {
+      "path": "src/cwr_eg/manifest.py",
+      "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"
+    },
+    {
+      "path": "src/cwr_eg/hashing.py",
+      "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"
+    }
+  ],
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "model_path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/models/Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "model_files": [
+    {
+      "path": "config.json",
+      "bytes": 660,
+      "sha256": "98d2ff8cc47488d08a2b0b3acf4eb99ef210779b42bd48605f6b8e36acdbf670"
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 242,
+      "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 1671839,
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 3087467144,
+      "sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 7031645,
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 7305,
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 2776833,
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "markllm_repository": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/最新思路/项目实施/cwr_eg_project/external/MarkLLM",
+  "markllm_commit": "c45ddc40f7b761beabe55a1b8dc4690e531d1c6d",
+  "key_file": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/最新思路/项目实施/cwr_eg_project/status/private/pilot_keys.env",
+  "key_file_sha256": "fe1b92fc4aeff59915a1ded37fd934624b4248d0d35286ce31f712864c42e5e8",
+  "required_key_ids": [
+    "kgw_key_a",
+    "kgw_key_b",
+    "unigram_key_a",
+    "unigram_key_b",
+    "unbiased_key_a",
+    "unbiased_key_b",
+    "synthid_key_a",
+    "synthid_key_b"
+  ],
+  "score_records_path": "artifacts/i06_calibration/checkpoint_scores.jsonl",
+  "score_records_sha256": "ce7cbeeaa94d634d7146d1e219e95f8112e627caf50c639ad9a1d26cb65b363a",
+  "families": [
+    "kgw",
+    "unigram",
+    "unbiased",
+    "synthid"
+  ],
+  "authorized_key_slots": [
+    "a",
+    "b"
+  ],
+  "include_scheme_only": true,
+  "expected_document_count": 400,
+  "device": "cuda:0",
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i06_calibration/registered_scores_a_and_b.jsonl",
+  "result_path": "artifacts/i06_calibration/registered_scoring_result.json",
+  "resume_policy": "existing-partial-exact-recipe-id-prefix",
+  "short_segment_policy": "family-minimum-token-precheck-plus-observed-kgw-min-prefix-inapplicable"
+}

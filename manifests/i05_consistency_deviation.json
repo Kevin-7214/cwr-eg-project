@@ -1,0 +1,53 @@
+{
+  "manifest_version": "i05-consistency-correction-v1",
+  "detected_at": "2026-08-15T14:27:00+08:00",
+  "task_id": "I-05-consistency-deviation",
+  "status": "invalidated_and_restart_required",
+  "finding": "The sharded-v1 tensor bundle omitted consistency_pairs and consistency_preserves_label, so the configured attack-consistency loss weight 0.2 was silently multiplied by zero.",
+  "affected_scope": {
+    "tensor_bundle_completion_sha256": "6c42627bee1dc9c26f3ff7de3b43236a389abb5032628823e92483bc5c644996",
+    "deleted_invalid_bundle_bytes": 26618303674,
+    "completed_training_runs_invalidated": [
+      {
+        "run_id": "full_seed_20260815",
+        "checkpoint_sha256": "9a68a7a3e817c78f2e425b1f23942c839f7e459db0c3fb6fddd4cd6c85684ea3",
+        "training_log_sha256": "7a3b935cb5520ca8c7d8e3f7acb527d90e6506aa273d2bd476dfc3917eb062ec"
+      },
+      {
+        "run_id": "full_seed_20260816",
+        "checkpoint_sha256": "6ae4cc83b8fbbd55aad023d38145674ebcf302d9486b91d541e761635b9b75a3",
+        "training_log_sha256": "a7b43589287bdb1bae9089365c5f35f453302d0e99ae19c1e295df9ded001c6a"
+      },
+      {
+        "run_id": "full_seed_20260817",
+        "checkpoint_sha256": "abc2b474d5c8ff8ed697a747429faa2f6366e8e3dd0a72bcb3bf66486eeebd40",
+        "training_log_sha256": "0761d2bc3dc8e5f19dad1df2b14fc2116b38ea831731bda1e0397fcace9229e9"
+      }
+    ],
+    "partial_training_run_invalidated": {
+      "run_id": "ablation_no_contrastive",
+      "best_checkpoint_sha256": "517b6c86ae7a65b38161c53da2141b67a9ab29a53b112d8bd219ee9a747b62e7",
+      "latest_checkpoint_sha256": "5c22bcaadb8762ef49ecf058f22562b242d536581101f86211aaaa37dd7b3685",
+      "training_log_sha256": "f6ee1fe0d2821b5b5bfdc42671e560cc010a8c50b1eb6379c2b449459543c627"
+    }
+  },
+  "correction": {
+    "training_manifest": "artifacts/i05_train_dev/features/training_feature_manifest_v2.jsonl",
+    "pairing_rule": "Each successful matched_attack is paired with its exact base_recipe_id inside the same parent batch.",
+    "preserves_label": true,
+    "expected_pairs": {
+      "full": {"train": 1497, "dev": 500},
+      "lofo_kgw": {"train": 1197, "dev": 400},
+      "lofo_unigram": {"train": 1198, "dev": 400},
+      "lofo_unbiased": {"train": 1197, "dev": 400},
+      "lofo_synthid": {"train": 1197, "dev": 400}
+    },
+    "restart_policy": "Rebuild all five bundles and rerun all ten training jobs from epoch 1; do not reuse any invalid checkpoint."
+  },
+  "split_audit": {
+    "calibration_unsealed": false,
+    "test_unsealed": false,
+    "train_dev_features_reused": true,
+    "feature_values_changed": false
+  }
+}

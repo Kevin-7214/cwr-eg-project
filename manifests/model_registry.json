@@ -6,14 +6,14 @@
       "id": "Qwen/Qwen2.5-0.5B-Instruct",
       "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
       "license": "apache-2.0",
-      "role": ["local_smoke_generator"],
+      "role": ["local_smoke_generator", "intermediate_cross_model_attacker"],
       "availability": "local_hash_verified"
     },
     {
       "id": "Qwen/Qwen2.5-1.5B-Instruct",
       "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
       "license": "apache-2.0",
-      "role": ["pilot_generator"],
+      "role": ["pilot_generator", "intermediate_generator", "intermediate_feature_model"],
       "availability": "local_hash_verified"
     },
     {

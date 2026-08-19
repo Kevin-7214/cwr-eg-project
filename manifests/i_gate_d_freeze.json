@@ -1,0 +1,62 @@
+{
+  "calibration_action_approved_next": true,
+  "calibration_null_input": {
+    "descendants": [
+      "clean",
+      "attacked-clean"
+    ],
+    "documents": 400,
+    "parent_counts_by_language": {
+      "en": 100,
+      "zh": 100
+    },
+    "parents": 200,
+    "path": "artifacts/i06_calibration/null_feature_documents.jsonl",
+    "sha256": "7f717c3adc9338964fa8db1000bf07b15a5044844dbf169d125c7b043f28a65e"
+  },
+  "content_hash": "c4e1b7ae75808c0f825c09ad7436870737e4330c026e28466821791e2572d2bc",
+  "created_at": "2026-08-15T19:05:02.217678+08:00",
+  "deviation_audit": {
+    "calibration_parents_per_language": 100,
+    "sample_or_split_changed": false,
+    "status": "pass",
+    "test_content_used_for_selection": false,
+    "test_features_or_scores_computed": false
+  },
+  "ensemble_rule": "arithmetic_mean_character_logits_for_three_full_models",
+  "full_checkpoints": [
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260815\\best_checkpoint.pt",
+      "run_id": "full_seed_20260815",
+      "sha256": "5e3d183d3a0384fe5d180745c5fdee7538a1d7df9cecdd155d3a760c5024ea4e"
+    },
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260816\\best_checkpoint.pt",
+      "run_id": "full_seed_20260816",
+      "sha256": "15fda981308cf2d3bd5287873703bbf6f6a99d87bd500ff5565cfcbfb966eb34"
+    },
+    {
+      "path": "artifacts\\i05_train_dev\\training\\full_seed_20260817\\best_checkpoint.pt",
+      "run_id": "full_seed_20260817",
+      "sha256": "f13e1a73950e4ed871bf9cbd2bced81fc2fb177b3f22e2fe977efbf62a0ad99b"
+    }
+  ],
+  "i05_dev_analysis": {
+    "path": "manifests/i05_dev_analysis_completion.json",
+    "sha256": "4710c9218a2c6c135a1cbadbc92c67b1362cbeed90ef28b6af6b55d893963b0b"
+  },
+  "manifest_version": "i-gate-d-v1",
+  "task_id": "I-GATE-D",
+  "test_action_approval_deferred_until_i06_frozen": true,
+  "test_input": {
+    "documents": 2096,
+    "execution_sealed": true,
+    "parents": 200,
+    "path": "artifacts/i07_test/feature_documents.jsonl",
+    "sha256": "5539327e22bee3e46724bdadd4519f8a1ce9ee03c8fcdad790340e074f539a33"
+  },
+  "training_completion": {
+    "path": "manifests/i05_training_matrix_completion.json",
+    "sha256": "b70fcfe861df1a916b152cd4b3e37142481b7e85c9c7bef0930a71c8667e5f12"
+  }
+}

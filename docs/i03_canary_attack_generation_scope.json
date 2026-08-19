@@ -1,0 +1,51 @@
+{
+  "task_id": "I-03-canary-attack",
+  "freeze_manifest": "manifests/intermediate_freeze_manifest.json",
+  "freeze_manifest_sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+  "runner_sha256": "d4fe3f192d16abc3ae7fd6566241c39670524426d8687a4cd4b631d1c3d54eb2",
+  "code_files": [
+    {"path": "src/cwr_eg/runtime.py", "sha256": "d4fe3f192d16abc3ae7fd6566241c39670524426d8687a4cd4b631d1c3d54eb2"},
+    {"path": "src/cwr_eg/monitoring.py", "sha256": "084d5d55bdb719d065fe6c6de963e39c580cb571bb3f2de1f7b520f69941332c"},
+    {"path": "src/cwr_eg/manifest.py", "sha256": "62ff08feb07d3e9d6af075539d070706da0e14f9d790aebc664545f1b0921536"},
+    {"path": "src/cwr_eg/hashing.py", "sha256": "c1888e6c705c9fabdf29a0ab008279c6bc5c27541f073515e706295bfa8d758d"}
+  ],
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "model_path": "E:/课题组/01_水印与大模型安全/个人创新/多来源多密钥联合定位与归因/project1/models/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "model_files": [
+    {"path": "config.json", "bytes": 659, "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45"},
+    {"path": "generation_config.json", "bytes": 242, "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"},
+    {"path": "merges.txt", "bytes": 1671839, "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"},
+    {"path": "model.safetensors", "bytes": 988097824, "sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe"},
+    {"path": "tokenizer.json", "bytes": 7031645, "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"},
+    {"path": "tokenizer_config.json", "bytes": 7305, "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"},
+    {"path": "vocab.json", "bytes": 2776833, "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"}
+  ],
+  "input_path": "artifacts/i03_canary/base_generated.jsonl",
+  "input_sha256": "96568c596c078aa9280deb665e578680aa99f281625a36c9e66435bb222f10d3",
+  "recipe_manifest": "manifests/intermediate_canary_recipes.jsonl",
+  "recipe_manifest_sha256": "3921a991af90cd588c7f11353eeb4c869fd6a90ebaa12c02684cee4596d7506b",
+  "attack_ids": ["paraphrase", "translation_roundtrip", "copy_edit", "truncation"],
+  "expected_recipe_count": 400,
+  "limit": 400,
+  "device": "cuda:0",
+  "dtype": "bfloat16",
+  "maximum_input_tokens": 1024,
+  "max_new_tokens": 256,
+  "do_sample": false,
+  "truncation_fraction": 0.75,
+  "maximum_failure_rate": 0.01,
+  "local_files_only": true,
+  "trust_remote_code": false,
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i03_canary/attacked_generated.jsonl",
+  "result_path": "artifacts/i03_canary/attack_generation_result.json"
+}

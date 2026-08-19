@@ -1,0 +1,99 @@
+{
+  "assemble_fingerprint": "56141b86c301fba4693d0e11e87d9c2b52b62ea85ec46feec6ed57bb5e9a9c88",
+  "assemble_result": {
+    "action": "assemble-data",
+    "approved_execution": true,
+    "code_files_verified": 5,
+    "feature_documents": 8239,
+    "feature_documents_path": "artifacts\\i04_full\\feature_documents.jsonl",
+    "feature_documents_sha256": "7cab862d913f3cbad8b08bb8df039bdc7b6f926396d1f870cbd16aa33416d30c",
+    "freeze_manifest_sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb",
+    "inputs": [
+      {
+        "path": "artifacts\\i04_full\\base_generated_reconciled.jsonl",
+        "sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177"
+      },
+      {
+        "path": "artifacts\\i04_full\\attacked_generated.jsonl",
+        "sha256": "dc593c2945915c30390c497a6f6c7d6b28aa4190dfd3655b80284cbd08fdd6da"
+      },
+      {
+        "path": "artifacts\\i04_full\\mixed_generated.jsonl",
+        "sha256": "6fce39f278dd520b219d12ab472620b2cf1e501638fbfee527099146c248f02f"
+      }
+    ],
+    "kind_counts": {
+      "base_generation": 4000,
+      "matched_attack": 4000,
+      "mixed_document": 400
+    },
+    "output_path": "artifacts\\i04_full\\all_generated.jsonl",
+    "output_sha256": "68538829560886292a198c59f16eaafd5acce380523c142a5c2d369fd9139823",
+    "recipes": 8400,
+    "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac",
+    "status_counts": {
+      "failed": 11,
+      "generated": 8389
+    },
+    "train_mixed_excluded": 150
+  },
+  "assemble_result_sha256": "fe8edb0b55d3986b77ac766b6b14e55c1992fd8cb0adf344bae933d63ad086d0",
+  "attack": {
+    "bytes": 6788630,
+    "failed_recipe_ids": [
+      "attack-base-clean-52812039e5522400",
+      "attack-base-clean-77152e4e6f27494f",
+      "attack-base-clean-ddad8c138dad37c6",
+      "attack-base-kgw-23bc6f807172d76e",
+      "attack-base-unbiased-1e67cca8bedf0e20",
+      "attack-base-unbiased-21e494f99ebc76a4",
+      "attack-base-unbiased-7a431506a7b68e26",
+      "attack-base-unigram-43016943052ecc08",
+      "attack-base-unigram-49edee33a1661423",
+      "attack-base-unigram-a658f69a4d972c68"
+    ],
+    "failed_rows": 10,
+    "generated_rows": 3990,
+    "path": "artifacts\\i04_full\\attacked_generated.jsonl",
+    "rows": 4000,
+    "sha256": "dc593c2945915c30390c497a6f6c7d6b28aa4190dfd3655b80284cbd08fdd6da",
+    "unique_recipe_ids": 4000
+  },
+  "base": {
+    "bytes": 6394469,
+    "failed_recipe_ids": [
+      "base-clean-52812039e5522400"
+    ],
+    "failed_rows": 1,
+    "generated_rows": 3999,
+    "path": "artifacts\\i04_full\\base_generated_reconciled.jsonl",
+    "rows": 4000,
+    "sha256": "6d3ff100f6ed265dd290409c88a03c90f2e42c3cf22dd3c5a86b87134fa62177",
+    "unique_recipe_ids": 4000
+  },
+  "completed_at": "2026-08-15T13:47:20.139027+08:00",
+  "deviation_audit": {
+    "calibration_or_test_unsealed": false,
+    "frozen_recipe_or_split_changed": false,
+    "generation_parameters_changed": false,
+    "model_assets_changed": false,
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "status": "pass_with_explicit_failures",
+    "stop_conditions_bypassed": false
+  },
+  "generation_failures": 11,
+  "mixed": {
+    "bytes": 1022978,
+    "failed_recipe_ids": [],
+    "failed_rows": 0,
+    "generated_rows": 400,
+    "path": "artifacts\\i04_full\\mixed_generated.jsonl",
+    "rows": 400,
+    "sha256": "6fce39f278dd520b219d12ab472620b2cf1e501638fbfee527099146c248f02f",
+    "unique_recipe_ids": 400
+  },
+  "silent_drops": 0,
+  "status": "complete",
+  "task_id": "I-04"
+}

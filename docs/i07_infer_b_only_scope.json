@@ -1,0 +1,71 @@
+{
+  "task_id": "I-07-infer-b_only",
+  "freeze_manifest": "manifests/i07_test_freeze_amendment_01.json",
+  "freeze_manifest_sha256": "00834b285f7835a47d416544e9727f18db4a82d2212c21296d74fcbfd4dddb18",
+  "runner_sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793",
+  "code_files": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "sha256": "13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+    },
+    {
+      "path": "src/cwr_eg/bundle.py",
+      "sha256": "9c3bbd0260f45273e501c3b2052e300238c36f920915af95c85fa71544515fae"
+    },
+    {
+      "path": "src/cwr_eg/calibration.py",
+      "sha256": "23bd1d1c069daeba3f9eeefabe9be76718548a052105b4966bd3579eadaaee83"
+    },
+    {
+      "path": "src/cwr_eg/contracts.py",
+      "sha256": "c22de8aaaec648cbda98d86029df40d3405f23d323e17e3f100319e585bd645c"
+    },
+    {
+      "path": "src/cwr_eg/enums.py",
+      "sha256": "91d93c5ddf7871d19cb5ccfd4295279a084f9107c43cc8d553eadae199f638cd"
+    },
+    {
+      "path": "src/cwr_eg/inference.py",
+      "sha256": "dbf5fc35fb34741dc06f2ac94416c6370e3c76834a89f850d22cb94c045472f1"
+    },
+    {
+      "path": "src/cwr_eg/candidates.py",
+      "sha256": "da9b193d43fbc9b38b2eaa6e00a49b08f942c603753b38c9a9daaaef70163489"
+    },
+    {
+      "path": "src/cwr_eg/decision.py",
+      "sha256": "256d2ceb02faf8d085ce702f487357edbe65316ed3f7c4ec9cb5552f64cd57e5"
+    },
+    {
+      "path": "src/cwr_eg/validity.py",
+      "sha256": "ee99047ba4eaa59a5d7598740725f12d4d01e582243a56f02593698a4b6bc127"
+    }
+  ],
+  "calibration_bundle": "artifacts/i06_calibration/calibration_bundle",
+  "calibration_manifest_sha256": "7c391ab8aea74e6f7a49949dbf3611dca1216d0b36fe2ad2e6d3cce855003e37",
+  "null_distributions_sha256": "200542d5ac48763e874f7809431c6742f9ad26c137473fbf8c3bde4734bc5c64",
+  "score_records_path": "artifacts/i07_test/registered_scores_b_only.jsonl",
+  "score_records_sha256": "e55e8258f8087badd4f9f75bf4bcb77df723bb0b3699473aef24d8e63bff2eb7",
+  "expected_document_count": 2096,
+  "allowed_splits": [
+    "test"
+  ],
+  "versions": {
+    "model_version": "sha256:8fe5ce201869927e4620099b7b68f9fdd113afe1bbfd2a8f88d78eb3701fab48",
+    "calibration_id": "i06-parent-max-v1",
+    "normalization_version": "raw-unicode-codepoint-v1",
+    "manifest_version": "i07-test-freeze-v1",
+    "code_revision": "working-tree:13651044029ac5ec85922862b64a3aa64a2d531162143b5e5f7daeb9260f8793"
+  },
+  "monitoring": {
+    "maximum_gpu_temperature_c": 85,
+    "temperature_grace_seconds": 120,
+    "maximum_ram_gib": 26,
+    "minimum_free_disk_gib": 100,
+    "status_interval_percent": 1,
+    "status_interval_minutes": 5,
+    "progress_path": "status/progress.jsonl"
+  },
+  "output_path": "artifacts/i07_test/decisions/b_only.jsonl",
+  "result_path": "artifacts/i07_test/inference_results/b_only.json"
+}

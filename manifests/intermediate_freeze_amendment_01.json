@@ -1,0 +1,105 @@
+{
+  "manifest_version": "intermediate-freeze-amendment-v1",
+  "amendment_content_hash": "58bf4a4f46b6dd8d4c7f515db2fef4a53871d834fa290027887123958bdba44f",
+  "amendment_id": "I-FIX-01-single-token-causal-feature",
+  "created_at": "2026-08-14T16:20:00+08:00",
+  "applies_from": "I-03-canary-feature-resume",
+  "parent_freeze_manifest": {
+    "path": "manifests/intermediate_freeze_manifest.json",
+    "sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+    "freeze_content_hash": "607c925776fddf631fc9f91c35873436ae562dd7b9536a294df218f409e09019"
+  },
+  "test_sealed": true,
+  "calibration_sealed": true,
+  "reason": {
+    "failed_scope_fingerprint": "bd85a13f817a4979e9854f2c2ab9dee270d1006e84e9e52aa9aebbafe05bf314",
+    "completed_before_stop": 740,
+    "total_documents": 810,
+    "failing_recipe_id": "base-unigram-4685cfa25e4ba433",
+    "failing_text_sha256": "b4935894c8ce16bde67bbffc672428b1533c4f1e1e8b1ce21a2933183db6bfa5",
+    "failing_text_unicode": "U+2026",
+    "token_count": 1,
+    "short_document_count_in_scope": 1,
+    "failure_type": "single-token causal context undefined"
+  },
+  "scientific_fix": {
+    "policy": "prepend one EOS context token only for rows that tokenize to exactly one real token",
+    "context_offset": [0, 0],
+    "real_character_offset_preserved": true,
+    "normal_rows_unchanged": true,
+    "normal_extractor_version": "transformers-causal-batched-logrank-v3",
+    "fallback_extractor_version": "transformers-causal-batched-logrank-v3-short-eos-fallback-v1"
+  },
+  "code_changes": [
+    {
+      "path": "src/cwr_eg/transformer_features.py",
+      "previous_bytes": 7315,
+      "previous_sha256": "73e491bd0174fa050cd198bbac50ec46edddf207fc2a451f462d8d313f60179a",
+      "current_bytes": 9187,
+      "current_sha256": "dc802bf91cb7a5885c4a240f8c0ae7fb7d9d229958947d312cc7e924b716ae8b"
+    },
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "previous_bytes": 73716,
+      "previous_sha256": "d4fe3f192d16abc3ae7fd6566241c39670524426d8687a4cd4b631d1c3d54eb2",
+      "current_bytes": 74495,
+      "current_sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78",
+      "purpose": "bind resume manifest SHA-256 and resumed-document count before model loading"
+    }
+  ],
+  "new_tests": [
+    {
+      "path": "tests/test_transformer_feature_short_text.py",
+      "bytes": 1108,
+      "sha256": "009f68c57948ce87c949e42ad7afc1bf8f5e40173fbb65ccea8ae1c953982bb9"
+    },
+    {
+      "path": "tests/test_feature_resume_scope.py",
+      "bytes": 834,
+      "sha256": "69a18e4fdc0ff4f0f4bbce95a486a6b15efb0b5c0170d39abc1753f7a65157a1"
+    }
+  ],
+  "freeze_tool": {
+    "path": "scripts/write_intermediate_freeze_manifest.py",
+    "bytes": 4822,
+    "sha256": "3580400b1cb6cfab9c41c55c063465f719f4f2ee11da9d339cabc17dbc16d94e",
+    "verify_only_is_read_only": true
+  },
+  "cpu_test_result": {
+    "passed": 61,
+    "failed": 0,
+    "cuda_visible_devices": "-1"
+  },
+  "preserved_inputs": [
+    {"path": "manifests/intermediate_canary_parents.jsonl", "sha256": "eac7753cc13567bd203960a6f40beac65915a49b5b437978b2715e5bbf7f3f29"},
+    {"path": "manifests/intermediate_canary_recipes.jsonl", "sha256": "3921a991af90cd588c7f11353eeb4c869fd6a90ebaa12c02684cee4596d7506b"},
+    {"path": "artifacts/i03_canary/feature_documents.jsonl", "sha256": "9473e9b97e7148df446d23f40a211718a5ef23482c9a893625ff0e965064666d"}
+  ],
+  "preserved_completed_outputs": [
+    {"path": "artifacts/i03_canary/base_generated.jsonl", "sha256": "96568c596c078aa9280deb665e578680aa99f281625a36c9e66435bb222f10d3"},
+    {"path": "artifacts/i03_canary/attacked_generated.jsonl", "sha256": "c6f4ad8a06da5c061a3a2601f8074d5077e07971df62f46d5d9c9236f494803a"},
+    {"path": "artifacts/i03_canary/mixed_generated.jsonl", "sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c"},
+    {"path": "artifacts/i03_canary/all_generated.jsonl", "sha256": "2532f5126c9abab0a1696f58ca1551ccd6c45550dc3f29caa64e5c8a0393f2ad"}
+  ],
+  "partial_feature_state": {
+    "manifest_path": "artifacts/i03_canary/features/feature_manifest.jsonl",
+    "manifest_sha256": "878d0f42fcdb856d3bc186cb64d0c234b9b99777db6c6a9d657a4811b486364b",
+    "feature_listing_content_hash": "58f81398f9d24bcea4f39fd62420e7ba16a556b1b4d919369a22fcbc0ba80c17",
+    "documents": 740,
+    "npz_files": 740,
+    "missing_files": 0,
+    "orphan_files": 0,
+    "hash_mismatches": 0,
+    "non_finite_files": 0,
+    "metadata_mismatches": 0,
+    "extractor_versions": {"transformers-causal-batched-logrank-v3": 740},
+    "view_dimensions": {"proxy": 4, "representation": 1536, "perturbation": 4, "validity": 4}
+  },
+  "resume_requirements": {
+    "expected_resumed_documents": 740,
+    "remaining_documents": 70,
+    "microbatch_sequence": [4, 2, 1],
+    "reuse_verified_partial": true,
+    "new_scope_and_fingerprint_required": true
+  }
+}

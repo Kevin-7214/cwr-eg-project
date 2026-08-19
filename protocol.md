@@ -1,6 +1,6 @@
 # CWR-EG Frozen Protocol
 
-Status: implementation contract, version `0.1.0-pre-experiment`.
+Status: implementation contract. Pilot compatibility remains `0.1.0-pre-experiment`; the RTX 5060 intermediate profile is `0.2.0-intermediate`.
 
 ## 1. Scientific scope
 
@@ -79,3 +79,14 @@ Document aggregation is conservative: a document inherits the highest-priority v
 ## 9. Local experiment approval
 
 Before any model load, CUDA/GPU use, model-based data generation, attack generation, training/backpropagation, hyperparameter search, calibration, inference, metric evaluation, or benchmark, the command must verify an active approval record. An approval is valid only for the exact action, command fingerprint, resource class, and expiry described in that record. Absence or mismatch is a hard failure.
+
+## 10. RTX 5060 intermediate profile
+
+- The intermediate profile uses 800 parents selected with seed `20260815`, with per-source Train/Dev/Calibration/Test counts of 75/25/50/50. The 32 pilot parents are an explicit exclusion set.
+- Its 8,400 recipes contain 4,000 base documents, 4,000 matched attacks, and 400 same-language, same-split mixed documents. Train mixed documents are evaluation-only and are excluded before feature extraction, leaving at most 8,250 scoring objects.
+- Feature files are atomically written, individually hashed, and resumable. Tensor bundles use `sharded-v1`, with at most 16 batches per shard.
+- Checkpoint scoring uses sliding 256-position windows. Token logits are projected to raw Unicode code points; `mapping_coverage` is computed before nearest-valid-token filling, and coverage below 0.98 forces `uncertain`.
+- Registered tests cover every generic candidate plus the full-text interval for all authorized family/key instances. Unbiased retains its raw lower-tail statistic and uses `negate-lower-tail-statistic-v1` only as the upward-oriented search/calibration strength.
+- Calibration pools are built from parent-level maxima over clean and attacked-clean descendants. The only intermediate null strata are `en:all` and `zh:all`, each with 100 independent parents.
+- The three complete checkpoints are combined only by arithmetic mean of character logits. Ablations and leave-one-family-out runs remain separate reports.
+- Test remains sealed through canary and Dev analysis. A new exact approval is required at every I-stage gate; no G-stage approval or fingerprint is reusable.

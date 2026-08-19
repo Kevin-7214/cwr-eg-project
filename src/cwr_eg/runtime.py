@@ -33,6 +33,19 @@ def _verify_runner(scope: dict[str, Any]) -> str:
     return actual
 
 
+def _verify_freeze_manifest(scope: dict[str, Any]) -> str | None:
+    path = scope.get("freeze_manifest")
+    expected = scope.get("freeze_manifest_sha256")
+    if path is None and expected is None:
+        return None
+    if path is None or expected is None:
+        raise ValueError("Freeze manifest path and SHA-256 must be supplied together")
+    actual = sha256_file(path)
+    if actual != str(expected):
+        raise RuntimeError("Intermediate freeze manifest SHA-256 mismatch")
+    return actual
+
+
 def _verify_code_files(scope: dict[str, Any]) -> dict[str, str]:
     entries = scope.get("code_files")
     if not isinstance(entries, list) or not entries:
@@ -123,6 +136,40 @@ def _verify_repository(repository: Path, expected_commit: str) -> None:
         raise RuntimeError("External repository has unapproved local changes")
 
 
+def _record_recipe_failure(
+    *,
+    outputs: list[dict[str, Any]],
+    partial_path: Path,
+    recipe: dict[str, Any],
+    error: Exception,
+    total: int,
+    maximum_failure_rate: float,
+) -> None:
+    from cwr_eg.manifest import write_jsonl
+
+    outputs.append(
+        {
+            **recipe,
+            "status": "failed",
+            "failure_type": type(error).__name__,
+            "failure_message": str(error)[:500],
+        }
+    )
+    write_jsonl(partial_path, outputs)
+    failures = sum(row.get("status") == "failed" for row in outputs)
+    message = str(error).lower()
+    unrecoverable = (
+        "outofmemory" in type(error).__name__.lower()
+        or "out of memory" in message
+        or "cuda" in message
+        or "driver" in message
+    )
+    if unrecoverable or failures / total > maximum_failure_rate:
+        raise RuntimeError(
+            f"Generation stopped after {failures}/{total} explicit failures"
+        ) from error
+
+
 def execute_approved_action(
     action: str, config_path: str | Path, scope: dict[str, Any]
 ) -> int:
@@ -131,15 +178,23 @@ def execute_approved_action(
         "model-smoke": _model_smoke,
         "generate": _generate,
         "attack-generate": _attack_generate,
+        "assemble-data": _assemble_data,
         "extract-features": _extract_features,
         "tensorize": _tensorize,
         "train": _train,
+        "score-checkpoint": _score_checkpoint,
+        "score-registered": _score_registered,
+        "prepare-calibration": _prepare_calibration,
+        "prepare-evaluation": _prepare_evaluation,
         "calibrate": _calibrate,
         "infer": _infer,
         "evaluate": _evaluate,
         "benchmark": _benchmark,
     }
+    freeze_manifest_sha256 = _verify_freeze_manifest(scope)
     result = handlers[action](Path(config_path), scope)
+    if freeze_manifest_sha256 is not None:
+        result["freeze_manifest_sha256"] = freeze_manifest_sha256
     result.update({"action": action, "approved_execution": True})
     _write_result(scope, result)
     return 0
@@ -279,11 +334,94 @@ def _model_smoke(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+_GENERATION_RECIPE_FIELDS = (
+    "kind",
+    "parent_ids",
+    "split",
+    "source",
+    "language",
+    "base_variant",
+    "watermark_family",
+    "key_id",
+    "attack_id",
+    "base_recipe_id",
+    "components",
+    "overlap_mode",
+)
+
+
+def _base_generation_seed(recipe: dict[str, Any], retry_index: int = 0) -> int:
+    if retry_index < 0:
+        raise ValueError("Generation retry index cannot be negative")
+    payload: dict[str, Any] = {
+        "seed": recipe["seed"],
+        "recipe_id": recipe["recipe_id"],
+    }
+    if retry_index:
+        payload["retry_index"] = retry_index
+    return int(content_hash(payload)[:16], 16) % (2**31)
+
+
+def _load_approved_generation_partial(
+    partial_path: Path,
+    *,
+    expected_sha256: str | None,
+    expected_count: int | None,
+    recipes: list[dict[str, Any]],
+    allow_failed_rows: bool = False,
+) -> list[dict[str, Any]]:
+    from cwr_eg.manifest import read_jsonl
+
+    if expected_sha256 is None:
+        if partial_path.exists():
+            raise RuntimeError("A generation partial exists but is not hash-approved")
+        if expected_count is not None:
+            raise ValueError("A resumed-document count requires a partial SHA-256")
+        return []
+    if not partial_path.exists():
+        raise FileNotFoundError("The approved generation partial is missing")
+    if sha256_file(partial_path) != str(expected_sha256):
+        raise RuntimeError("Generation partial SHA-256 mismatch")
+    outputs = read_jsonl(partial_path)
+    if expected_count is None or len(outputs) != int(expected_count):
+        raise RuntimeError("Generation resumed-document count does not match the approved scope")
+    recipe_by_id = {str(recipe["recipe_id"]): recipe for recipe in recipes}
+    if len(recipe_by_id) != len(recipes):
+        raise ValueError("Selected generation recipes contain duplicate ids")
+    completed_ids: set[str] = set()
+    for row in outputs:
+        recipe_id = str(row.get("recipe_id"))
+        if recipe_id in completed_ids:
+            raise RuntimeError("Generation partial contains a duplicate recipe id")
+        if recipe_id not in recipe_by_id:
+            raise RuntimeError("Generation partial contains an unapproved recipe id")
+        status = row.get("status")
+        if status == "generated":
+            text = str(row.get("text", ""))
+            if not text or sha256_text(text) != str(row.get("text_sha256")):
+                raise RuntimeError("Generation partial contains invalid text provenance")
+        elif status == "failed" and allow_failed_rows:
+            if not row.get("failure_type") or not row.get("failure_message"):
+                raise RuntimeError("Generation partial contains invalid failure provenance")
+        else:
+            raise RuntimeError("Only approved completed rows may seed a new scope")
+        recipe = recipe_by_id[recipe_id]
+        for field in _GENERATION_RECIPE_FIELDS:
+            if field in recipe and row.get(field) != recipe.get(field):
+                raise RuntimeError(
+                    f"Generation partial changed frozen recipe field: {field}"
+                )
+        completed_ids.add(recipe_id)
+    return outputs
+
+
 def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     from cwr_eg.manifest import read_jsonl, write_jsonl
     from cwr_eg.markllm_bridge import MarkLlmBridge, MarkLlmSettings
+    from cwr_eg.monitoring import ExperimentMonitor
 
     runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
     if scope.get("local_files_only") is not True:
         raise ValueError("generate requires local_files_only=true")
     if scope.get("trust_remote_code") is not False:
@@ -322,6 +460,14 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     expected_recipe_count = int(scope["expected_recipe_count"])
     if len(recipes) != expected_recipe_count:
         raise ValueError("Selected generation recipe count does not match the approved scope")
+    output_path = Path(scope["output_path"])
+    if output_path.exists():
+        raise FileExistsError(f"Refusing to overwrite completed generation output: {output_path}")
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="generate", disk_path=output_path.parent
+    )
+    if monitor is not None:
+        monitor.update(phase=generation_kind, completed=0, total=len(recipes))
     bridge = MarkLlmBridge(
         MarkLlmSettings(
             repository=repository,
@@ -336,31 +482,57 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
             local_files_only=bool(scope.get("local_files_only", True)),
         )
     )
-    output_path = Path(scope["output_path"])
-    if output_path.exists():
-        raise FileExistsError(f"Refusing to overwrite completed generation output: {output_path}")
     partial_path = output_path.with_suffix(output_path.suffix + ".partial")
-    outputs = read_jsonl(partial_path) if partial_path.exists() else []
+    outputs = _load_approved_generation_partial(
+        partial_path,
+        expected_sha256=scope.get("resume_partial_sha256"),
+        expected_count=scope.get("expected_resumed_documents"),
+        recipes=recipes,
+        allow_failed_rows=scope.get("resume_explicit_failures") is True,
+    )
+    resumed_documents = len(outputs)
     completed_ids = {str(row["recipe_id"]) for row in outputs}
     selected_ids = {str(row["recipe_id"]) for row in recipes}
     if not completed_ids.issubset(selected_ids):
         raise RuntimeError("Partial generation output contains an unapproved recipe id")
+    if monitor is not None and outputs:
+        monitor.update(
+            phase=generation_kind, completed=len(outputs), total=len(recipes)
+        )
     prompt_characters = int(scope.get("prompt_characters", 1000))
+    generation_retry_index = int(scope.get("generation_retry_index", 0))
+    if generation_retry_index < 0:
+        raise ValueError("generation_retry_index cannot be negative")
+    maximum_failure_rate = float(scope.get("maximum_failure_rate", 0.0))
+    if not 0.0 <= maximum_failure_rate <= 1.0:
+        raise ValueError("maximum_failure_rate must lie in [0, 1]")
     for recipe in recipes:
         if str(recipe["recipe_id"]) in completed_ids:
             continue
         if generation_kind == "base_generation":
             parent = parents[recipe["parent_ids"][0]]
-            generation_seed = int(
-                content_hash({"seed": recipe["seed"], "recipe_id": recipe["recipe_id"]})[:16],
-                16,
-            ) % (2**31)
-            generated = bridge.generate(
-                str(parent["text"])[:prompt_characters],
-                recipe["watermark_family"],
-                recipe["key_id"],
-                seed=generation_seed,
-            )
+            generation_seed = _base_generation_seed(recipe, generation_retry_index)
+            try:
+                generated = bridge.generate(
+                    str(parent["text"])[:prompt_characters],
+                    recipe["watermark_family"],
+                    recipe["key_id"],
+                    seed=generation_seed,
+                )
+            except Exception as error:
+                _record_recipe_failure(
+                    outputs=outputs,
+                    partial_path=partial_path,
+                    recipe=(
+                        {**recipe, "generation_retry_index": generation_retry_index}
+                        if generation_retry_index
+                        else recipe
+                    ),
+                    error=error,
+                    total=len(recipes),
+                    maximum_failure_rate=maximum_failure_rate,
+                )
+                continue
             row = {
                 **recipe,
                 "source": parent["source"],
@@ -372,6 +544,11 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
                 else [[0, len(generated)]],
                 "boundary_quality": "exact",
                 "generation_seed": generation_seed,
+                **(
+                    {"generation_retry_index": generation_retry_index}
+                    if generation_retry_index
+                    else {}
+                ),
                 "status": "generated",
                 "model_revision": str(scope["revision"]),
             }
@@ -395,6 +572,7 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError("Mixed recipes require aligned component and parent lists")
             generated_components: list[str] = []
             component_records: list[dict[str, Any]] = []
+            component_failed = False
             for component_index, (component, parent_id) in enumerate(
                 zip(components, recipe["parent_ids"], strict=True)
             ):
@@ -412,12 +590,24 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
                     )[:16],
                     16,
                 ) % (2**31)
-                generated = bridge.generate(
-                    str(parent["text"])[:prompt_characters],
-                    family,
-                    key_id,
-                    seed=generation_seed,
-                )
+                try:
+                    generated = bridge.generate(
+                        str(parent["text"])[:prompt_characters],
+                        family,
+                        key_id,
+                        seed=generation_seed,
+                    )
+                except Exception as error:
+                    _record_recipe_failure(
+                        outputs=outputs,
+                        partial_path=partial_path,
+                        recipe=recipe,
+                        error=error,
+                        total=len(recipes),
+                        maximum_failure_rate=maximum_failure_rate,
+                    )
+                    component_failed = True
+                    break
                 if not generated:
                     raise RuntimeError(
                         f"Mixed generation produced empty component: {recipe['recipe_id']}"
@@ -435,6 +625,8 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
                         "text_sha256": sha256_text(generated),
                     }
                 )
+            if component_failed:
+                continue
             mixed_text, intervals = _compose_adjacent_components(
                 generated_components, str(scope.get("component_separator", "\n\n"))
             )
@@ -462,6 +654,10 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
             }
         outputs.append(row)
         write_jsonl(partial_path, outputs)
+        if monitor is not None:
+            monitor.update(
+                phase=generation_kind, completed=len(outputs), total=len(recipes)
+            )
         print(
             json.dumps(
                 {"generation_progress": len(outputs), "total": len(recipes)},
@@ -471,13 +667,16 @@ def _generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
         )
     partial_path.replace(output_path)
     return {
-        "generated": len(outputs),
+        "generated": sum(row.get("status") == "generated" for row in outputs),
+        "failed": sum(row.get("status") == "failed" for row in outputs),
         "output_path": str(output_path),
         "runner_sha256": runner_sha256,
         "bridge_sha256": bridge_sha256,
         "generation_kind": generation_kind,
         "model_files_verified": len(verified_files),
         "key_file_sha256": key_file_sha256,
+        "code_files_verified": len(verified_code),
+        "resumed_documents": resumed_documents,
     }
 
 
@@ -512,8 +711,10 @@ def _deterministic_attack(text: str, attack_id: str, truncation_fraction: float)
 
 def _attack_generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     from cwr_eg.manifest import read_jsonl, write_jsonl
+    from cwr_eg.monitoring import ExperimentMonitor
 
     runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
     if scope.get("local_files_only") is not True:
         raise ValueError("attack-generate requires local_files_only=true")
     if scope.get("trust_remote_code") is not False:
@@ -553,11 +754,28 @@ def _attack_generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]
     if output_path.exists():
         raise FileExistsError(f"Refusing to overwrite completed attack output: {output_path}")
     partial_path = output_path.with_suffix(output_path.suffix + ".partial")
-    outputs = read_jsonl(partial_path) if partial_path.exists() else []
+    outputs = _load_approved_generation_partial(
+        partial_path,
+        expected_sha256=scope.get("resume_partial_sha256"),
+        expected_count=scope.get("expected_resumed_documents"),
+        recipes=recipes,
+        allow_failed_rows=scope.get("resume_explicit_failures") is True,
+    )
+    resumed_documents = len(outputs)
     completed_ids = {str(row["recipe_id"]) for row in outputs}
     selected_ids = {str(row["recipe_id"]) for row in recipes}
     if not completed_ids.issubset(selected_ids):
         raise RuntimeError("Partial attack output contains an unapproved recipe id")
+    maximum_failure_rate = float(scope.get("maximum_failure_rate", 0.0))
+    if not 0.0 <= maximum_failure_rate <= 1.0:
+        raise ValueError("maximum_failure_rate must lie in [0, 1]")
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="attack-generate", disk_path=output_path.parent
+    )
+    if monitor is not None:
+        monitor.update(
+            phase="matched_attack", completed=len(outputs), total=len(recipes)
+        )
     pending_model_attacks = any(
         row["attack_id"] in model_attack_ids and row["recipe_id"] not in completed_ids
         for row in recipes
@@ -589,35 +807,46 @@ def _attack_generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]
     for recipe in recipes:
         if str(recipe["recipe_id"]) in completed_ids:
             continue
-        base = inputs[str(recipe["base_recipe_id"])]
-        attack_id = str(recipe["attack_id"])
-        base_text = str(base["text"])
-        if attack_id in {"truncation", "copy_edit"}:
-            attacked_text = _deterministic_attack(
-                base_text, attack_id, float(scope["truncation_fraction"])
-            )
-        else:
-            assert torch is not None and tokenizer is not None and model is not None
-            prompt = prompts[attack_id] + base_text
-            encoded = tokenizer(
-                prompt,
-                return_tensors="pt",
-                truncation=True,
-                max_length=int(scope["maximum_input_tokens"]),
-            ).to(device)
-            with torch.inference_mode():
-                generated = model.generate(
-                    **encoded,
-                    max_new_tokens=int(scope["max_new_tokens"]),
-                    do_sample=False,
-                    pad_token_id=tokenizer.eos_token_id,
+        try:
+            base = inputs[str(recipe["base_recipe_id"])]
+            attack_id = str(recipe["attack_id"])
+            base_text = str(base["text"])
+            if attack_id in {"truncation", "copy_edit"}:
+                attacked_text = _deterministic_attack(
+                    base_text, attack_id, float(scope["truncation_fraction"])
                 )
-            continuation = generated[0, encoded["input_ids"].shape[1] :]
-            attacked_text = tokenizer.decode(
-                continuation, skip_special_tokens=True
-            ).strip()
-        if not attacked_text:
-            raise RuntimeError(f"Attack produced empty text: {recipe['recipe_id']}")
+            else:
+                assert torch is not None and tokenizer is not None and model is not None
+                prompt = prompts[attack_id] + base_text
+                encoded = tokenizer(
+                    prompt,
+                    return_tensors="pt",
+                    truncation=True,
+                    max_length=int(scope["maximum_input_tokens"]),
+                ).to(device)
+                with torch.inference_mode():
+                    generated = model.generate(
+                        **encoded,
+                        max_new_tokens=int(scope["max_new_tokens"]),
+                        do_sample=False,
+                        pad_token_id=tokenizer.eos_token_id,
+                    )
+                continuation = generated[0, encoded["input_ids"].shape[1] :]
+                attacked_text = tokenizer.decode(
+                    continuation, skip_special_tokens=True
+                ).strip()
+            if not attacked_text:
+                raise RuntimeError(f"Attack produced empty text: {recipe['recipe_id']}")
+        except Exception as error:
+            _record_recipe_failure(
+                outputs=outputs,
+                partial_path=partial_path,
+                recipe=recipe,
+                error=error,
+                total=len(recipes),
+                maximum_failure_rate=maximum_failure_rate,
+            )
+            continue
         row = {
             **base,
             **recipe,
@@ -633,6 +862,10 @@ def _attack_generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]
             row["attacker_model_revision"] = revision
         outputs.append(row)
         write_jsonl(partial_path, outputs)
+        if monitor is not None:
+            monitor.update(
+                phase="matched_attack", completed=len(outputs), total=len(recipes)
+            )
         print(
             json.dumps(
                 {"attack_progress": len(outputs), "total": len(recipes)},
@@ -642,17 +875,165 @@ def _attack_generate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]
         )
     partial_path.replace(output_path)
     return {
-        "attacked": len(outputs),
+        "attacked": sum(row.get("status") == "generated" for row in outputs),
+        "failed": sum(row.get("status") == "failed" for row in outputs),
         "output_path": str(output_path),
         "runner_sha256": runner_sha256,
         "model_files_verified": len(verified_files),
+        "code_files_verified": len(verified_code),
+        "resumed_documents": resumed_documents,
     }
+
+
+def _assemble_data(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    from cwr_eg.generated_data import assemble_generated_documents
+    from cwr_eg.monitoring import ExperimentMonitor
+
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    if sha256_file(scope["recipe_manifest"]) != str(scope["recipe_manifest_sha256"]):
+        raise RuntimeError("Recipe manifest SHA-256 does not match the approved scope")
+    input_entries = scope.get("inputs")
+    if not isinstance(input_entries, list) or not input_entries:
+        raise ValueError("assemble-data requires generated input files")
+    input_paths: list[str] = []
+    for entry in input_entries:
+        if sha256_file(entry["path"]) != str(entry["sha256"]):
+            raise RuntimeError("Generated input SHA-256 does not match the approved scope")
+        input_paths.append(str(entry["path"]))
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="assemble-data", disk_path=Path(scope["output_path"]).parent
+    )
+    if monitor is not None:
+        monitor.update(phase="assemble_generated_data", completed=0, total=1)
+    result = assemble_generated_documents(
+        recipe_manifest=scope["recipe_manifest"],
+        input_paths=input_paths,
+        output_path=scope["output_path"],
+        feature_documents_path=scope["feature_documents_path"],
+    )
+    if result["recipes"] != int(scope["expected_recipe_count"]):
+        raise RuntimeError("Assembled data has an unexpected recipe count")
+    if monitor is not None:
+        monitor.update(phase="assemble_generated_data", completed=1, total=1)
+    result.update(
+        {
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+        }
+    )
+    return result
+
+
+def _atomic_write_feature_npz(
+    path: Path, *, extracted: Any, numpy_module: Any
+) -> dict[str, int]:
+    payload: dict[str, Any] = {
+        "metadata_document_id": numpy_module.asarray(extracted.document_id),
+        "metadata_extractor_version": numpy_module.asarray(extracted.extractor_version),
+        "metadata_normalization_version": numpy_module.asarray(
+            extracted.normalization_version
+        ),
+    }
+    dimensions: dict[str, int] = {}
+    for name, view in extracted.views.items():
+        if not numpy_module.all(numpy_module.isfinite(view.values)):
+            raise RuntimeError(f"Non-finite feature values for {extracted.document_id}:{name}")
+        dimensions[name] = int(view.values.shape[1])
+        payload[f"{name}_values"] = view.values
+        payload[f"{name}_mask"] = view.valid_mask
+        payload[f"{name}_offsets"] = numpy_module.asarray(
+            [
+                (-1, -1)
+                if interval is None
+                else (interval.char_start, interval.char_end)
+                for interval in view.raw_intervals
+            ],
+            dtype=numpy_module.int32,
+        )
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("wb") as handle:
+        numpy_module.savez_compressed(handle, **payload)
+        handle.flush()
+        os.fsync(handle.fileno())
+    temporary.replace(path)
+    return dimensions
+
+
+def _feature_manifest_entry(
+    row: dict[str, Any],
+    path: Path,
+    *,
+    extractor_version: str,
+    normalization_version: str,
+) -> dict[str, Any]:
+    return {
+        "recipe_id": row["recipe_id"],
+        "parent_ids": row["parent_ids"],
+        "split": row["split"],
+        "source": row.get("source"),
+        "language": row["language"],
+        "watermark_family": row.get("watermark_family"),
+        "key_id": row.get("key_id"),
+        "attack_id": row.get("attack_id"),
+        "intervention_id": row.get(
+            "attack_id", row.get("watermark_family") or "clean"
+        ),
+        "boundary_quality": row.get("boundary_quality", "exact"),
+        "feature_path": str(path),
+        "feature_sha256": sha256_file(path),
+        "extractor_version": extractor_version,
+        "normalization_version": normalization_version,
+    }
+
+
+def _recover_feature_entry(
+    row: dict[str, Any], path: Path, numpy_module: Any
+) -> tuple[dict[str, Any], dict[str, int]]:
+    with numpy_module.load(path, allow_pickle=False) as payload:
+        document_id = str(payload["metadata_document_id"].item())
+        if document_id != str(row["recipe_id"]):
+            raise RuntimeError(f"Orphan feature belongs to another document: {path}")
+        extractor_version = str(payload["metadata_extractor_version"].item())
+        normalization_version = str(payload["metadata_normalization_version"].item())
+        dimensions = {
+            key[: -len("_values")]: int(payload[key].shape[1])
+            for key in payload.files
+            if key.endswith("_values")
+        }
+        if not dimensions or any(
+            not numpy_module.all(numpy_module.isfinite(payload[key]))
+            for key in payload.files
+            if key.endswith("_values")
+        ):
+            raise RuntimeError(f"Orphan feature is incomplete or non-finite: {path}")
+    return (
+        _feature_manifest_entry(
+            row,
+            path,
+            extractor_version=extractor_version,
+            normalization_version=normalization_version,
+        ),
+        dimensions,
+    )
+
+
+def _verify_feature_resume_manifest(
+    manifest_path: Path, expected_sha256: str | None
+) -> None:
+    if expected_sha256 is None:
+        return
+    if not manifest_path.is_file():
+        raise FileNotFoundError("The approved feature resume manifest is missing")
+    if sha256_file(manifest_path) != expected_sha256:
+        raise RuntimeError("Feature resume manifest SHA-256 mismatch")
 
 
 def _extract_features(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     import numpy as np
 
     from cwr_eg.manifest import read_jsonl, write_jsonl
+    from cwr_eg.monitoring import ExperimentMonitor
     from cwr_eg.transformer_features import (
         TransformerFeatureSettings,
         TransformersCausalFeatureExtractor,
@@ -680,8 +1061,24 @@ def _extract_features(config_path: Path, scope: dict[str, Any]) -> dict[str, Any
         raise ValueError("Selected feature document count does not match the approved scope")
     if len({str(row["recipe_id"]) for row in rows}) != len(rows):
         raise ValueError("Feature input recipe ids must be unique")
-    if any(str(row["split"]) not in {"train", "dev"} for row in rows):
-        raise ValueError("G-05 feature smoke input may contain only Train and Dev rows")
+    allowed_splits = {str(item) for item in scope.get("allowed_splits", ["train", "dev"])}
+    if not allowed_splits or not allowed_splits.issubset(
+        {"train", "dev", "calibration", "test"}
+    ):
+        raise ValueError("Feature allowed_splits contains an unsupported split")
+    if any(str(row["split"]) not in allowed_splits for row in rows):
+        raise ValueError("Feature input contains a split outside the approved scope")
+    output_dir = Path(scope["output_dir"])
+    resume = bool(scope.get("resume", False))
+    manifest_path = output_dir / "feature_manifest.jsonl"
+    _verify_feature_resume_manifest(
+        manifest_path, scope.get("resume_manifest_sha256")
+    )
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="extract-features", disk_path=output_dir
+    )
+    if monitor is not None:
+        monitor.update(phase="feature_extraction", completed=0, total=len(rows))
     extractor = TransformersCausalFeatureExtractor(
         TransformerFeatureSettings(
             model_path=model_path,
@@ -692,58 +1089,146 @@ def _extract_features(config_path: Path, scope: dict[str, Any]) -> dict[str, Any
             trust_remote_code=bool(scope.get("trust_remote_code", False)),
         )
     )
-    output_dir = Path(scope["output_dir"])
-    output_dir.mkdir(parents=True, exist_ok=False)
-    manifest: list[dict[str, Any]] = []
+    output_dir.mkdir(parents=True, exist_ok=resume)
+    manifest = read_jsonl(manifest_path) if manifest_path.exists() else []
+    approved_ids = {str(row["recipe_id"]) for row in rows}
+    if any(str(entry["recipe_id"]) not in approved_ids for entry in manifest):
+        raise RuntimeError("Existing feature manifest contains an unapproved recipe id")
+    completed: dict[str, dict[str, Any]] = {}
+    for entry in manifest:
+        recipe_id = str(entry["recipe_id"])
+        if recipe_id in completed:
+            raise RuntimeError("Existing feature manifest contains duplicate recipe ids")
+        feature_path = Path(str(entry["feature_path"]))
+        if not feature_path.is_file() or sha256_file(feature_path) != str(
+            entry["feature_sha256"]
+        ):
+            raise RuntimeError(f"Feature hash drift detected during resume: {recipe_id}")
+        completed[recipe_id] = entry
+    expected_resumed_documents = scope.get("expected_resumed_documents")
+    if expected_resumed_documents is not None and len(completed) != int(
+        expected_resumed_documents
+    ):
+        raise RuntimeError("Feature resumed-document count does not match the approved scope")
     view_dims: dict[str, int] | None = None
     for row in rows:
-        extracted = extractor.extract(
-            str(row["recipe_id"]), str(row["text"]), str(row["language"])
+        recipe_id = str(row["recipe_id"])
+        path = output_dir / f"{recipe_id}.npz"
+        if recipe_id in completed:
+            with np.load(path, allow_pickle=False) as payload:
+                current_view_dims = {
+                    key[: -len("_values")]: int(payload[key].shape[1])
+                    for key in payload.files
+                    if key.endswith("_values")
+                }
+            if view_dims is None:
+                view_dims = current_view_dims
+            elif current_view_dims != view_dims:
+                raise RuntimeError("Feature view dimensions changed within resumed files")
+        elif path.exists():
+            recovered, current_view_dims = _recover_feature_entry(row, path, np)
+            completed[recipe_id] = recovered
+            if view_dims is None:
+                view_dims = current_view_dims
+            elif current_view_dims != view_dims:
+                raise RuntimeError("Feature view dimensions changed in orphan recovery")
+    if completed:
+        write_jsonl(
+            manifest_path,
+            [completed[str(row["recipe_id"])] for row in rows if str(row["recipe_id"]) in completed],
         )
-        path = output_dir / f"{row['recipe_id']}.npz"
-        payload: dict[str, Any] = {}
-        for name, view in extracted.views.items():
-            if not np.all(np.isfinite(view.values)):
-                raise RuntimeError(f"Non-finite feature values for {row['recipe_id']}:{name}")
-            payload[f"{name}_values"] = view.values
-            payload[f"{name}_mask"] = view.valid_mask
-            payload[f"{name}_offsets"] = np.asarray(
-                [
-                    (-1, -1)
-                    if interval is None
-                    else (interval.char_start, interval.char_end)
-                    for interval in view.raw_intervals
-                ],
-                dtype=np.int32,
+        if monitor is not None:
+            monitor.update(
+                phase="feature_extraction", completed=len(completed), total=len(rows)
             )
-        current_view_dims = {
-            name: int(view.values.shape[1]) for name, view in extracted.views.items()
-        }
-        if view_dims is None:
-            view_dims = current_view_dims
-        elif current_view_dims != view_dims:
-            raise RuntimeError("Feature view dimensions changed within the approved run")
-        np.savez_compressed(path, **payload)
-        manifest.append(
-            {
-                "recipe_id": row["recipe_id"],
-                "parent_ids": row["parent_ids"],
-                "split": row["split"],
-                "language": row["language"],
-                "watermark_family": row.get("watermark_family"),
-                "key_id": row.get("key_id"),
-                "intervention_id": row.get("attack_id", row.get("watermark_family") or "clean"),
-                "boundary_quality": row.get("boundary_quality", "exact"),
-                "feature_path": str(path),
-                "feature_sha256": sha256_file(path),
-                "extractor_version": extracted.extractor_version,
-                "normalization_version": extracted.normalization_version,
-            }
-        )
-    manifest_path = output_dir / "feature_manifest.jsonl"
+
+    microbatches = [int(item) for item in scope.get("microbatch_sequence", [1])]
+    if (
+        not microbatches
+        or any(item < 1 for item in microbatches)
+        or any(left <= right for left, right in zip(microbatches, microbatches[1:]))
+    ):
+        raise ValueError("microbatch_sequence must be a strictly decreasing positive list")
+    batch_index = 0
+    pending = [row for row in rows if str(row["recipe_id"]) not in completed]
+    cursor = 0
+    last_report = time.monotonic()
+    report_increment = max(1, math.ceil(len(rows) / 100))
+    while cursor < len(pending):
+        microbatch = microbatches[batch_index]
+        batch_rows = pending[cursor : cursor + microbatch]
+        try:
+            extracted_batch = extractor.extract_many(
+                [
+                    (str(row["recipe_id"]), str(row["text"]), str(row["language"]))
+                    for row in batch_rows
+                ]
+            )
+        except extractor.torch.OutOfMemoryError:
+            if batch_index + 1 >= len(microbatches):
+                raise
+            batch_index += 1
+            if str(scope.get("device", "")).startswith("cuda"):
+                extractor.torch.cuda.empty_cache()
+            print(
+                json.dumps(
+                    {
+                        "feature_oom_fallback": microbatches[batch_index],
+                        "completed": len(completed),
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+            continue
+        if len(extracted_batch) != len(batch_rows):
+            raise RuntimeError("Feature extractor returned an incomplete microbatch")
+        for row, extracted in zip(batch_rows, extracted_batch, strict=True):
+            recipe_id = str(row["recipe_id"])
+            path = output_dir / f"{recipe_id}.npz"
+            current_view_dims = _atomic_write_feature_npz(
+                path, extracted=extracted, numpy_module=np
+            )
+            if view_dims is None:
+                view_dims = current_view_dims
+            elif current_view_dims != view_dims:
+                raise RuntimeError("Feature view dimensions changed within the approved run")
+            completed[recipe_id] = _feature_manifest_entry(
+                row,
+                path,
+                extractor_version=extracted.extractor_version,
+                normalization_version=extracted.normalization_version,
+            )
+            write_jsonl(
+                manifest_path,
+                [completed[str(item["recipe_id"])] for item in rows if str(item["recipe_id"]) in completed],
+            )
+            if monitor is not None:
+                monitor.update(
+                    phase="feature_extraction",
+                    completed=len(completed),
+                    total=len(rows),
+                )
+            now = time.monotonic()
+            if len(completed) % report_increment == 0 or now - last_report >= 300:
+                print(
+                    json.dumps(
+                        {
+                            "feature_progress": len(completed),
+                            "total": len(rows),
+                            "microbatch": microbatch,
+                        },
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )
+                last_report = now
+        cursor += len(batch_rows)
+    manifest = [completed[str(row["recipe_id"])] for row in rows]
     write_jsonl(manifest_path, manifest)
     return {
         "documents": len(manifest),
+        "resumed_documents": len(rows) - len(pending),
         "feature_manifest": str(manifest_path),
         "feature_manifest_sha256": sha256_file(manifest_path),
         "input_sha256": input_sha256,
@@ -751,11 +1236,13 @@ def _extract_features(config_path: Path, scope: dict[str, Any]) -> dict[str, Any
         "model_files_verified": len(verified_files),
         "code_files_verified": len(verified_code),
         "view_dims": view_dims,
+        "final_microbatch": microbatches[batch_index],
     }
 
 
 def _tensorize(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
-    from cwr_eg.tensor_bundle import build_tensor_bundle
+    from cwr_eg.monitoring import ExperimentMonitor
+    from cwr_eg.tensor_bundle import build_sharded_tensor_bundle, build_tensor_bundle
 
     runner_sha256 = _verify_runner(scope)
     verified_code = _verify_code_files(scope)
@@ -765,16 +1252,46 @@ def _tensorize(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     output_path = Path(scope["output_path"])
     if output_path.exists():
         raise FileExistsError(f"Refusing to overwrite tensor bundle: {output_path}")
-    result = build_tensor_bundle(
-        feature_manifest=scope["feature_manifest"],
-        output_path=output_path,
-        positions=int(scope["positions"]),
-        maximum_batch_examples=int(scope["maximum_batch_examples"]),
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="tensorize", disk_path=output_path
     )
+    if monitor is not None:
+        monitor.update(phase="tensorize", completed=0, total=1)
+    bundle_format = str(scope.get("bundle_format", "legacy-v0"))
+    if bundle_format == "sharded-v1":
+        result = build_sharded_tensor_bundle(
+            feature_manifest=scope["feature_manifest"],
+            output_dir=output_path,
+            positions=int(scope["positions"]),
+            maximum_batch_examples=int(scope["maximum_batch_examples"]),
+            maximum_batches_per_shard=int(scope["maximum_batches_per_shard"]),
+            excluded_watermark_families=tuple(
+                scope.get("excluded_watermark_families", ())
+            ),
+        )
+    elif bundle_format == "legacy-v0":
+        result = build_tensor_bundle(
+            feature_manifest=scope["feature_manifest"],
+            output_path=output_path,
+            positions=int(scope["positions"]),
+            maximum_batch_examples=int(scope["maximum_batch_examples"]),
+        )
+    else:
+        raise ValueError("Unsupported tensor bundle format")
     if result["train_batches"] != int(scope["expected_train_batches"]):
         raise RuntimeError("Unexpected Train batch count")
     if result["dev_batches"] != int(scope["expected_dev_batches"]):
         raise RuntimeError("Unexpected Dev batch count")
+    if "expected_train_consistency_pairs" in scope and result[
+        "train_consistency_pairs"
+    ] != int(scope["expected_train_consistency_pairs"]):
+        raise RuntimeError("Unexpected Train consistency-pair count")
+    if "expected_dev_consistency_pairs" in scope and result[
+        "dev_consistency_pairs"
+    ] != int(scope["expected_dev_consistency_pairs"]):
+        raise RuntimeError("Unexpected Dev consistency-pair count")
+    if monitor is not None:
+        monitor.update(phase="tensorize", completed=1, total=1)
     result.update(
         {
             "feature_manifest_sha256": feature_manifest_sha256,
@@ -788,19 +1305,48 @@ def _tensorize(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
 def _train(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     from cwr_eg.losses import LossWeights
     from cwr_eg.modeling import CwrEgModelConfig
+    from cwr_eg.monitoring import ExperimentMonitor
     from cwr_eg.training import TrainingSettings, train_from_tensor_bundle
 
     runner_sha256 = _verify_runner(scope)
     verified_code = _verify_code_files(scope)
-    bundle_sha256 = sha256_file(scope["bundle_path"])
+    bundle_path = Path(scope["bundle_path"])
+    bundle_hash_path = (
+        bundle_path / "bundle_index.json" if bundle_path.is_dir() else bundle_path
+    )
+    bundle_sha256 = sha256_file(bundle_hash_path)
     if bundle_sha256 != str(scope["bundle_sha256"]):
         raise RuntimeError("Tensor bundle SHA-256 does not match the approved scope")
     output_dir = Path(scope["output_dir"])
-    if output_dir.exists():
+    resume_checkpoint = scope.get("resume_checkpoint")
+    if output_dir.exists() and resume_checkpoint is None:
         raise FileExistsError(f"Refusing to overwrite training output: {output_dir}")
+    if resume_checkpoint is not None and sha256_file(resume_checkpoint) != str(
+        scope["resume_checkpoint_sha256"]
+    ):
+        raise RuntimeError("Resume checkpoint SHA-256 does not match the approved scope")
     config = load_yaml(config_path)
     model_config = CwrEgModelConfig(**scope["model_config"])
     loss_config = config["model"]["losses"]
+    loss_config = {**loss_config, **dict(scope.get("loss_overrides", {}))}
+    supported_loss_keys = {
+        "watermark_weight",
+        "null_weight",
+        "margin_weight",
+        "contrastive_weight",
+        "reconstruction_weight",
+        "orthogonality_weight",
+        "scheme_adv_weight",
+        "private_scheme_weight",
+        "nuisance_adv_weight",
+        "boundary_weight",
+        "consistency_weight",
+        "variance_floor_weight",
+        "grl_scale",
+        "invariant_margin",
+    }
+    if set(loss_config) - supported_loss_keys:
+        raise ValueError("Training loss configuration contains an unsupported key")
     weights = LossWeights(
         watermark=float(loss_config["watermark_weight"]),
         null=float(loss_config["null_weight"]),
@@ -816,6 +1362,9 @@ def _train(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
         variance_floor=float(loss_config["variance_floor_weight"]),
     )
     settings = TrainingSettings(**scope.get("training_settings", {}))
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="train", disk_path=output_dir
+    )
     result = train_from_tensor_bundle(
         bundle_path=scope["bundle_path"],
         output_dir=scope["output_dir"],
@@ -823,13 +1372,24 @@ def _train(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
         settings=settings,
         loss_weights=weights,
         device_name=str(scope.get("device", "cuda:0")),
+        resume_checkpoint=resume_checkpoint,
+        progress_callback=(
+            None
+            if monitor is None
+            else lambda phase, completed, total: monitor.update(
+                phase=phase, completed=completed, total=total
+            )
+        ),
     )
+    if monitor is not None:
+        monitor.update(phase="training_complete", completed=1, total=1)
     if not math.isfinite(float(result["best_dev_total"])):
         raise RuntimeError("Training produced a non-finite Dev objective")
     result.update(
         {
             "bundle_sha256": bundle_sha256,
             "checkpoint_sha256": sha256_file(result["checkpoint"]),
+            "latest_checkpoint_sha256": sha256_file(result["latest_checkpoint"]),
             "training_log_sha256": sha256_file(result["training_log"]),
             "runner_sha256": runner_sha256,
             "code_files_verified": len(verified_code),
@@ -838,9 +1398,215 @@ def _train(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _score_checkpoint(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    from cwr_eg.monitoring import ExperimentMonitor
+    from cwr_eg.scoring import score_checkpoint_features
+
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    checkpoint_entries = scope.get("checkpoints")
+    if not isinstance(checkpoint_entries, list) or not checkpoint_entries:
+        raise ValueError("score-checkpoint requires at least one checkpoint")
+    checkpoint_paths: list[str] = []
+    for entry in checkpoint_entries:
+        path = str(entry["path"])
+        if sha256_file(path) != str(entry["sha256"]):
+            raise RuntimeError(f"Checkpoint SHA-256 mismatch: {path}")
+        checkpoint_paths.append(path)
+    feature_manifest_sha256 = sha256_file(scope["feature_manifest"])
+    if feature_manifest_sha256 != str(scope["feature_manifest_sha256"]):
+        raise RuntimeError("Feature manifest SHA-256 does not match the approved scope")
+    documents_sha256 = sha256_file(scope["documents_path"])
+    if documents_sha256 != str(scope["documents_sha256"]):
+        raise RuntimeError("Scoring document SHA-256 does not match the approved scope")
+    output_path = Path(scope["output_path"])
+    if output_path.exists():
+        raise FileExistsError(f"Refusing to overwrite checkpoint scores: {output_path}")
+    config = load_yaml(config_path)
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="score-checkpoint", disk_path=output_path.parent
+    )
+    result = score_checkpoint_features(
+        checkpoint_paths=checkpoint_paths,
+        feature_manifest_path=scope["feature_manifest"],
+        documents_path=scope["documents_path"],
+        output_path=output_path,
+        positions=int(scope["positions"]),
+        device_name=str(scope.get("device", "cuda:0")),
+        minimum_mapping_coverage=float(
+            config["validity"]["minimum_mapping_coverage"]
+        ),
+        recipe_ids=scope.get("recipe_ids"),
+        progress_callback=(
+            None
+            if monitor is None
+            else lambda completed, total: monitor.update(
+                phase="checkpoint_scoring", completed=completed, total=total
+            )
+        ),
+    )
+    if result["documents"] != int(scope["expected_document_count"]):
+        raise RuntimeError("Checkpoint scoring produced an unexpected document count")
+    result.update(
+        {
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+            "feature_manifest_sha256": feature_manifest_sha256,
+            "documents_sha256": documents_sha256,
+        }
+    )
+    return result
+
+
+def _score_registered(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    from cwr_eg.markllm_bridge import MarkLlmBridge, MarkLlmSettings
+    from cwr_eg.monitoring import ExperimentMonitor
+    from cwr_eg.registered_scoring import score_registered_evidence
+
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    score_records_sha256 = sha256_file(scope["score_records_path"])
+    if score_records_sha256 != str(scope["score_records_sha256"]):
+        raise RuntimeError("Generic score records SHA-256 does not match the approved scope")
+    model_path = Path(scope["model_path"]).resolve()
+    verified_files = _verify_model_files(model_path, scope.get("model_files"))
+    repository = Path(scope["markllm_repository"]).resolve()
+    _verify_repository(repository, str(scope["markllm_commit"]))
+    key_file_sha256 = _load_private_keys(scope)
+    output_path = Path(scope["output_path"])
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="score-registered", disk_path=output_path.parent
+    )
+    bridge = MarkLlmBridge(
+        MarkLlmSettings(
+            repository=repository,
+            model_path=model_path,
+            model_revision=str(scope["revision"]),
+            device=str(scope.get("device", "cuda:0")),
+            max_new_tokens=1,
+            do_sample=False,
+            local_files_only=True,
+        )
+    )
+    config = load_yaml(config_path)
+    result = score_registered_evidence(
+        bridge=bridge,
+        score_records_path=scope["score_records_path"],
+        output_path=output_path,
+        families=scope["families"],
+        authorized_key_slots=scope["authorized_key_slots"],
+        window_lengths=config["search"]["window_char_lengths"],
+        stride_fraction=float(config["search"]["stride_fraction"]),
+        candidate_quantile=float(config["search"]["candidate_quantile"]),
+        merge_gap_chars=int(config["search"]["merge_gap_chars"]),
+        include_scheme_only=bool(scope.get("include_scheme_only", False)),
+        progress_callback=(
+            None
+            if monitor is None
+            else lambda completed, total: monitor.update(
+                phase="registered_scoring", completed=completed, total=total
+            )
+        ),
+    )
+    if result["documents"] != int(scope["expected_document_count"]):
+        raise RuntimeError("Registered scoring produced an unexpected document count")
+    result.update(
+        {
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+            "model_files_verified": len(verified_files),
+            "score_records_sha256": score_records_sha256,
+            "key_file_sha256": key_file_sha256,
+        }
+    )
+    return result
+
+
+def _prepare_calibration(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    from cwr_eg.calibration_records import build_parent_calibration_records
+    from cwr_eg.monitoring import ExperimentMonitor
+
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    records_sha256 = sha256_file(scope["scored_documents_path"])
+    if records_sha256 != str(scope["scored_documents_sha256"]):
+        raise RuntimeError("Scored Calibration documents SHA-256 mismatch")
+    output_path = Path(scope["output_path"])
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="prepare-calibration", disk_path=output_path.parent
+    )
+    if monitor is not None:
+        monitor.update(phase="prepare_parent_nulls", completed=0, total=1)
+    config = load_yaml(config_path)
+    result = build_parent_calibration_records(
+        scored_documents_path=scope["scored_documents_path"],
+        output_path=output_path,
+        window_lengths=config["search"]["window_char_lengths"],
+        stride_fraction=float(config["search"]["stride_fraction"]),
+        candidate_quantile=float(config["search"]["candidate_quantile"]),
+        merge_gap_chars=int(config["search"]["merge_gap_chars"]),
+    )
+    if result["parents"] != int(scope["expected_parent_count"]):
+        raise RuntimeError("Calibration preparation produced an unexpected parent count")
+    if monitor is not None:
+        monitor.update(phase="prepare_parent_nulls", completed=1, total=1)
+    result.update(
+        {
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+            "scored_documents_sha256": records_sha256,
+        }
+    )
+    return result
+
+
+def _prepare_evaluation(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    from cwr_eg.evaluation_records import build_evaluation_records
+    from cwr_eg.monitoring import ExperimentMonitor
+
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    decisions_sha256 = sha256_file(scope["decisions_path"])
+    documents_sha256 = sha256_file(scope["documents_path"])
+    if decisions_sha256 != str(scope["decisions_sha256"]):
+        raise RuntimeError("Test decisions SHA-256 does not match the approved scope")
+    if documents_sha256 != str(scope["documents_sha256"]):
+        raise RuntimeError("Test documents SHA-256 does not match the approved scope")
+    output_path = Path(scope["output_path"])
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="prepare-evaluation", disk_path=output_path.parent
+    )
+    if monitor is not None:
+        monitor.update(phase="prepare_test_metrics", completed=0, total=1)
+    result = build_evaluation_records(
+        decisions_path=scope["decisions_path"],
+        documents_path=scope["documents_path"],
+        output_path=output_path,
+        authorized_key_slots=scope["authorized_key_slots"],
+        held_out_family=scope.get("held_out_family"),
+    )
+    if result["parents"] != int(scope["expected_parent_count"]):
+        raise RuntimeError("Evaluation preparation produced an unexpected parent count")
+    if monitor is not None:
+        monitor.update(phase="prepare_test_metrics", completed=1, total=1)
+    result.update(
+        {
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+            "decisions_sha256": decisions_sha256,
+            "documents_sha256": documents_sha256,
+        }
+    )
+    return result
+
+
 def _calibrate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
-    from cwr_eg.bundle import fit_calibration_bundle_from_records
+    from cwr_eg.bundle import (
+        fit_calibration_bundle_from_records,
+        fit_parent_calibration_bundle_from_records,
+    )
     from cwr_eg.calibration import CalibrationBundleHeader
+    from cwr_eg.monitoring import ExperimentMonitor
 
     runner_sha256 = _verify_runner(scope)
     verified_code = _verify_code_files(scope)
@@ -849,15 +1615,34 @@ def _calibrate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError("Calibration records SHA-256 does not match the approved scope")
     if Path(scope["output_dir"]).exists():
         raise FileExistsError("Refusing to overwrite calibration output")
-    config = load_yaml(config_path)
-    path = fit_calibration_bundle_from_records(
-        records_path=scope["records_path"],
-        output_dir=scope["output_dir"],
-        header=CalibrationBundleHeader(**scope["header"]),
-        validity_rules=config["validity"],
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="calibrate", disk_path=scope["output_dir"]
     )
+    if monitor is not None:
+        monitor.update(phase="parent_calibration", completed=0, total=1)
+    config = load_yaml(config_path)
+    aggregation_unit = str(scope.get("aggregation_unit", "document"))
+    if aggregation_unit == "parent_id":
+        path = fit_parent_calibration_bundle_from_records(
+            records_path=scope["records_path"],
+            output_dir=scope["output_dir"],
+            header=CalibrationBundleHeader(**scope["header"]),
+            validity_rules=config["validity"],
+            minimum_parents_per_stratum=int(scope["minimum_parents_per_stratum"]),
+        )
+    elif aggregation_unit == "document":
+        path = fit_calibration_bundle_from_records(
+            records_path=scope["records_path"],
+            output_dir=scope["output_dir"],
+            header=CalibrationBundleHeader(**scope["header"]),
+            validity_rules=config["validity"],
+        )
+    else:
+        raise ValueError("Unsupported calibration aggregation unit")
     manifest_path = path / "calibration_manifest.json"
     null_path = path / "null_distributions.npz"
+    if monitor is not None:
+        monitor.update(phase="parent_calibration", completed=1, total=1)
     return {
         "calibration_bundle": str(path),
         "records_sha256": records_sha256,
@@ -865,7 +1650,17 @@ def _calibrate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
         "null_distributions_sha256": sha256_file(null_path),
         "runner_sha256": runner_sha256,
         "code_files_verified": len(verified_code),
+        "aggregation_unit": aggregation_unit,
     }
+
+
+def _inference_character_scores(row: dict[str, Any]) -> Any:
+    scores = row.get("character_scores")
+    if scores is None:
+        scores = row.get("character_logits")
+    if scores is None:
+        raise ValueError("Inference score record has no character score vector")
+    return scores
 
 
 def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
@@ -874,6 +1669,7 @@ def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     from cwr_eg.enums import Applicability, KeyStatus, TailDirection
     from cwr_eg.inference import InferencePipeline, InferenceVersions
     from cwr_eg.manifest import read_jsonl, write_jsonl
+    from cwr_eg.monitoring import ExperimentMonitor
 
     runner_sha256 = _verify_runner(scope)
     verified_code = _verify_code_files(scope)
@@ -899,10 +1695,20 @@ def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     rows = read_jsonl(scope["score_records_path"])
     if len(rows) != int(scope["expected_document_count"]):
         raise ValueError("Inference document count does not match the approved scope")
-    if any(str(row.get("split")) != "test" for row in rows):
-        raise ValueError("G-05 inference smoke accepts Test rows only")
+    allowed_splits = {str(item) for item in scope.get("allowed_splits", ["test"])}
+    if not allowed_splits or not allowed_splits.issubset(
+        {"train", "dev", "calibration", "test"}
+    ):
+        raise ValueError("Inference allowed_splits contains an unsupported split")
+    if any(str(row.get("split")) not in allowed_splits for row in rows):
+        raise ValueError("Inference score records contain a split outside the approved scope")
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="infer", disk_path=output_path.parent
+    )
+    if monitor is not None:
+        monitor.update(phase="inference", completed=0, total=len(rows))
     decisions = []
-    for row in rows:
+    for row_index, row in enumerate(rows, start=1):
         declared = tuple(
             RegisteredEvidence(
                 detector_id=str(item["detector_id"]),
@@ -917,6 +1723,8 @@ def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
                 adjusted_p=item.get("adjusted_p"),
                 applicability=Applicability(item["applicability"]),
                 reason_codes=tuple(item.get("reason_codes", ())),
+                evidence_strength=item.get("evidence_strength"),
+                evidence_transform_version=item.get("evidence_transform_version"),
             )
             for item in row.get("registered_evidence", ())
         )
@@ -925,8 +1733,7 @@ def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
             return tuple(
                 item
                 for item in declared
-                if item.interval.char_start < candidate.interval.char_end
-                and candidate.interval.char_start < item.interval.char_end
+                if item.interval == candidate.interval or "full_text" in item.reason_codes
             )
 
         pipeline = InferencePipeline(
@@ -944,11 +1751,15 @@ def _infer(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
             document_id=str(row["document_id"]),
             raw_text=str(row["text"]),
             language=str(row["language"]),
-            character_scores=row["character_scores"],
+            character_scores=_inference_character_scores(row),
             effective_length=int(row["effective_length"]),
             mapping_coverage=float(row["mapping_coverage"]),
             ).to_dict()
         )
+        if monitor is not None:
+            monitor.update(
+                phase="inference", completed=row_index, total=len(rows)
+            )
     write_jsonl(output_path, decisions)
     return {
         "documents": len(decisions),
@@ -967,7 +1778,18 @@ def _evaluate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
     from cwr_eg.enums import DecisionLabel
     from cwr_eg.manifest import read_jsonl
     from cwr_eg.metrics import EvaluationRecord, cluster_bootstrap_macro_f1, evaluate_records
+    from cwr_eg.monitoring import ExperimentMonitor
 
+    runner_sha256 = _verify_runner(scope)
+    verified_code = _verify_code_files(scope)
+    records_sha256 = sha256_file(scope["records_path"])
+    if records_sha256 != str(scope["records_sha256"]):
+        raise RuntimeError("Evaluation records SHA-256 does not match the approved scope")
+    monitor = ExperimentMonitor.from_scope(
+        scope, task_id="evaluate", disk_path=Path(scope["records_path"]).parent
+    )
+    if monitor is not None:
+        monitor.update(phase="metric_evaluation", completed=0, total=1)
     rows = read_jsonl(scope["records_path"])
     records = [
         EvaluationRecord(
@@ -975,20 +1797,35 @@ def _evaluate(config_path: Path, scope: dict[str, Any]) -> dict[str, Any]:
             true_label=DecisionLabel(row["true_label"]),
             predicted_label=DecisionLabel(row["predicted_label"]),
             score=float(row["score"]),
+            knownness_score=row.get("knownness_score"),
             true_intervals=tuple(CharacterInterval(*item) for item in row.get("true_intervals", [])),
             predicted_intervals=tuple(
                 CharacterInterval(*item) for item in row.get("predicted_intervals", [])
             ),
+            source=row.get("source"),
+            language=row.get("language"),
+            watermark_family=row.get("watermark_family"),
+            key_id=row.get("key_id"),
+            attack_id=row.get("attack_id"),
         )
         for row in rows
     ]
-    result = evaluate_records(records)
+    result = evaluate_records(records, stratify_by=tuple(scope.get("stratify_by", ())))
     if len({record.parent_id for record in records}) >= 2:
         result["macro_f1_cluster_bootstrap"] = cluster_bootstrap_macro_f1(
             records,
             replicates=int(scope.get("bootstrap_replicates", 2000)),
             seed=int(scope.get("seed", 20260813)),
         )
+    if monitor is not None:
+        monitor.update(phase="metric_evaluation", completed=1, total=1)
+    result.update(
+        {
+            "records_sha256": records_sha256,
+            "runner_sha256": runner_sha256,
+            "code_files_verified": len(verified_code),
+        }
+    )
     return result
 
 

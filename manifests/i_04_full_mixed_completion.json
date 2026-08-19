@@ -1,0 +1,50 @@
+{
+  "completed_at": "2026-08-15T13:47:19.333616+08:00",
+  "deviation_audit": {
+    "calibration_or_test_unsealed": false,
+    "frozen_recipe_fields_changed": false,
+    "model_or_generation_parameters_changed": false,
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "status": "pass",
+    "stop_condition_bypassed": false
+  },
+  "new_documents": 360,
+  "qa": {
+    "bytes": 1022978,
+    "failed_recipe_ids": [],
+    "failed_rows": 0,
+    "generated_rows": 400,
+    "path": "artifacts\\i04_full\\mixed_generated.jsonl",
+    "rows": 400,
+    "sha256": "6fce39f278dd520b219d12ab472620b2cf1e501638fbfee527099146c248f02f",
+    "unique_recipe_ids": 400
+  },
+  "resources": {
+    "first_recorded_at": "2026-08-15T12:50:45+08:00",
+    "last_recorded_at": "2026-08-15T13:33:51+08:00",
+    "maximum_gpu_temperature_c": 62.0,
+    "maximum_used_ram_gib": 14.140945434570312,
+    "minimum_free_disk_gib": 532.6933364868164,
+    "monitor_points": 92
+  },
+  "result_path": "artifacts\\i04_full\\mixed_generation_result.json",
+  "result_sha256": "f99150b024ff33d56f0dd369e1da1560752fb88d21b5f08e96fc8ebd3c66e51a",
+  "resumed_documents": 40,
+  "runtime_result": {
+    "action": "generate",
+    "approved_execution": true,
+    "bridge_sha256": "8a1d29f7d331460146864f03fd62acac91fea2667e7424ed8aab83e7e4d411b3",
+    "code_files_verified": 5,
+    "failed": 0,
+    "freeze_manifest_sha256": "fcc64bfef79a9bcf7ea5ee6515561b80c38f8e2351260177cec40d372652e6fb",
+    "generated": 400,
+    "generation_kind": "mixed_document",
+    "key_file_sha256": "fe1b92fc4aeff59915a1ded37fd934624b4248d0d35286ce31f712864c42e5e8",
+    "model_files_verified": 7,
+    "output_path": "artifacts\\i04_full\\mixed_generated.jsonl",
+    "resumed_documents": 40,
+    "runner_sha256": "7802cd246e2606e6a6cd29ddec036911a059e775f1beb4e1d00b112c7659e3ac"
+  },
+  "task_id": "I-04-full-mixed"
+}

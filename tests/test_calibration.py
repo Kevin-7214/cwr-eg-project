@@ -35,6 +35,7 @@ def test_empirical_p_has_plus_one_smoothing_and_is_monotone() -> None:
 def test_exact_fwer_upper_matches_predeclared_zero_error_requirement() -> None:
     assert clopper_pearson_upper(0, 198) > 0.015
     assert clopper_pearson_upper(0, 199) <= 0.015
+    assert clopper_pearson_upper(0, 200) == pytest.approx(0.014867, abs=1e-6)
 
 
 def test_bundle_compatibility_changes_with_search_space() -> None:

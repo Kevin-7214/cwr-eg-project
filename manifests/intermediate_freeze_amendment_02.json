@@ -1,0 +1,107 @@
+{
+  "manifest_version": "intermediate-freeze-amendment-v1",
+  "amendment_content_hash": "f1f957c342b86668b252da52e48c178d9d3732e2304d932437bac78baa5405c9",
+  "amendment_id": "I-FIX-02-hash-bound-generation-reuse",
+  "created_at": "2026-08-14T16:49:00+08:00",
+  "applies_from": "I-GATE-B-full-generation",
+  "parent_amendment": {
+    "path": "manifests/intermediate_freeze_amendment_01.json",
+    "sha256": "a1b7c76eaf6c9c78189f86202d4c0ae366b3bcf13c1b1df9e9cbfd844ba7aad3",
+    "amendment_content_hash": "58bf4a4f46b6dd8d4c7f515db2fef4a53871d834fa290027887123958bdba44f"
+  },
+  "original_freeze_manifest": {
+    "path": "manifests/intermediate_freeze_manifest.json",
+    "sha256": "a6ebe9d5086c15e7fb217751af2cfa3a14c61ecf1a87f92461f4c374a7dc8324",
+    "freeze_content_hash": "607c925776fddf631fc9f91c35873436ae562dd7b9536a294df218f409e09019"
+  },
+  "test_sealed": true,
+  "calibration_sealed": true,
+  "reason": {
+    "completed_task": "I-03",
+    "canary_recipes": 840,
+    "generation_failures": 0,
+    "required_reuse": true,
+    "prior_gap": "A pre-existing generation partial was checked only for recipe-id membership, not an approved file hash, exact count, row provenance, duplicate ids, or immutable recipe fields."
+  },
+  "scientific_fix": {
+    "policy": "Every pre-existing generation partial must be bound by SHA-256 and exact resumed-document count in the approved scope.",
+    "row_requirements": [
+      "status is generated",
+      "recipe id is unique and belongs to the selected frozen recipes",
+      "text is non-empty and matches text_sha256",
+      "all frozen recipe fields are unchanged"
+    ],
+    "normal_generation_computation_changed": false,
+    "generation_parameters_changed": false,
+    "reuse_changes_results": false,
+    "new_scope_and_fingerprint_required": true
+  },
+  "code_changes": [
+    {
+      "path": "src/cwr_eg/runtime.py",
+      "previous_bytes": 74495,
+      "previous_sha256": "89a3a74486239ecd88e0ffbd2b326c56e54e0f15afc56cc4feace48f966e8f78",
+      "current_bytes": 77436,
+      "current_sha256": "0f3fe852b5a34d07843010f87ed051d67df3e1e5cd6de4111a71f8e2034e70b6",
+      "purpose": "reject unapproved or drifted generation partials before reuse"
+    },
+    {
+      "path": "scripts/seed_generation_partial.py",
+      "bytes": 2331,
+      "sha256": "3b19b871297c6ce51b278bdbe5a2c34625be773445069effc81f502ee4e9e931",
+      "purpose": "materialize exact canary rows as validated full-run partial seeds"
+    }
+  ],
+  "new_tests": [
+    {
+      "path": "tests/test_generation_resume_scope.py",
+      "bytes": 3241,
+      "sha256": "45fe4eeb22f7e9deec43467d67a8029b936f3de39da060e2e83e03f751578fed"
+    }
+  ],
+  "cpu_test_result": {
+    "passed": 65,
+    "failed": 0,
+    "cuda_visible_devices": ""
+  },
+  "preserved_inputs": [
+    {"path": "manifests/intermediate_parents.jsonl", "sha256": "02fd389173f76e2113e40601e1be8324d9a3359fb3b58a11fc48eeb0aa87276d"},
+    {"path": "manifests/intermediate_recipes.jsonl", "sha256": "ae92524278975d515460e0ee42ca3b1b7437d216f841dc49f33ca37232fd92e5"},
+    {"path": "artifacts/i03_canary/base_generated.jsonl", "sha256": "96568c596c078aa9280deb665e578680aa99f281625a36c9e66435bb222f10d3"},
+    {"path": "artifacts/i03_canary/attacked_generated.jsonl", "sha256": "c6f4ad8a06da5c061a3a2601f8074d5077e07971df62f46d5d9c9236f494803a"},
+    {"path": "artifacts/i03_canary/mixed_generated.jsonl", "sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c"}
+  ],
+  "partial_seeds": [
+    {
+      "kind": "base_generation",
+      "path": "artifacts/i04_full/base_generated.jsonl.partial",
+      "sha256": "96568c596c078aa9280deb665e578680aa99f281625a36c9e66435bb222f10d3",
+      "documents": 400,
+      "seed_manifest_sha256": "110ca2972ef38ad51738508b9afea335e1bc13af3d19ebccf8a840aa5b2bac37"
+    },
+    {
+      "kind": "matched_attack",
+      "path": "artifacts/i04_full/attacked_generated.jsonl.partial",
+      "sha256": "c6f4ad8a06da5c061a3a2601f8074d5077e07971df62f46d5d9c9236f494803a",
+      "documents": 400,
+      "seed_manifest_sha256": "5690d91b210158ce50c7d54cf1a6baf380a36b427dd2c01050b8e631b2517e33"
+    },
+    {
+      "kind": "mixed_document",
+      "path": "artifacts/i04_full/mixed_generated.jsonl.partial",
+      "sha256": "772c33cdadd7d2ecc4edb528e0e4e10d5813d4f7b407df0784c11078047afd2c",
+      "documents": 40,
+      "seed_manifest_sha256": "4a8be1809b7d4b07bc2a69145978f3c5a8593243e3e90d2783111eb0add5842f"
+    }
+  ],
+  "deviation_audit": {
+    "status": "pass",
+    "objective_changed": false,
+    "sample_scale_changed": false,
+    "recipe_or_split_changed": false,
+    "model_asset_changed": false,
+    "generation_algorithm_changed": false,
+    "calibration_or_test_unsealed": false,
+    "notes": "This amendment only makes the planned canary reuse fail closed and auditable."
+  }
+}

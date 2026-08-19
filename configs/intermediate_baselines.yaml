@@ -1,0 +1,24 @@
+baseline_registry_version: intermediate-v1
+freeze_before_test: true
+enabled:
+  direct_statistics: {fit_split: train, select_split: dev}
+  logistic_regression: {fit_split: train, select_split: dev}
+  maximum_softmax: {fit_split: train, select_split: dev}
+  energy: {fit_split: train, select_split: dev}
+  mahalanobis: {fit_split: train, select_split: dev}
+  one_class_svm: {fit_split: train, select_split: dev}
+  prototype_distance: {fit_split: train, select_split: dev}
+  generic_only: {fit_split: train, select_split: dev}
+  registered_only: {fit_split: calibration, select_split: dev}
+  linear_evidence_fusion: {fit_split: train, select_split: dev}
+  direct_feature_mlp: {fit_split: train, select_split: dev}
+  markllm_registered_detectors:
+    families: [kgw, unigram, unbiased, synthid]
+    authorization_scenarios: [a_and_b, a_only, b_only]
+excluded:
+  detectgpt: missing_local_perturbation_model_and_outside_frozen_assets
+  binoculars: missing_local_model_pair_and_outside_frozen_assets
+  bloom: local_weights_absent_and_new_download_forbidden
+  multilingual_e5: local_weights_absent_and_new_download_forbidden
+  official_gcd_aol: windows_native_extension_not_validated_for_this_24h_run
+  waterseeker: upstream_license_not_declared

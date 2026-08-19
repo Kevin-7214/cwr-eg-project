@@ -7,8 +7,12 @@ from typing import Sequence
 
 from cwr_eg.approval import EXPERIMENT_ACTIONS, approval_fingerprint, require_approval
 from cwr_eg.assets import audit_legacy_assets
-from cwr_eg.config import config_hash, load_yaml, validate_pilot_config
-from cwr_eg.data_prep import prepare_pilot_data
+from cwr_eg.config import config_hash, load_yaml, validate_experiment_config
+from cwr_eg.data_prep import (
+    prepare_intermediate_canary,
+    prepare_intermediate_data,
+    prepare_pilot_data,
+)
 from cwr_eg.progress import latest_progress
 
 
@@ -47,11 +51,25 @@ def build_parser() -> argparse.ArgumentParser:
     prepare.add_argument("--output-dir", type=Path, default=Path("manifests"))
     prepare.add_argument("--seed", type=int, default=20260813)
 
-    tensor = subparsers.add_parser("build-tensor-bundle")
-    tensor.add_argument("--feature-manifest", type=Path, required=True)
-    tensor.add_argument("--output", type=Path, required=True)
-    tensor.add_argument("--positions", type=int, default=256)
-    tensor.add_argument("--maximum-batch-examples", type=int, default=20)
+    intermediate = subparsers.add_parser("prepare-intermediate-data")
+    intermediate.add_argument("--legacy-corpus-dir", type=Path, required=True)
+    intermediate.add_argument("--output-dir", type=Path, default=Path("manifests"))
+    intermediate.add_argument(
+        "--excluded-parent-manifest",
+        type=Path,
+        default=Path("manifests/pilot_parents.jsonl"),
+    )
+    intermediate.add_argument("--seed", type=int, default=20260815)
+
+    canary = subparsers.add_parser("prepare-intermediate-canary")
+    canary.add_argument(
+        "--parent-manifest", type=Path, default=Path("manifests/intermediate_parents.jsonl")
+    )
+    canary.add_argument(
+        "--recipe-manifest", type=Path, default=Path("manifests/intermediate_recipes.jsonl")
+    )
+    canary.add_argument("--output-dir", type=Path, default=Path("manifests"))
+    canary.add_argument("--seed", type=int, default=20260815)
 
     audit = subparsers.add_parser("audit-assets")
     audit.add_argument("--project-root", type=Path, default=Path.cwd())
@@ -79,7 +97,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "validate-config":
         payload = load_yaml(args.config)
-        validate_pilot_config(payload)
+        validate_experiment_config(payload)
         print(json.dumps({"ok": True, "config_hash": config_hash(args.config)}))
         return 0
     if args.command == "prepare-data":
@@ -90,14 +108,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
-    if args.command == "build-tensor-bundle":
-        from cwr_eg.tensor_bundle import build_tensor_bundle
-
-        result = build_tensor_bundle(
-            feature_manifest=args.feature_manifest,
-            output_path=args.output,
-            positions=args.positions,
-            maximum_batch_examples=args.maximum_batch_examples,
+    if args.command == "prepare-intermediate-data":
+        result = prepare_intermediate_data(
+            legacy_corpus_dir=args.legacy_corpus_dir,
+            output_dir=args.output_dir,
+            excluded_parent_manifest=args.excluded_parent_manifest,
+            seed=args.seed,
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "prepare-intermediate-canary":
+        result = prepare_intermediate_canary(
+            parent_manifest=args.parent_manifest,
+            recipe_manifest=args.recipe_manifest,
+            output_dir=args.output_dir,
+            seed=args.seed,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
